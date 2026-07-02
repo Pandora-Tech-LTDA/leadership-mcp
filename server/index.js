@@ -255,14 +255,51 @@ async function summarizeFile(relPath, preferredSection) {
 // Servidor MCP
 // ---------------------------------------------------------------------------
 
+// Instruções entregues ao cliente MCP no handshake `initialize` (campo `instructions`).
+// O cliente (Claude Desktop e outros clientes MCP) injeta este texto no contexto
+// automaticamente — sem o usuário colar nada. É o que faz o gatilho relacional funcionar
+// só instalando o MCP: o `prompt-sistema.md` deixa de ser pré-requisito e vira reforço
+// opcional (e segue sendo o caminho para assistentes sem MCP).
+//
+// Núcleo CONDENSADO de propósito: descreve QUANDO oferecer a consulta e a taxonomia dos 5
+// gatilhos, sem replicar o roteiro completo de detecção contextual do prompt-sistema.md.
+// Texto ESTÁTICO de propósito: `createServer()` é síncrona e, no modo HTTP, roda uma vez
+// por request — montar via `loadFile` (async/rede) aqui quebraria o offline-first. A
+// taxonomia é estável (espelha o array TRIGGERS acima).
+export const INSTRUCTIONS = [
+  "Este servidor entrega uma base viva de liderança humanista. A orientação retornada é",
+  "sempre uma HIPÓTESE de ação, nunca uma prescrição.",
+  "",
+  "Quando a tarefa for PRODUZIR ou ESTRUTURAR algo para ou sobre uma pessoa ou grupo",
+  "(e-mail, mensagem, comunicado, feedback, roteiro, post, apresentação), trate como um",
+  "gatilho relacional e classifique-o silenciosamente em uma destas categorias:",
+  "  1. Conflito — tensão, desentendimento, crítica, clima ruim.",
+  "  2. Decisão com Impacto — comunicar/escalar/delegar algo que afeta outras pessoas.",
+  "  3. Feedback — reconhecer, agradecer, corrigir comportamento, responder avaliação.",
+  "  4. Relacionamento Interno — pedir, apresentar ou alinhar com gestor, colega ou time.",
+  "  5. Interação Externa — fornecedor, parceiro, cliente ou lead.",
+  "",
+  "Nesses casos, ANTES de escrever, ofereça uma escolha: consultar a ferramenta",
+  "`buscar_orientacao` (descrevendo a situação em uma frase) e moldar a resposta a partir",
+  "dela desde o início, ou responder direto. Se a pessoa recusar, responda normalmente sem",
+  "insistir. O gatilho pode vir do CONTEÚDO que você acessou (um e-mail tenso, uma cobrança),",
+  "não só das palavras do pedido.",
+  "",
+  "Tarefa puramente técnica, conceitual ou operacional, sem destinatário humano, NÃO é",
+  "gatilho — responda direto. Use `listar_gatilhos` para navegar as categorias cobertas.",
+].join("\n");
+
 // Cria uma instância do servidor MCP com as duas ferramentas registradas. No modo stdio
 // usamos uma única instância; no modo HTTP stateless criamos uma por request (recomendação
 // do SDK — evita vazamento de estado entre clientes concorrentes).
 export function createServer() {
-  const server = new McpServer({
-    name: "leadership-mcp",
-    version: "0.1.0",
-  });
+  const server = new McpServer(
+    {
+      name: "leadership-mcp",
+      version: "0.1.2",
+    },
+    { instructions: INSTRUCTIONS }
+  );
 
   server.registerTool(
     "buscar_orientacao",

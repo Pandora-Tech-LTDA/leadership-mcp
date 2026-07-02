@@ -1,7 +1,7 @@
 // smoke-test.js — valida classificação e montagem da orientação sem subir o transporte MCP.
 // Usa a base empacotada/local como fonte (não exige rede). Uso: node smoke-test.js
 
-import { classify, buildGuidance } from "./index.js";
+import { classify, buildGuidance, createServer, INSTRUCTIONS } from "./index.js";
 
 // (situação do usuário, gatilho esperado) — frases dos exemplos do prompt v0.3.
 const CASES = [
@@ -37,5 +37,20 @@ console.log(`\nResultado: ${pass}/${CASES.length} ok, ${fail} falha(s).\n`);
 console.log("== Orientação consolidada (1 exemplo) ==\n");
 const sample = await buildGuidance("como respondo o email agressivo do colega");
 console.log(sample);
+
+// Servidor MCP: instancia sem erro e entrega o gatilho embutido via `instructions`.
+console.log("\n== Servidor MCP (instructions embutido) ==\n");
+try {
+  createServer();
+  const okInstr =
+    typeof INSTRUCTIONS === "string" &&
+    INSTRUCTIONS.trim().length > 0 &&
+    INSTRUCTIONS.includes("buscar_orientacao");
+  console.log(`${okInstr ? "✅" : "❌"} createServer() instancia e INSTRUCTIONS cita buscar_orientacao`);
+  if (!okInstr) fail++;
+} catch (err) {
+  console.log(`❌ createServer() lançou: ${err.message}`);
+  fail++;
+}
 
 process.exit(fail === 0 ? 0 : 1);
