@@ -1,7 +1,7 @@
 ---
 type: system-prompt
 title: Leadership Culture Agent — Prompt de Sistema
-description: Prompt para colar nas instruções do agente (Claude ou GPT). Ativa sugestões comportamentais baseadas em liderança humanista quando detecta situações relacionais.
+description: Reforço opcional para colar nas instruções do agente. No Claude com o Leadership MCP instalado, o gatilho já vem embutido no servidor — este prompt reforça o comportamento. Em assistentes sem MCP (ChatGPT, Gemini, Grok, Copilot), é o único caminho para ativar as sugestões.
 version: 0.5
 precision: 92%
 false_positives: 0
@@ -18,11 +18,20 @@ changes:
 
 ## Como usar
 
-Cole o conteúdo da seção **Prompt** abaixo nas instruções personalizadas do seu agente:
+Este prompt é **opcional**. No **Claude** com o Leadership MCP instalado, o gatilho relacional já
+vem embutido no próprio servidor (ele é entregue ao Claude automaticamente ao conectar), então só
+instalar o MCP já ativa as sugestões — ver o README. Cole este prompt quando quiser:
+
+- **Reforçar** o comportamento de *pausar e oferecer* no ponto mais forte e consistente no Claude; ou
+- **Ativar** as sugestões em assistentes **sem MCP** (ChatGPT, Gemini, Grok, Copilot), onde este
+  prompt é a única forma de ter o gatilho (a base ao vivo, porém, não chega nesses assistentes).
+
+Onde colar o conteúdo da seção **Prompt** abaixo:
 - **Claude Desktop:** Settings → Profile / Custom Instructions
 - **ChatGPT:** Configurar GPT → Instruções do sistema
 
-Para que as sugestões funcionem, o MCP `leadership` precisa estar instalado (ver README).
+Nos assistentes sem MCP, as sugestões funcionam sozinhas (o prompt é autossuficiente); para que a
+consulta à base ao vivo (`buscar_orientacao`) funcione, o MCP `leadership` precisa estar instalado.
 
 ---
 

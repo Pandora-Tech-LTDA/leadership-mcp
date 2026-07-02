@@ -287,7 +287,7 @@
       Roda sobre o padrão aberto <a href="https://modelcontextprotocol.io">MCP</a>.
     </p>
     <div class="btns">
-      <a class="btn" href="#instalar">Instalar em 2 passos</a>
+      <a class="btn" href="#instalar">Instalar no Claude</a>
     </div>
   </div>
 </section>
@@ -327,26 +327,19 @@
 <section id="instalar">
   <div class="wrap">
     <p class="eyebrow">Instalar</p>
-    <h2>Pronto em 2 passos — grátis.</h2>
+    <h2>No Claude, 1 passo — grátis.</h2>
     <p class="lead">
-      O <strong>prompt</strong> funciona em qualquer assistente (Claude, ChatGPT, Gemini, Grok). A
-      <strong>base ao vivo</strong> conecta hoje no <strong>Claude Desktop</strong> — só precisa do
-      <a href="https://nodejs.org">Node.js 18+</a>.
+      No <strong>Claude Desktop</strong>, instalar o servidor MCP já <strong>embute o gatilho</strong>:
+      ele passa a perceber a situação relacional e oferecer a consulta sozinho — só precisa do
+      <a href="https://nodejs.org">Node.js 18+</a>. O <strong>prompt de sistema</strong> vira
+      opcional (reforço) e é o caminho para assistentes <strong>sem MCP</strong> (ChatGPT, Gemini, Grok).
     </p>
     <div class="steps steps2">
-      <div class="step">
-        <h3>Copie e cole o prompt de sistema</h3>
-        <p>
-          É ele que ensina o assistente a <em>perceber</em> a situação relacional e oferecer a consulta
-          — sem impor. Clique, copie, e a gente mostra onde colar no seu assistente.
-        </p>
-        <button class="btn" type="button" onclick="copyPromptAndOpen()" style="margin-top:10px">Copiar o prompt de sistema</button>
-      </div>
       <div class="step">
         <h3>Registre o servidor MCP</h3>
         <p>
           Em <strong>Configurações → Desenvolvedor → Editar Config</strong>, adicione o bloco abaixo
-          e reinicie o Claude:
+          e reinicie o Claude. O gatilho já vem embutido — não precisa colar mais nada.
         </p>
         <pre class="code"><code>{
   "mcpServers": {
@@ -356,6 +349,14 @@
     }
   }
 }</code></pre>
+      </div>
+      <div class="step">
+        <h3>Opcional: o prompt de sistema</h3>
+        <p>
+          No Claude o gatilho já vem no MCP — cole o prompt só para <em>reforçar</em> o comportamento,
+          ou para usar em assistentes <strong>sem MCP</strong>. Clique, copie, e a gente mostra onde colar.
+        </p>
+        <button class="btn ghost" type="button" onclick="copyPromptAndOpen()" style="margin-top:10px">Copiar o prompt de sistema</button>
       </div>
     </div>
     <p class="note">
@@ -383,7 +384,7 @@
     <button class="modal-close" type="button" aria-label="Fechar" onclick="closePromptModal()">×</button>
     <p class="copied-flag">✓ Prompt copiado</p>
     <h3 id="promptModalTitle">Agora é só colar nas instruções do seu assistente</h3>
-    <p class="sub">Escolha onde você usa IA e siga os passos. Cola uma vez — vale para todas as conversas.</p>
+    <p class="sub">Escolha onde você usa IA e siga os passos. Cola uma vez — vale para todas as conversas. No <strong>Claude</strong>, isto é opcional: o gatilho já vem embutido no servidor MCP.</p>
     <div class="tabs" role="tablist">
       <button class="tab tab-primary active" type="button" onclick="showTab(event,'tab-claude')">Claude<span class="tab-star">recomendado</span></button>
       <button class="tab" type="button" onclick="showTab(event,'tab-chatgpt')">ChatGPT</button>
@@ -393,12 +394,12 @@
     </div>
     <div class="tab-panel active" id="tab-claude">
       <div class="full-badge">✓ Experiência completa · o único com a base ao vivo</div>
+      <div class="hint" style="margin-top:0">No Claude, o gatilho já vem <strong>embutido no servidor MCP</strong> — instalar o MCP (o <a href="#instalar" onclick="closePromptModal()">passo acima</a>) já basta. Colar o prompt abaixo é <strong>opcional</strong>: reforça o comportamento no ponto mais forte.</div>
       <ol>
         <li>Abra o <strong>Claude</strong> (claude.ai ou o app).</li>
         <li>Vá em <strong>Configurações → Geral</strong>.</li>
         <li>Em <strong>Instruções para o Claude</strong>, cole o prompt (<strong>Cmd/Ctrl + V</strong>) e salve.</li>
       </ol>
-      <div class="hint">Para a orientação <strong>ao vivo</strong> (a base sendo consultada de verdade), instale também o servidor MCP — os <a href="#instalar" onclick="closePromptModal()">2 passos acima</a>. É o que dá a experiência completa.</div>
     </div>
     <div class="tab-panel" id="tab-chatgpt">
       <div class="lite-warn">⚠ <strong>Modo leve</strong> — a base ao vivo e as atualizações <strong>não</strong> chegam aqui. O assistente percebe o momento, mas responde com o conhecimento próprio dele.</div>
