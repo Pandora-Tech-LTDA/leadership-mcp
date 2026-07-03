@@ -18,7 +18,8 @@ Uma frase sintetiza essa visão: *"medimos o sucesso pela forma como tocamos a v
 Liderar, aqui, não é ter pessoas a serviço de uma meta — é colocar-se a serviço das pessoas para
 que elas realizem o melhor de si. A autoridade existe para cuidar, não para mandar.
 
-Vale a imagem da **zeladoria** (*stewardship*): o líder é guardião das pessoas que lhe foram
+Vale a imagem da **zeladoria** (*stewardship*), central na tradição da liderança servidora
+inaugurada por Robert Greenleaf: o líder é guardião das pessoas que lhe foram
 confiadas. A pergunta que orienta a decisão deixa de ser "o que eu preciso que essa pessoa
 faça?" e passa a ser "do que essa pessoa precisa para ter sucesso?".
 

@@ -21,7 +21,7 @@ import { loadFile, listDir, parseFrontmatter } from "./knowledge-loader.js";
 // Classificação de gatilho
 // ---------------------------------------------------------------------------
 
-// Os 5 gatilhos da taxonomia. A pontuação combina:
+// Os 6 gatilhos da taxonomia. A pontuação combina:
 //   - keywords fortes (peso 2): descrevem a NATUREZA da situação (agressivo, decisão, feedback…)
 //   - weakKeywords (peso 1): descrevem só QUEM (colega, gestor, time…) — co-ocorrem em quase
 //     toda situação relacional, então discriminam pouco e não devem dominar a natureza
@@ -33,11 +33,25 @@ const TRIGGERS = [
     file: "gatilhos/conflito.md",
     label: "Conflito",
     keywords: [
-      "conflito", "tensão", "desentendimento", "discussão", "discordo", "discordância",
-      "briga", "atrito", "agressiv", "crítica", "criticou", "injust", "ruptura",
+      "conflito", "tensão", "tenso", "tensa", "desentendimento", "discussão", "discord",
+      "briga", "brigu", "atrito", "agressiv", "crítica", "criticou", "injust", "ruptura",
       "clima ruim", "erro grave", "errou", "reclamação", "bronca", "irritad",
       "em círculos", "círculos", "discussão sem fim", "não chegamos a um acordo",
-      "não saímos do lugar",
+      "não saímos do lugar", "passou por cima", "remoendo", "não se falam", "acusad",
+      "acusaç", "desqualific", "na frente dos outros", "hostil", "ofendid", "gritou",
+      "perdi a paciência",
+    ],
+  },
+  {
+    id: "relacionamento-pessoal",
+    file: "gatilhos/relacionamento-pessoal.md",
+    label: "Relacionamento Pessoal",
+    keywords: [
+      "meu irmão", "minha irmã", "meu pai", "minha mãe", "meu filho", "minha filha",
+      "esposa", "marido", "namorad", "companheir", "sogr", "cunhad", "meu primo",
+      "minha prima", "meu amigo", "minha amiga", "amigo próximo", "amiga próxima",
+      "vizinh", "sócio", "sócia", "família", "familiar", "herança", "casamento",
+      "divórcio", "adolescente", "magoou", "mágoa", "reaproximar", "reatar",
     ],
   },
   {
@@ -45,10 +59,12 @@ const TRIGGERS = [
     file: "gatilhos/decisao-com-impacto.md",
     label: "Decisão com Impacto",
     keywords: [
-      "decisão", "decidir", "comunicar decisão", "cancelamento", "cancelar", "demitir",
-      "demissão", "reorganiz", "reestrutur", "priorizar", "priorização", "escalar",
+      "decisão", "decidir", "comunicar decisão", "cancelamento", "cancelar", "cancelad",
+      "demitir", "demissão", "reorganiz", "reestrutur", "priorizar", "priorização", "escalar",
       "mudança", "mudar", "impopular", "anunciar", "comunicado", "impacto",
       "delegar", "delegação", "projeto novo", "novo projeto", "kickoff", "começar um projeto",
+      "avisar", "comunico", "preciso comunicar", "vou comunicar", "como conto para",
+      "encerrar", "presencial",
     ],
   },
   {
@@ -59,6 +75,7 @@ const TRIGGERS = [
       "feedback", "avaliação", "avaliar", "reconhec", "elogiar", "elogio", "agradec",
       "retorno", "corrigir comportamento", "parabéns", "reconhecimento", "mérito",
       "conversa difícil", "venho adiando", "vim adiando", "estou adiando", "preciso falar com",
+      "avaliação de desempenho", "1:1", "one on one", "apontei", "chorou",
     ],
   },
   {
@@ -66,8 +83,10 @@ const TRIGGERS = [
     file: "gatilhos/relacionamento.md",
     label: "Relacionamento Interno",
     keywords: [
-      "pedir ajuda", "pedir apoio", "abordar", "me relaciono", "onboard",
-      "apresentar", "conversar com", "alinhar com",
+      "pedir ajuda", "pedir apoio", "abordar", "abordo", "me relaciono", "onboard",
+      "apresentar", "conversar com", "alinhar com", "novo chefe", "nova chefe",
+      "novo gestor", "relação melhor", "construir uma relação", "me aproximar",
+      "boa impressão", "primeira reunião",
     ],
     // Só indicam QUEM está envolvido — comuns a quase toda situação relacional.
     weakKeywords: [
@@ -82,6 +101,7 @@ const TRIGGERS = [
     keywords: [
       "fornecedor", "parceiro", "parceria", "cliente", "prestador", "lead", "negociar",
       "negociação", "contrato", "externo", "vendor", "atrasando", "entrega do fornecedor",
+      "agência", "nos atende",
     ],
   },
 ];
@@ -93,6 +113,11 @@ const STOPWORDS = new Set([
   "preciso", "quero", "vou", "tenho", "esse", "essa", "isso", "esta", "este", "estou",
   "sobre", "pelo", "pela", "mais", "menos", "muito", "alguem", "alguma", "algum", "fazer",
   "tive", "tem", "ter", "ser", "estar", "minha", "meu", "seu", "sua", "dele", "dela",
+  // Palavras de "quem" — aparecem em quase toda frase sobre trabalho e não discriminam a
+  // NATUREZA da situação. Sozinhas, faziam sinais genéricos casarem com tarefas operacionais
+  // ("relatório de desempenho do time" ativava relacionamento).
+  "time", "equipe", "gestor", "chefe", "colega", "pessoa", "pessoas", "reuniao",
+  "lider", "liderado", "liderada", "diretoria", "trabalho",
 ]);
 
 function normalize(s) {
@@ -138,13 +163,6 @@ export async function classify(situacao) {
       }
     }
 
-    for (const kw of trigger.weakKeywords || []) {
-      if (text.includes(normalize(kw))) {
-        score += 1;
-        hits.push(kw);
-      }
-    }
-
     const signals = await loadSignals(trigger);
     for (const sig of signals) {
       // casa por sobreposição de palavras significativas do sinal (ignora stopwords)
@@ -153,6 +171,19 @@ export async function classify(situacao) {
       if (sigWords.length > 0 && overlap >= Math.ceil(sigWords.length / 2)) {
         score += 1;
         hits.push(sig);
+      }
+    }
+
+    // Keywords fracas só desempatam: descrevem QUEM está envolvido ("time", "reunião"…),
+    // presentes em quase toda frase sobre trabalho. Sem uma evidência forte (keyword da
+    // natureza da situação ou sinal do .md), não ativam o gatilho sozinhas — era a maior
+    // fonte de falsos positivos ("planilha para controlar tarefas do time" ativava gatilho).
+    if (score > 0) {
+      for (const kw of trigger.weakKeywords || []) {
+        if (text.includes(normalize(kw))) {
+          score += 1;
+          hits.push(kw);
+        }
       }
     }
 
@@ -167,11 +198,15 @@ export async function classify(situacao) {
 // Montagem da orientação
 // ---------------------------------------------------------------------------
 
+// Score mínimo para ativar um gatilho: um sinal parcial isolado (+1) não basta —
+// exige ao menos uma keyword forte ou dois sinais. Reduz ativação espúria.
+export const MIN_ACTIVATION_SCORE = 2;
+
 export async function buildGuidance(situacao) {
   const scored = await classify(situacao);
   const top = scored[0];
 
-  if (!top || top.score === 0) {
+  if (!top || top.score < MIN_ACTIVATION_SCORE) {
     return [
       "Não identifiquei com confiança um gatilho relacional específico nesta situação.",
       "",
@@ -203,9 +238,10 @@ export async function buildGuidance(situacao) {
     if (summary) sections.push(`\n### Filtro — ${summary.title}\n${summary.text}`);
   }
 
-  // Ações sugeridas (hipóteses de comportamento).
+  // Ações sugeridas (hipóteses de comportamento) — a camada mais acionável da
+  // orientação, por isso recebe mais espaço que filtros e resultado.
   for (const a of acoes) {
-    const summary = await summarizeFile(a, null);
+    const summary = await summarizeFile(a, null, 1400);
     if (summary) sections.push(`\n### Ação sugerida — ${summary.title}\n${summary.text}`);
   }
 
@@ -233,7 +269,7 @@ function extractSection(md, title) {
 }
 
 // Resumo curto de um arquivo: título do frontmatter + primeira seção relevante.
-async function summarizeFile(relPath, preferredSection) {
+async function summarizeFile(relPath, preferredSection, maxLen = 600) {
   const md = await loadFile(relPath);
   if (!md) return null;
   const { meta } = parseFrontmatter(md);
@@ -241,13 +277,26 @@ async function summarizeFile(relPath, preferredSection) {
 
   let text = preferredSection ? extractSection(md, preferredSection) : null;
   if (!text) {
-    // fallback: primeiro parágrafo após o H1
-    const afterH1 = md.split(/\n#\s.*\n/)[1] || md;
-    text = afterH1.replace(/^---[\s\S]*?---/, "").trim().split("\n\n")[0];
+    // fallback: corpo após o H1, sem o blockquote de abertura ("hipóteses, não
+    // prescrições" — o lembrete já fecha a orientação) e sem a seção Conexões
+    // (os links já estruturam a própria orientação).
+    const body = md.replace(/^---[\s\S]*?---/, "");
+    const afterH1 = body.split(/\n#\s.*\n/)[1] || body;
+    text = afterH1
+      .split("\n")
+      .filter((l) => !l.trim().startsWith(">"))
+      .join("\n")
+      .replace(/\n##\s*Conexões[\s\S]*$/i, "")
+      // rebaixa H2 internos (a orientação usa ###) e resolve links .md para texto puro
+      .replace(/^##\s*(.+)$/gm, "**$1**")
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
   }
-  // limita o tamanho para manter a resposta enxuta
   text = (text || "").trim();
-  if (text.length > 600) text = text.slice(0, 597).trimEnd() + "…";
+  if (text.length > maxLen) {
+    // corta em fronteira de parágrafo para não interromper frase no meio
+    const cut = text.lastIndexOf("\n\n", maxLen);
+    text = cut > maxLen * 0.5 ? text.slice(0, cut).trimEnd() : text.slice(0, maxLen - 1).trimEnd() + "…";
+  }
   return { title, text };
 }
 
@@ -271,8 +320,9 @@ export function createServer() {
       description:
         "Recebe a descrição de uma situação relacional (em uma frase) e retorna orientação " +
         "comportamental baseada em princípios de liderança humanista. Classifica o gatilho " +
-        "(conflito, decisão com impacto, feedback, relacionamento interno, interação externa) e " +
-        "consolida filtros, ação e resultado. " +
+        "(conflito, relacionamento pessoal, decisão com impacto, feedback, relacionamento " +
+        "interno, interação externa) e consolida filtros, ação e resultado. Cobre situações de " +
+        "trabalho e também pessoais (família, cônjuge, amizade, sócios). " +
         "Use quando a pessoa pedir ajuda para conduzir a parte humana de uma situação.",
       inputSchema: {
         situacao: z
