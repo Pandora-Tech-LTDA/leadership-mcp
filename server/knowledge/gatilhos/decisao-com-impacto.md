@@ -6,9 +6,11 @@ tags: [decisão, impacto, comunicação, mudança, escalada]
 links:
   - filtros/escuta-ativa.md
   - filtros/cultura-de-servico.md
+  - filtros/seguranca-psicologica.md
   - acoes/comunicando-decisao.md
   - acoes/conversa-de-enrolamento.md
-timestamp: 2026-06-25
+  - resultados/engajamento.md
+timestamp: 2026-07-03
 ---
 
 # Gatilho: Decisão com Impacto
@@ -39,8 +41,10 @@ Situações onde a pessoa precisa tomar ou comunicar uma decisão que afeta outr
 
 - Filtro principal: [cultura-de-servico.md](../filtros/cultura-de-servico.md)
 - Filtro secundário: [escuta-ativa.md](../filtros/escuta-ativa.md)
+- Filtro para abrir espaço à reação: [seguranca-psicologica.md](../filtros/seguranca-psicologica.md)
 - Ação sugerida: [comunicando-decisao.md](../acoes/comunicando-decisao.md)
 - Ação ao delegar/iniciar projeto: [conversa-de-enrolamento.md](../acoes/conversa-de-enrolamento.md)
+- Resultado esperado: [engajamento.md](../resultados/engajamento.md)
 
 ## Nota comportamental
 

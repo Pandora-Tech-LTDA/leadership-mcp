@@ -77,8 +77,9 @@ The base is organized in four chained layers — **trigger → filters → actio
 server assembles into a single, consolidated piece of guidance from the situation you describe:
 
 1. **Trigger** — the relational nature of the situation (conflict, feedback, high-impact decision,
-   internal relationship, external interaction).
-2. **Filters** — the pillars of humanist leadership (active listening, recognition, culture of service).
+   internal relationship, external interaction, personal relationship).
+2. **Filters** — the pillars of humanist leadership (active listening, recognition, culture of
+   service, nonviolent communication, psychological safety, interests over positions).
 3. **Action** — a concrete behavioral hypothesis for that situation.
 4. **Outcome** — the expected effect (engagement, trust, inclusive culture).
 
@@ -91,6 +92,8 @@ server assembles into a single, consolidated piece of guidance from the situatio
 - **Tech leads, PMs and coordinators** who lead without necessarily having "manager" in their title.
 - **HR and people/culture** teams who want a common leadership language.
 - **Anyone** who writes difficult messages at work.
+- **Anyone navigating a hard personal conversation** — family, spouse, close friends, business
+  partners. The base covers the personal realm too, where there's no hierarchy to lean on.
 
 No management title required. It takes leading relationships — and wanting to lead them better.
 
@@ -103,6 +106,8 @@ No management title required. It takes leading relationships — and wanting to 
 - **Announce a hard decision** (a cut, a change, extra effort) while preserving the team's trust.
 - **Write the critical email** that records what's needed without setting the relationship on fire.
 - **Recognize for real** — behavior, impact and feeling, not generic praise.
+- **Handle the personal conflict** — the sibling you stopped talking to, the business partner
+  disagreement, the conversation your marriage has been postponing.
 
 The end goal isn't "reply to an email better." It's building, interaction by interaction,
 **engagement, trust and an inclusive culture** — the outcomes the base is after.
@@ -150,7 +155,22 @@ interaction — because that's where leadership happens. Full sources are [at th
 
 ---
 
-## 🚀 Installation (Claude Desktop)
+## 🚀 Installation
+
+### Option A — Claude web, desktop and mobile (remote connector)
+
+If the hosted endpoint is available (or you [deploy your own](server/deploy/README.md)), this is
+the simplest path — one setup, works everywhere including the **mobile app**:
+
+1. Go to [claude.ai/settings/connectors](https://claude.ai/settings/connectors) and click
+   **Add custom connector**.
+2. URL: `https://leadership-mcp.campello.me/mcp` — no OAuth fields needed.
+3. In a conversation, open **+ → Connectors** and enable *leadership-mcp*.
+4. Paste the system prompt (step 1 below) into your profile's custom instructions.
+
+Requires a Pro/Max/Team/Enterprise plan (free accounts can add one custom connector).
+
+### Option B — Claude Desktop (local, via npm)
 
 One step: **register the MCP server**. The relational trigger now ships **inside** the server —
 it's delivered to Claude automatically the moment it connects — so installing the MCP is enough for
@@ -160,10 +180,9 @@ required.
 
 ### Register the MCP server
 
-> ⚠️ **Note:** this is a **local** MCP server (it runs on your machine via `npx`). It is **not**
-> installed through Claude's _"Add custom connector"_ window — that's only for **remote** servers
-> with an `https://` URL. The correct install is to edit the config file below. (That's why it works
-> on Claude **Desktop**, not web/mobile.)
+> ⚠️ **Note:** in this option the MCP server is **local** (it runs on your machine via `npx`), so
+> it works on Claude **Desktop** only. For web/mobile, use Option A above. Do **not** paste `npx`
+> commands into the _"Add custom connector"_ window — that window is only for remote `https://` URLs.
 
 Edit the Claude Desktop config file:
 
@@ -288,13 +307,18 @@ practice of humanist leadership:
 - **Barry-Wehmiller / Bob Chapman** — _Everybody Matters_ (2015, rev. 2025, with Raj Sisodia);
   Barry-Wehmiller University (_Listen Like a Leader_); Harvard Business School case (2016).
 - **Simon Sinek** — _Leaders Eat Last_, _Start With Why_ and talks on trust, safety and purpose.
+- **Marshall Rosenberg** — _Nonviolent Communication_, the backbone of the personal-realm guidance.
+- **Roger Fisher & William Ury** — _Getting to Yes_ (principled negotiation).
+- **Amy Edmondson** — the research on psychological safety (_The Fearless Organization_).
+- **Kim Scott** (_Radical Candor_) and **Brené Brown** (_Dare to Lead_) — candor with care.
+- **Robert Greenleaf** — _Servant Leadership_, the root of the culture-of-service tradition.
 - **Mario Campello's own leadership experience and practice** — what works in the day-to-day
   reality of leading people and relationships.
 
 Quotes and concrete data throughout the base credit their sources; the principles are expressed in
 the project's own voice. This project is independent and is not affiliated with or endorsed by
-Barry-Wehmiller, Bob Chapman or Simon Sinek — references are made for educational and intellectual
-acknowledgment.
+Barry-Wehmiller, Bob Chapman, Simon Sinek or any of the authors above — references are made for
+educational and intellectual acknowledgment.
 
 ## Connect
 

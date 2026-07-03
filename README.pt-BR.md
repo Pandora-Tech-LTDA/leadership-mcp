@@ -79,8 +79,9 @@ A base é organizada em quatro camadas encadeadas — **gatilho → filtros → 
 o servidor monta em uma orientação consolidada a partir da situação que você descreve:
 
 1. **Gatilho** — a natureza relacional da situação (conflito, feedback, decisão com impacto,
-   relacionamento interno, interação externa).
-2. **Filtros** — os pilares da liderança humanista (escuta ativa, reconhecimento, cultura de serviço).
+   relacionamento interno, interação externa, relacionamento pessoal).
+2. **Filtros** — os pilares da liderança humanista (escuta ativa, reconhecimento, cultura de
+   serviço, comunicação não-violenta, segurança psicológica, interesses em vez de posições).
 3. **Ação** — uma hipótese de comportamento concreta para aquela situação.
 4. **Resultado** — o efeito esperado (engajamento, confiança, cultura inclusiva).
 
@@ -93,6 +94,8 @@ o servidor monta em uma orientação consolidada a partir da situação que voc�
 - **Líderes técnicos, PMs e coordenadores** que lideram sem necessariamente ter "chefe" no título.
 - **RH e pessoas de cultura** que querem uma linguagem comum de liderança.
 - **Qualquer pessoa** que escreve mensagens difíceis no trabalho.
+- **Qualquer pessoa diante de uma conversa pessoal difícil** — família, cônjuge, amizades,
+  sócios. A base cobre também o âmbito pessoal, onde não há hierarquia para apoiar a conversa.
 
 Não exige cargo de chefia. Exige conduzir relações — e querer conduzi-las melhor.
 
@@ -105,6 +108,8 @@ Não exige cargo de chefia. Exige conduzir relações — e querer conduzi-las m
 - **Comunicar uma decisão difícil** (corte, mudança, esforço extra) preservando a confiança do time.
 - **Escrever o e-mail crítico** que registra o que precisa sem incendiar a relação.
 - **Reconhecer de verdade** — comportamento, impacto e sentimento, não elogio genérico.
+- **Conduzir o conflito pessoal** — o irmão com quem você parou de se falar, o desacordo entre
+  sócios, a conversa que o casamento vem adiando.
 
 O objetivo final não é "responder melhor um e-mail". É construir, interação por interação,
 **engajamento, confiança e uma cultura inclusiva** — os resultados que a base persegue.
@@ -151,7 +156,23 @@ porque é aí que a liderança acontece. As fontes completas estão [no fim dest
 
 ---
 
-## 🚀 Instalação (Claude Desktop)
+## 🚀 Instalação
+
+### Opção A — Claude web, desktop e celular (conector remoto)
+
+Se o endpoint hospedado estiver disponível (ou você [hospedar o seu](server/deploy/README.md)),
+este é o caminho mais simples — configura uma vez e funciona em todo lugar, **inclusive no app
+do celular**:
+
+1. Acesse [claude.ai/settings/connectors](https://claude.ai/settings/connectors) e clique em
+   **Adicionar conector personalizado**.
+2. URL: `https://leadership-mcp.campello.me/mcp` — sem preencher os campos de OAuth.
+3. Numa conversa, abra **+ → Conectores** e ative o *leadership-mcp*.
+4. Cole o prompt de sistema (passo 1 abaixo) nas instruções personalizadas do seu perfil.
+
+Requer plano Pro/Max/Team/Enterprise (contas gratuitas podem adicionar 1 conector).
+
+### Opção B — Claude Desktop (local, via npm)
 
 Um passo: **registre o servidor MCP**. O gatilho relacional agora vive **dentro** do servidor —
 ele é entregue ao Claude automaticamente assim que o servidor conecta —, então instalar o MCP já
@@ -160,10 +181,9 @@ basta para o Claude detectar situações relacionais e oferecer a consulta. Cola
 
 ### Registre o servidor MCP
 
-> ⚠️ **Atenção:** este é um servidor MCP **local** (roda na sua máquina via `npx`). Ele **não**
-> se instala pela janela _"Adicionar conector personalizado"_ do Claude — aquela é só para
-> servidores **remotos** com URL `https://`. A instalação correta é editar o arquivo de
-> configuração abaixo. (Por isso funciona no Claude **Desktop**, não no web/celular.)
+> ⚠️ **Atenção:** nesta opção o servidor MCP é **local** (roda na sua máquina via `npx`), então
+> funciona só no Claude **Desktop**. Para web/celular, use a Opção A acima. Não cole comandos
+> `npx` na janela _"Adicionar conector personalizado"_ — ela é só para URLs remotas `https://`.
 
 Edite o arquivo de configuração do Claude Desktop:
 
@@ -261,10 +281,10 @@ Configurável por variáveis de ambiente (opcional):
 ├── prompt-sistema.md      ← prompt opcional (reforço no Claude / assistentes sem MCP)
 ├── knowledge/             ← base de conhecimento (fonte canônica)
 │   ├── index.md
-│   ├── gatilhos/          ← 5 situações relacionais
-│   ├── filtros/           ← 3 pilares da liderança humanista
-│   ├── acoes/             ← 7 hipóteses de comportamento
-│   └── resultados/        ← 3 resultados esperados
+│   ├── gatilhos/          ← 6 situações relacionais
+│   ├── filtros/           ← 8 pilares da liderança humanista
+│   ├── acoes/             ← 13 hipóteses de comportamento
+│   └── resultados/        ← 4 resultados esperados
 └── server/                ← servidor MCP (Node.js)
     ├── index.js
     ├── knowledge-loader.js
@@ -348,13 +368,19 @@ informam uma prática própria de liderança humanista:
   Barry-Wehmiller University (_Listen Like a Leader_); caso da Harvard Business School (2016).
 - **Simon Sinek** — _Leaders Eat Last_, _Start With Why_ e palestras sobre confiança, segurança
   e propósito.
+- **Marshall Rosenberg** — _Comunicação Não-Violenta_, a espinha dorsal da orientação no âmbito
+  pessoal.
+- **Roger Fisher & William Ury** — _Como Chegar ao Sim_ (negociação por princípios).
+- **Amy Edmondson** — a pesquisa sobre segurança psicológica (_The Fearless Organization_).
+- **Kim Scott** (_Radical Candor_) e **Brené Brown** (_A Coragem de Liderar_) — franqueza com cuidado.
+- **Robert Greenleaf** — _Servant Leadership_, a raiz da tradição da cultura de serviço.
 - **A experiência e a prática de liderança de Mario Campello** — o que funciona no dia a dia real
   de conduzir pessoas e relações.
 
 As citações e dados concretos ao longo da base creditam suas fontes; os princípios são expressos
 em voz própria. Este projeto é independente e não é afiliado nem endossado pela Barry-Wehmiller,
-por Bob Chapman ou por Simon Sinek — as referências são feitas para fins educacionais e de
-reconhecimento intelectual.
+por Bob Chapman, por Simon Sinek nem por nenhum dos autores acima — as referências são feitas
+para fins educacionais e de reconhecimento intelectual.
 
 # Conecte-se
 Para reuniões, mentoria, treinamento e desenvolvimento entre em contato:

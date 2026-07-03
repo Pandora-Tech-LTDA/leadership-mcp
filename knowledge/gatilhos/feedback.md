@@ -6,10 +6,12 @@ tags: [feedback, avaliação, retorno, reconhecimento]
 links:
   - filtros/escuta-ativa.md
   - filtros/reconhecimento.md
+  - filtros/franqueza-com-cuidado.md
   - acoes/dando-feedback.md
   - acoes/recebendo-feedback.md
   - acoes/conversa-que-voce-vem-adiando.md
-timestamp: 2026-06-25
+  - resultados/engajamento.md
+timestamp: 2026-07-03
 ---
 
 # Gatilho: Feedback
@@ -40,9 +42,11 @@ Situações onde alguém precisa dar ou receber uma avaliação — sobre compor
 
 - Filtro principal: [reconhecimento.md](../filtros/reconhecimento.md)
 - Filtro secundário: [escuta-ativa.md](../filtros/escuta-ativa.md)
+- Filtro para a verdade difícil: [franqueza-com-cuidado.md](../filtros/franqueza-com-cuidado.md)
 - Ação (dar): [dando-feedback.md](../acoes/dando-feedback.md)
 - Ação (receber): [recebendo-feedback.md](../acoes/recebendo-feedback.md)
 - Ação (conversa adiada): [conversa-que-voce-vem-adiando.md](../acoes/conversa-que-voce-vem-adiando.md)
+- Resultado esperado: [engajamento.md](../resultados/engajamento.md)
 
 ## Nota comportamental
 

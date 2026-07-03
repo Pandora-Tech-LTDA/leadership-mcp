@@ -1,21 +1,11 @@
 // smoke-test.js — valida classificação e montagem da orientação sem subir o transporte MCP.
-// Usa a base empacotada/local como fonte (não exige rede). Uso: node smoke-test.js
+// Roda 100% offline: força o loader a ignorar o GitHub raw (senão os sinais viriam da base
+// publicada na main, não da cópia local em teste). Uso: node smoke-test.js
 
-import { classify, buildGuidance, createServer, INSTRUCTIONS } from "./index.js";
+process.env.LEADERSHIP_MCP_REPO = "offline/offline";
 
-// (situação do usuário, gatilho esperado) — frases dos exemplos do prompt v0.3.
-const CASES = [
-  ["escreve um email para o fornecedor que está atrasando", "interacao-externa"],
-  ["como respondo o email agressivo do colega", "conflito"],
-  ["roteiro para anunciar cancelamento do projeto para o time", "decisao-com-impacto"],
-  ["texto de reconhecimento para o time", "feedback"],
-  ["mensagem para pedir ajuda a um colega sem sobrecarregar", "relacionamento"],
-  ["como apresento essa decisão impopular para a liderança", "decisao-com-impacto"],
-  ["preciso dar um feedback difícil para um liderado", "feedback"],
-  ["tem uma conversa difícil que venho adiando com um liderado", "feedback"],
-  ["a discussão com o time fica andando em círculos e não chegamos a um acordo", "conflito"],
-  ["vou delegar um projeto novo e quero fazer o kickoff com a pessoa", "decisao-com-impacto"],
-];
+const { classify, buildGuidance, MIN_ACTIVATION_SCORE, createServer, INSTRUCTIONS } = await import("./index.js");
+const { CASES } = await import("./eval-cases.js");
 
 let pass = 0;
 let fail = 0;
@@ -24,9 +14,11 @@ console.log("== Classificação ==\n");
 for (const [situacao, esperado] of CASES) {
   const scored = await classify(situacao);
   const top = scored[0];
-  const ok = top && top.trigger.id === esperado && top.score > 0;
+  const got = top && top.score >= MIN_ACTIVATION_SCORE ? top.trigger.id : null;
+  const accepted = esperado === null ? [null] : Array.isArray(esperado) ? esperado : [esperado];
+  const ok = accepted.includes(got);
   console.log(
-    `${ok ? "✅" : "❌"} "${situacao}"\n   → ${top?.trigger.id} (score ${top?.score}); esperado: ${esperado}`
+    `${ok ? "✅" : "❌"} "${situacao}"\n   → ${got ?? "(nenhum gatilho)"} (score ${top?.score ?? 0}); esperado: ${accepted.map((a) => a ?? "(nenhum gatilho)").join(" ou ")}`
   );
   if (ok) pass++;
   else fail++;
@@ -34,9 +26,21 @@ for (const [situacao, esperado] of CASES) {
 
 console.log(`\nResultado: ${pass}/${CASES.length} ok, ${fail} falha(s).\n`);
 
-console.log("== Orientação consolidada (1 exemplo) ==\n");
-const sample = await buildGuidance("como respondo o email agressivo do colega");
-console.log(sample);
+console.log("== Orientação consolidada (2 exemplos) ==\n");
+for (const situacao of [
+  "como respondo o email agressivo do colega",
+  "briguei com meu irmão por causa da herança e não nos falamos há um mês",
+]) {
+  const guidance = await buildGuidance(situacao);
+  console.log(`--- "${situacao}"\n${guidance}\n`);
+  // A orientação precisa sair completa: gatilho + pelo menos um filtro, uma ação e o resultado.
+  for (const marker of ["## Gatilho identificado", "### Filtro —", "### Ação sugerida —", "### Resultado esperado —"]) {
+    if (!guidance.includes(marker)) {
+      console.error(`❌ Orientação incompleta: faltou a seção "${marker}"`);
+      fail++;
+    }
+  }
+}
 
 // Servidor MCP: instancia sem erro e entrega o gatilho embutido via `instructions`.
 console.log("\n== Servidor MCP (instructions embutido) ==\n");

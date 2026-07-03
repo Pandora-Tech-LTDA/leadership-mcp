@@ -18,6 +18,7 @@ Materiais prontos para empresas de **treinamento de liderança** e **consultoria
 | Arquivo | O que é | Quando usar |
 | --- | --- | --- |
 | [`pitch.md`](pitch.md) | Slide-by-slide do pitch comercial (10 slides) | Reunião de descoberta, call de vendas |
+| [`faq-white-label.md`](faq-white-label.md) | FAQ de objeções da parceria (marca, custo, exclusividade, dados/LGPD, propriedade) | Antes/depois da demo, quando surgirem dúvidas |
 | [`white-label.md`](white-label.md) | Guia técnico de white-label via fork | Demo técnica, onboarding do parceiro |
 | [`email-prospeccao.md`](email-prospeccao.md) | Templates de outreach por canal | Primeira abordagem, follow-up |
 

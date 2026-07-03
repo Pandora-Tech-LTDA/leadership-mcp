@@ -37,8 +37,8 @@ Chapman, Simon Sinek). A orientação é sempre **hipótese, nunca prescrição*
   detectar situações relacionais e oferecer a consulta. Texto estático (não faz I/O), espelha a
   taxonomia do array `TRIGGERS`.
 - **Prompt de sistema** (`prompt-sistema.md`): reforço **opcional**. No Claude com o MCP instalado o
-  gatilho já vem embutido; o prompt reforça o comportamento no ponto mais forte (detecção contextual
-  v0.5, roteiro de pausa completo). É também o **único caminho** para assistentes sem MCP (ChatGPT,
+  gatilho já vem embutido; o prompt reforça o comportamento no ponto mais forte (detecção contextual,
+  roteiro de pausa completo). É também o **único caminho** para assistentes sem MCP (ChatGPT,
   Gemini, Grok, Copilot). A cópia do prompt na landing (`docs/index.html`, `<script id="sysPromptText">`)
   deve ser mantida em sincronia com a seção `## Prompt` do arquivo.
 
@@ -46,8 +46,9 @@ Chapman, Simon Sinek). A orientação é sempre **hipótese, nunca prescrição*
 
 ```
 knowledge/            ← base canônica (markdown com frontmatter YAML)
-  gatilhos/           ← 5 situações relacionais (conflito, feedback, decisão, relacionamento, externa)
-  filtros/            ← pilares da liderança humanista (escuta ativa, reconhecimento, serviço, presença)
+  gatilhos/           ← 6 situações relacionais (conflito, feedback, decisão, relacionamento, externa, pessoal)
+  filtros/            ← pilares da liderança humanista (escuta ativa, reconhecimento, serviço, presença,
+                        CNV, segurança psicológica, interesses-não-posições, franqueza com cuidado)
   acoes/              ← hipóteses de comportamento concretas
   resultados/         ← efeitos esperados (engajamento, confiança, cultura inclusiva)
 server/               ← servidor MCP (Node.js) + cópia de knowledge/ (fallback) + smoke-test + deploy/
@@ -120,3 +121,9 @@ estratégia sensível (rede de facilitadores, alvos de prospecção) no repo pú
 - 🔜 Próximos (Fundação): base de marketing `/marketing` (SOPs + kit de semeadura), textos de
   submissão a registries MCP, deck para a rede de facilitadores.
 - ⏸️ Web app adiado (STR-201). Chave de API/hospedagem só se ele for revivido.
+- ✅ Base ampliada (2026-07): gatilho **relacionamento-pessoal** (família/cônjuge/amizade/sócios),
+  4 filtros novos (CNV/Rosenberg, segurança psicológica/Edmondson, interesses-não-posições/Fisher&Ury,
+  franqueza com cuidado/Kim Scott+Brené Brown), 3 ações e 1 resultado novos. Classificador com
+  regra anti-falso-positivo (keywords fracas só desempatam) e limiar de ativação ≥2; bateria de
+  40 casos em `server/eval-cases.js` roda no smoke/CI (40/40). Deploy documenta conector
+  personalizado do claude.ai (web/desktop/mobile) com endpoint público em `server/deploy/`.
