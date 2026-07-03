@@ -172,15 +172,13 @@ Requires a Pro/Max/Team/Enterprise plan (free accounts can add one custom connec
 
 ### Option B — Claude Desktop (local, via npm)
 
-Two steps: **(1)** paste the system prompt and **(2)** register the MCP server.
+One step: **register the MCP server**. The relational trigger now ships **inside** the server —
+it's delivered to Claude automatically the moment it connects — so installing the MCP is enough for
+Claude to start detecting relational situations and offering the consultation. Pasting the system
+prompt (see [_Optional_](#optional-paste-the-system-prompt-reinforcement) below) is no longer
+required.
 
-### 1. Paste the system prompt
-
-Open [`prompt-sistema.md`](prompt-sistema.md), copy the content of the **Prompt** section and paste
-it into Claude's custom instructions (**Settings → Profile / Custom Instructions**). It teaches the
-assistant to detect relational situations and to offer — without imposing — the consultation.
-
-### 2. Register the MCP server
+### Register the MCP server
 
 > ⚠️ **Note:** in this option the MCP server is **local** (it runs on your machine via `npx`), so
 > it works on Claude **Desktop** only. For web/mobile, use Option A above. Do **not** paste `npx`
@@ -208,6 +206,15 @@ Add the block below (if you already have other `mcpServers`, just add the `"lead
 
 Then **restart Claude Desktop**. Done — ask something like *"how do I reply to an aggressive email
 from a colleague?"* and watch the guidance shape the response.
+
+### Optional: paste the system prompt (reinforcement)
+
+The MCP already carries the trigger, so this step isn't required on Claude. Paste it if you want the
+strongest, most consistent *pause-and-offer* behavior — or if you use an assistant **without MCP**
+(ChatGPT, Gemini, Grok, Copilot), where the prompt is the only way to get the trigger. Open
+[`prompt-sistema.md`](prompt-sistema.md), copy the content of the **Prompt** section, and paste it
+into your assistant's custom instructions (**Settings → Profile / Custom Instructions**). It teaches
+the assistant to detect relational situations and to offer — without imposing — the consultation.
 
 ---
 

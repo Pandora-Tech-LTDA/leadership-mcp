@@ -4,7 +4,7 @@
 
 process.env.LEADERSHIP_MCP_REPO = "offline/offline";
 
-const { classify, buildGuidance, MIN_ACTIVATION_SCORE } = await import("./index.js");
+const { classify, buildGuidance, MIN_ACTIVATION_SCORE, createServer, INSTRUCTIONS } = await import("./index.js");
 const { CASES } = await import("./eval-cases.js");
 
 let pass = 0;
@@ -40,6 +40,21 @@ for (const situacao of [
       fail++;
     }
   }
+}
+
+// Servidor MCP: instancia sem erro e entrega o gatilho embutido via `instructions`.
+console.log("\n== Servidor MCP (instructions embutido) ==\n");
+try {
+  createServer();
+  const okInstr =
+    typeof INSTRUCTIONS === "string" &&
+    INSTRUCTIONS.trim().length > 0 &&
+    INSTRUCTIONS.includes("buscar_orientacao");
+  console.log(`${okInstr ? "✅" : "❌"} createServer() instancia e INSTRUCTIONS cita buscar_orientacao`);
+  if (!okInstr) fail++;
+} catch (err) {
+  console.log(`❌ createServer() lançou: ${err.message}`);
+  fail++;
 }
 
 process.exit(fail === 0 ? 0 : 1);

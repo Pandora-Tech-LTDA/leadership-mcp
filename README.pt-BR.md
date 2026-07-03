@@ -174,15 +174,12 @@ Requer plano Pro/Max/Team/Enterprise (contas gratuitas podem adicionar 1 conecto
 
 ### Opção B — Claude Desktop (local, via npm)
 
-São dois passos: **(1)** colar o prompt de sistema e **(2)** registrar o servidor MCP.
+Um passo: **registre o servidor MCP**. O gatilho relacional agora vive **dentro** do servidor —
+ele é entregue ao Claude automaticamente assim que o servidor conecta —, então instalar o MCP já
+basta para o Claude detectar situações relacionais e oferecer a consulta. Colar o prompt de sistema
+(ver [_Opcional_](#opcional-cole-o-prompt-de-sistema-reforço) abaixo) deixou de ser necessário.
 
-### 1. Cole o prompt de sistema
-
-Abra [`prompt-sistema.md`](prompt-sistema.md), copie o conteúdo da seção **Prompt** e cole nas
-instruções personalizadas do Claude (**Settings → Profile / Custom Instructions**). Ele ensina o
-assistente a detectar situações relacionais e a oferecer — sem impor — a consulta.
-
-### 2. Registre o servidor MCP
+### Registre o servidor MCP
 
 > ⚠️ **Atenção:** nesta opção o servidor MCP é **local** (roda na sua máquina via `npx`), então
 > funciona só no Claude **Desktop**. Para web/celular, use a Opção A acima. Não cole comandos
@@ -210,6 +207,15 @@ Adicione o bloco abaixo (se já houver outros `mcpServers`, basta acrescentar a 
 
 Depois **reinicie o Claude Desktop**. Pronto — peça algo como *"como respondo um e-mail agressivo
 de um colega?"* e veja a orientação moldar a resposta.
+
+### Opcional: cole o prompt de sistema (reforço)
+
+O MCP já carrega o gatilho, então este passo não é obrigatório no Claude. Cole se quiser o
+comportamento de *pausar e oferecer* no ponto mais forte e consistente — ou se você usa um
+assistente **sem MCP** (ChatGPT, Gemini, Grok, Copilot), onde o prompt é a única forma de ter o
+gatilho. Abra [`prompt-sistema.md`](prompt-sistema.md), copie o conteúdo da seção **Prompt** e cole
+nas instruções personalizadas do seu assistente (**Settings → Profile / Custom Instructions**). Ele
+ensina o assistente a detectar situações relacionais e a oferecer — sem impor — a consulta.
 
 > **Rodando a partir do código (desenvolvimento):** para usar sua cópia local em vez da versão do
 > npm, aponte para o `index.js`:
@@ -272,7 +278,7 @@ Configurável por variáveis de ambiente (opcional):
 .
 ├── README.md              ← este arquivo
 ├── LICENSE                ← MIT
-├── prompt-sistema.md      ← prompt para colar nas instruções do Claude
+├── prompt-sistema.md      ← prompt opcional (reforço no Claude / assistentes sem MCP)
 ├── knowledge/             ← base de conhecimento (fonte canônica)
 │   ├── index.md
 │   ├── gatilhos/          ← 6 situações relacionais

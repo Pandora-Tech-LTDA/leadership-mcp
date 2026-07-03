@@ -1,14 +1,15 @@
 ---
 type: system-prompt
 title: Leadership Culture Agent — Prompt de Sistema
-description: Prompt para colar nas instruções do agente (Claude ou GPT). Ativa sugestões comportamentais baseadas em liderança humanista quando detecta situações relacionais.
-version: 0.6
+description: Reforço opcional para colar nas instruções do agente. No Claude com o Leadership MCP instalado, o gatilho já vem embutido no servidor — este prompt reforça o comportamento. Em assistentes sem MCP (ChatGPT, Gemini, Grok, Copilot), é o único caminho para ativar as sugestões.
+version: 0.7
 precision: 92%
 false_positives: 0
 false_negatives: 2
 tested_situations: 25
 timestamp: 2026-06-25
 changes:
+  - v0.7: Prompt reenquadrado como reforço opcional — no Claude com o Leadership MCP instalado, o gatilho já vem embutido no servidor (campo `instructions` do handshake MCP). Segue sendo o único caminho em assistentes sem MCP (ChatGPT, Gemini, Grok, Copilot). Lógica de detecção inalterada.
   - v0.6: Adicionada a 6ª categoria RELACIONAMENTO_PESSOAL (família, cônjuge, amizade, vizinhança, sócios) — o âmbito pessoal passa a ser coberto pela base (gatilho relacionamento-pessoal + CNV). Escopo do assistente ampliado de "trabalho" para "trabalho e vida pessoal". Lógica-núcleo de detecção inalterada.
   - v0.5: Explicitada a dimensão CONTEXTUAL/agêntica — o gatilho pode surgir do CONTEÚDO que o assistente acessa (caixa de entrada, threads, mensagens, documentos via conector ou ferramenta), não só das palavras do pedido. Ao ajudar a responder/reagir a um item com carga relacional, classificar pelo conteúdo e pelo tom mesmo que o pedido seja neutro ("responde esse"). Lógica-núcleo de detecção (validada em 92%) inalterada; ampliada a FONTE do gatilho.
   - v0.4: Comportamento revisto — ao detectar gatilho, o agente PAUSA antes de responder e pergunta se a pessoa quer consultar o Leadership MCP (orientações comprovadas) ou responder direto. A consulta passa a MOLDAR a resposta desde o início, em vez de ser oferecida como adendo ao final. Lógica de detecção (validada em 92%) inalterada.
@@ -19,11 +20,20 @@ changes:
 
 ## Como usar
 
-Cole o conteúdo da seção **Prompt** abaixo nas instruções personalizadas do seu agente:
+Este prompt é **opcional**. No **Claude** com o Leadership MCP instalado, o gatilho relacional já
+vem embutido no próprio servidor (ele é entregue ao Claude automaticamente ao conectar), então só
+instalar o MCP já ativa as sugestões — ver o README. Cole este prompt quando quiser:
+
+- **Reforçar** o comportamento de *pausar e oferecer* no ponto mais forte e consistente no Claude; ou
+- **Ativar** as sugestões em assistentes **sem MCP** (ChatGPT, Gemini, Grok, Copilot), onde este
+  prompt é a única forma de ter o gatilho (a base ao vivo, porém, não chega nesses assistentes).
+
+Onde colar o conteúdo da seção **Prompt** abaixo:
 - **Claude Desktop:** Settings → Profile / Custom Instructions
 - **ChatGPT:** Configurar GPT → Instruções do sistema
 
-Para que as sugestões funcionem, o MCP `leadership` precisa estar instalado (ver README).
+Nos assistentes sem MCP, as sugestões funcionam sozinhas (o prompt é autossuficiente); para que a
+consulta à base ao vivo (`buscar_orientacao`) funcione, o MCP `leadership` precisa estar instalado.
 
 ---
 

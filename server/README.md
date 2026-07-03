@@ -25,10 +25,13 @@ econômico comprovado. A sugestão é sempre uma hipótese, nunca uma prescriç�
 }
 ```
 
-**2.** Cole o prompt de sistema (em [`prompt-sistema.md`](https://github.com/mcampello/leadership-mcp/blob/main/prompt-sistema.md))
-nas instruções personalizadas do Claude.
+**2.** Reinicie o Claude Desktop. Pronto — o gatilho relacional já vem embutido no servidor (ele é
+entregue ao Claude automaticamente ao conectar), então não é preciso colar nada.
 
-**3.** Reinicie o Claude Desktop.
+**Opcional (reforço):** para o comportamento de *pausar e oferecer* no ponto mais forte — ou para
+usar em assistentes **sem MCP** (ChatGPT, Gemini, Grok, Copilot) — cole o prompt de sistema (em
+[`prompt-sistema.md`](https://github.com/mcampello/leadership-mcp/blob/main/prompt-sistema.md)) nas
+instruções personalizadas do assistente.
 
 ## Ferramentas expostas
 

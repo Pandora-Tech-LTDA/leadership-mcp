@@ -31,8 +31,16 @@ Chapman, Simon Sinek). A orientação é sempre **hipótese, nunca prescrição*
     (default `main`) — é o mecanismo de **white-label** (parceiro forka e aponta para o próprio repo).
 - **Transportes:** stdio (Claude Desktop) e Streamable HTTP (VPS, quando `MCP_HTTP_PORT` está setado).
   Deploy HTTP documentado em `server/deploy/`.
-- **Prompt de sistema** (`prompt-sistema.md`): instruções que o usuário cola no Claude para ele
-  detectar situações relacionais e oferecer a consulta.
+- **Gatilho embutido** (`instructions` do servidor): a constante `INSTRUCTIONS` em `server/index.js`
+  é entregue ao cliente MCP no handshake `initialize` (campo `instructions`), que o Claude injeta no
+  contexto automaticamente. É o núcleo condensado do gatilho — só instalar o MCP já faz o Claude
+  detectar situações relacionais e oferecer a consulta. Texto estático (não faz I/O), espelha a
+  taxonomia do array `TRIGGERS`.
+- **Prompt de sistema** (`prompt-sistema.md`): reforço **opcional**. No Claude com o MCP instalado o
+  gatilho já vem embutido; o prompt reforça o comportamento no ponto mais forte (detecção contextual,
+  roteiro de pausa completo). É também o **único caminho** para assistentes sem MCP (ChatGPT,
+  Gemini, Grok, Copilot). A cópia do prompt na landing (`docs/index.html`, `<script id="sysPromptText">`)
+  deve ser mantida em sincronia com a seção `## Prompt` do arquivo.
 
 ## Estrutura do repositório
 
