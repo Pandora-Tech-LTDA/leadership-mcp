@@ -1,6 +1,6 @@
 {
   "name": "leadership-mcp",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "MCP server que distribui uma base de conhecimento viva sobre liderança humanista para o Claude. Inspirado em Barry-Wehmiller/Bob Chapman, Simon Sinek e na prática de Mario Campello.",
   "type": "module",
   "homepage": "https://github.com/mcampello/leadership-mcp#readme",

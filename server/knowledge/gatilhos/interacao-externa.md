@@ -6,7 +6,10 @@ tags: [externo, fornecedor, parceiro, cliente, prestador]
 links:
   - filtros/escuta-ativa.md
   - filtros/cultura-de-servico.md
-timestamp: 2026-06-25
+  - filtros/interesses-nao-posicoes.md
+  - acoes/negociando-um-acordo.md
+  - resultados/confianca.md
+timestamp: 2026-07-03
 ---
 
 # Gatilho: Interação Externa
@@ -35,6 +38,9 @@ Situações onde a pessoa precisa interagir com alguém fora da hierarquia inter
 
 - Filtro principal: [escuta-ativa.md](../filtros/escuta-ativa.md)
 - Filtro secundário: [cultura-de-servico.md](../filtros/cultura-de-servico.md)
+- Filtro para negociar: [interesses-nao-posicoes.md](../filtros/interesses-nao-posicoes.md)
+- Ação ao negociar: [negociando-um-acordo.md](../acoes/negociando-um-acordo.md)
+- Resultado esperado: [confianca.md](../resultados/confianca.md)
 
 ## Nota comportamental
 

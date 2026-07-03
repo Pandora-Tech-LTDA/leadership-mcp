@@ -6,9 +6,11 @@ tags: [conflito, tensão, crise, desentendimento]
 links:
   - filtros/escuta-ativa.md
   - filtros/presenca-intencional.md
+  - filtros/comunicacao-nao-violenta.md
   - acoes/durante-o-conflito.md
   - acoes/encerrando-discussao-em-circulos.md
-timestamp: 2026-06-25
+  - resultados/confianca.md
+timestamp: 2026-07-03
 ---
 
 # Gatilho: Conflito
@@ -40,8 +42,10 @@ Qualquer situação onde há tensão, discordância ou ruptura de relacionamento
 
 - Filtro principal: [escuta-ativa.md](../filtros/escuta-ativa.md)
 - Filtro de presença: [presenca-intencional.md](../filtros/presenca-intencional.md)
+- Filtro para falar sem acusar: [comunicacao-nao-violenta.md](../filtros/comunicacao-nao-violenta.md)
 - Ação sugerida: [durante-o-conflito.md](../acoes/durante-o-conflito.md)
 - Ação para debate travado: [encerrando-discussao-em-circulos.md](../acoes/encerrando-discussao-em-circulos.md)
+- Resultado esperado: [confianca.md](../resultados/confianca.md)
 
 ## Nota comportamental
 

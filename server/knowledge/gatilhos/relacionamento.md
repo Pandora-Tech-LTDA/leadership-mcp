@@ -8,7 +8,8 @@ links:
   - filtros/cultura-de-servico.md
   - filtros/presenca-intencional.md
   - acoes/antes-da-reuniao.md
-timestamp: 2026-06-25
+  - resultados/confianca.md
+timestamp: 2026-07-03
 ---
 
 # Gatilho: Relacionamento Interno
@@ -41,3 +42,4 @@ Antes de sugerir ação, o agente deve qualificar:
 - Filtro secundário: [cultura-de-servico.md](../filtros/cultura-de-servico.md)
 - Filtro de presença: [presenca-intencional.md](../filtros/presenca-intencional.md)
 - Ação sugerida: [antes-da-reuniao.md](../acoes/antes-da-reuniao.md)
+- Resultado esperado: [confianca.md](../resultados/confianca.md)
