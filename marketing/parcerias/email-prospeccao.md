@@ -66,7 +66,7 @@ Mario
 
 ---
 
-## Template 4 — WhatsApp (rede de facilitadores — entrada quente)
+## Template 4 — WhatsApp (contato quente / indicação)
 
 Oi, `[nome]`! Tudo bem?
 
@@ -85,6 +85,6 @@ Quer que eu faça uma demo rápida? Leva 15 min.
 ## Notas de uso
 
 - **Sempre personalize** o primeiro parágrafo com algo real sobre o prospect.
-- **WhatsApp** é para a rede de facilitadores do Mario (entrada quente). Não usar para frio.
+- **WhatsApp** é só para contatos quentes / indicações (entrada por relacionamento). Não usar para frio.
 - **LinkedIn** funciona bem como opener antes do email.
 - O CTA é sempre **15 minutos de demo** — não vender o produto no email, só gerar interesse.
