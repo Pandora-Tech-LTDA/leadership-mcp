@@ -84,7 +84,7 @@ npm publish --access public
 - **Contribuição:** dois caminhos — abrir issue (templates em `.github/ISSUE_TEMPLATE/`) ou editar
   no navegador. Não exige código.
 
-## Contexto de Growth (resumo — detalhe completo no Linear)
+## Contexto de Growth (resumo — detalhe completo no repo privado `leadership-mcp-ops`)
 
 O trabalho atual é de **adoção/growth**. Decisões estratégicas travadas:
 
@@ -99,11 +99,17 @@ O trabalho atual é de **adoção/growth**. Decisões estratégicas travadas:
 - **Web app "experimente agora": adiado** (a landing + demo + conector cobrem o valor sem custo de API).
 - **North Star:** usuários ativos semanais que recebem orientação.
 
-**Onde vive o estado e o plano (privado):** projeto **"Leadership MCP" no Linear** (workspace
-heypandora, time "Stora Bolha", prefixo de issues `STR-`), organizado em 3 marcos: **🏗️ Fundação**
-(o que se constrói no repo/web), **🔑 Setup** (tarefas do Mario, uma vez), **🚀 Operação** (growth
-recorrente). Documentos no projeto: *Plano de Growth* e *Kit de Parceria B2B2C*. **Não commitar
-estratégia sensível (rede de facilitadores, alvos de prospecção) no repo público** — isso fica no Linear.
+**Onde vive o estado e o plano (privado):** repositório **privado `mcampello/leadership-mcp-ops`**
+(GitHub Issues). O Linear foi **descontinuado neste projeto** (2026-07-05) — todas as issues ativas
+foram migradas para o `leadership-mcp-ops`. Os 3 marcos viraram labels: `marco:fundacao`
+(o que se constrói no repo/web), `marco:setup` (tarefas do Mario, uma vez), `marco:operacao` (growth
+recorrente); prioridades em `prioridade:urgente|alta|media|baixa`. Documentos de estratégia
+(*Plano de Growth*, *Kit de Parceria B2B2C*) também vivem nesse repo privado.
+
+**REGRA (2026-07-05):** todo backlog operacional/estratégico do Leadership MCP vive no repo
+**privado `leadership-mcp-ops`** — incluindo estratégia sensível (rede de facilitadores, alvos de
+prospecção, contatos, contas/tokens de marca). **Nada disso vai para o repo público `leadership-mcp`.**
+Uma issue só é tornada pública quando o Mario pedir **explicitamente**.
 
 ## Fluxo de trabalho git
 
