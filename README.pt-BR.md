@@ -51,8 +51,8 @@ que a tarefa é relacional, pausa, e oferece a escolha — e só então molda a 
 > **Você:** preciso responder esse e-mail de um colega que está me acusando de atrasar o projeto dele.
 >
 > **Claude:** Percebi que isso envolve uma conversa difícil com um colega. Posso consultar o
-> Leadership MCP — uma base sobre liderança humanista, com orientações comprovadamente eficazes
-> sobre como conduzir esse tipo de situação — e escrever já com base nisso. Ou prefere que eu
+> Leadership MCP — que reúne orientações dos maiores guias de liderança do mundo sobre como
+> conduzir esse tipo de situação — e escrever já com base nisso. Ou prefere que eu
 > responda direto?
 >
 > **Você:** pode consultar.
