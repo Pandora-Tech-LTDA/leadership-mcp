@@ -1,12 +1,16 @@
 # Bloco a adicionar no Caddyfile do projeto docs-site (VPS).
 # Após adicionar: `caddy validate` e reload graceful. Ver deploy/README.md.
 #
-# ACESSO PÚBLICO (default): o endpoint MCP fica aberto, sem autenticação. É o modo
-# exigido pelo conector personalizado do claude.ai (web/desktop/mobile), que não envia
-# header customizado — só suporta OAuth ou nenhum auth. O risco é baixo por desenho:
-# as ferramentas são somente-leitura, determinísticas e servem conteúdo já público
-# (a base de conhecimento é open-source neste repo). Nenhum dado do usuário passa
-# pelo servidor além da frase de situação enviada na chamada.
+# ROTEAMENTO (default): um único domínio serve DUAS coisas:
+#   /            → landing (proxy reverso para a Vercel; a URL final continua .campello.me,
+#                  NÃO é redirect — o cliente nunca vê o domínio da Vercel).
+#   /mcp (+/*)   → conector MCP, PÚBLICO, sem autenticação. É o modo exigido pelo conector
+#                  personalizado do claude.ai (web/desktop/mobile), que não envia header
+#                  customizado — só suporta OAuth ou nenhum auth. Risco baixo por desenho: as
+#                  ferramentas são somente-leitura, determinísticas e servem conteúdo já público
+#                  (a base de conhecimento é open-source neste repo). Nenhum dado do usuário é
+#                  armazenado além da frase de situação enviada na chamada.
+#   /health      → healthcheck do container.
 
 leadership-mcp.campello.me {
 	encode gzip zstd
@@ -15,35 +19,39 @@ leadership-mcp.campello.me {
 		Referrer-Policy strict-origin-when-cross-origin
 	}
 
-	# Streamable HTTP do MCP usa respostas SSE de longa duração — sem timeout no upstream.
-	reverse_proxy leadership-mcp:3000 {
-		flush_interval -1
-		transport http {
-			read_timeout 0
-			write_timeout 0
+	# Conector MCP (público). Streamable HTTP usa SSE de longa duração — sem timeout no upstream.
+	@mcp path /mcp /mcp/*
+	handle @mcp {
+		reverse_proxy leadership-mcp:3000 {
+			flush_interval -1
+			transport http {
+				read_timeout 0
+				write_timeout 0
+			}
+		}
+	}
+
+	# Healthcheck.
+	handle /health {
+		reverse_proxy leadership-mcp:3000
+	}
+
+	# Landing: proxy reverso para a Vercel. A Vercel roteia pelo Host, então sobrescrevemos o Host
+	# para o domínio do projeto (o Caddy disca por TLS com SNI = leadership-mcp.vercel.app).
+	handle {
+		reverse_proxy https://leadership-mcp.vercel.app {
+			header_up Host leadership-mcp.vercel.app
 		}
 	}
 }
 
 # --- Variante privada (Bearer token) -------------------------------------------------
-# Para um deploy white-label restrito (ex.: parceiro que só quer expor ao Claude Code /
-# clientes MCP que suportam headers), troque o bloco acima por este. O token é lido da
-# env MCP_BEARER_TOKEN do container Caddy (definida no .env do docs-site).
-# Atenção: com Bearer ativo, o conector do claude.ai (e o Claude mobile) NÃO consegue
-# conectar — clientes de conector não enviam headers customizados.
-#
-# leadership-mcp.campello.me {
-# 	encode gzip zstd
-# 	header {
-# 		X-Content-Type-Options nosniff
-# 		Referrer-Policy strict-origin-when-cross-origin
-# 	}
-#
-# 	# Healthcheck liberado (Docker/monitoração não têm o token).
-# 	@health path /health
-# 	handle @health {
-# 		reverse_proxy leadership-mcp:3000
-# 	}
+# Para um deploy white-label RESTRITO (ex.: parceiro que só quer expor ao Claude Code /
+# clientes MCP que suportam headers), troque o roteamento de /mcp acima por um gate Bearer.
+# O token é lido da env MCP_BEARER_TOKEN do container Caddy (definida no .env do docs-site);
+# gere/rotacione com deploy/rotate-bearer.sh.
+# Atenção: com Bearer ativo, o conector do claude.ai (e o Claude mobile) NÃO consegue conectar
+# — clientes de conector não enviam headers customizados; e a raiz / também exigiria o header.
 #
 # 	@unauthorized not header Authorization "Bearer {$MCP_BEARER_TOKEN}"
 # 	respond @unauthorized 401 {
@@ -58,4 +66,3 @@ leadership-mcp.campello.me {
 # 			write_timeout 0
 # 		}
 # 	}
-# }
