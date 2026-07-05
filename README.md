@@ -50,8 +50,9 @@ that the task is relational, pauses, and offers a choice — and only then shape
 > **You:** I need to reply to an email from a colleague who's accusing me of delaying his project.
 >
 > **Claude:** I noticed this involves a difficult conversation with a colleague. I can consult
-> Leadership MCP — a base on humanist leadership with proven guidance on how to handle this kind of
-> situation — and write with that in mind. Or would you rather I just answer directly?
+> Leadership MCP — which gathers guidance from the world's leading leadership guides on how to
+> handle this kind of situation — and write with that in mind. Or would you rather I just answer
+> directly?
 >
 > **You:** go ahead and consult it.
 >
