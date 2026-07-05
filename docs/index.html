@@ -70,7 +70,6 @@
   footer{padding:48px 0 64px; color:var(--muted); font-size:.9rem}
   footer a{color:var(--muted); text-decoration:underline}
   .kicker{color:var(--warm); font-weight:700}
-  .steps2{grid-template-columns:1fr 1fr}
   .step .code{
     margin:16px 0 0; padding:16px 18px; background:var(--ink); color:#eef2f4;
     border-radius:12px; overflow-x:auto; font-size:.86rem; line-height:1.5;
@@ -135,7 +134,7 @@
   .claude-cta .btn{background:#fff; color:var(--ink); border-color:#fff}
   .claude-cta .btn:hover{background:#e9edf0; border-color:#e9edf0}
   @media(max-width:720px){
-    .ba,.grid3,.steps,.steps2,.chat-pair{grid-template-columns:1fr}
+    .ba,.grid3,.steps,.chat-pair{grid-template-columns:1fr}
     section{padding:56px 0}
   }
 </style>
@@ -283,7 +282,7 @@
       <div class="step"><h3>A resposta já vem moldada</h3><p>Fato em vez de acusação, próximo passo em vez de porta fechada — com impacto humano e econômico comprovado.</p></div>
     </div>
     <p class="lead" style="margin-top:28px">
-      Nada das suas conversas sai da sua máquina — a ferramenta só lê a base pública de conhecimento.
+      Suas conversas ficam com você — a ferramenta só lê a base pública de conhecimento.
       Roda sobre o padrão aberto <a href="https://modelcontextprotocol.io">MCP</a>.
     </p>
     <div class="btns">
@@ -327,16 +326,18 @@
 <section id="instalar">
   <div class="wrap">
     <p class="eyebrow">Instalar</p>
-    <h2>No Claude, 1 passo — grátis.</h2>
+    <h2>No Claude — no Desktop ou direto no web e mobile.</h2>
     <p class="lead">
-      No <strong>Claude Desktop</strong>, instalar o servidor MCP já <strong>embute o gatilho</strong>:
-      ele passa a perceber a situação relacional e oferecer a consulta sozinho — só precisa do
-      <a href="https://nodejs.org">Node.js 18+</a>. O <strong>prompt de sistema</strong> vira
-      opcional (reforço) e é o caminho para assistentes <strong>sem MCP</strong> (ChatGPT, Gemini, Grok).
+      Dois caminhos, e nos dois o gatilho já vem <strong>embutido</strong>: instalou, ele passa a
+      perceber a situação relacional e oferecer a consulta sozinho. No <strong>Claude Desktop</strong>,
+      o servidor roda na sua máquina (grátis, só precisa do <a href="https://nodejs.org">Node.js 18+</a>).
+      No <strong>Claude web e mobile</strong>, você usa o nosso <strong>conector HTTP</strong> — sem
+      instalar nada. O <strong>prompt de sistema</strong> vira opcional (reforço) e é o caminho para
+      assistentes <strong>sem MCP</strong> (ChatGPT, Gemini, Grok).
     </p>
-    <div class="steps steps2">
+    <div class="steps">
       <div class="step">
-        <h3>Registre o servidor MCP</h3>
+        <h3>Claude Desktop: servidor local</h3>
         <p>
           Em <strong>Configurações → Desenvolvedor → Editar Config</strong>, adicione o bloco abaixo
           e reinicie o Claude. O gatilho já vem embutido — não precisa colar mais nada.
@@ -351,6 +352,16 @@
 }</code></pre>
       </div>
       <div class="step">
+        <h3>Claude web e mobile: conector HTTP</h3>
+        <p>
+          Fale com a gente no WhatsApp para receber o <strong>endereço do conector e a sua chave de
+          acesso</strong>. Depois é só adicionar em <strong>Configurações → Conectores → Adicionar
+          conector personalizado</strong> — configurou uma vez no navegador, vale também no app do
+          celular e no desktop.
+        </p>
+        <a class="btn ghost" href="https://wa.me/5511992630805?text=Ol%C3%A1%21%20Quero%20usar%20o%20Leadership%20MCP%20pelo%20conector%20HTTP%20no%20Claude%20web%2Fmobile.%20Pode%20me%20passar%20minha%20chave%20de%20acesso%3F" target="_blank" rel="noopener" style="margin-top:10px">Pedir minha chave de acesso</a>
+      </div>
+      <div class="step">
         <h3>Opcional: o prompt de sistema</h3>
         <p>
           No Claude o gatilho já vem no MCP — cole o prompt só para <em>reforçar</em> o comportamento,
@@ -360,10 +371,10 @@
       </div>
     </div>
     <p class="note">
-      💡 É um servidor <strong>local</strong> — roda na sua máquina via <code>npx</code>, não sai nada
-      das suas conversas. Por isso ele <strong>não</strong> entra pela janela de "adicionar conector"
-      (que é só para servidores remotos com URL), e por isso funciona no Claude
-      <strong>Desktop</strong>, não no web/mobile.
+      💡 No Desktop, o servidor é <strong>local</strong> — roda na sua máquina via <code>npx</code>,
+      nada das suas conversas sai dela. No conector HTTP, o que chega ao servidor é só a consulta —
+      a situação descrita em uma frase — nunca a conversa inteira; a base de conhecimento que ele
+      serve já é pública.
     </p>
     <p class="lead" style="margin-top:24px">
       Pronto. Peça algo como <em>"como respondo esse e-mail agressivo do colega?"</em> e veja a
