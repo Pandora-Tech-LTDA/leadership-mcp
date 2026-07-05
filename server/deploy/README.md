@@ -9,13 +9,21 @@ O Leadership MCP roda em dois modos a partir do mesmo `index.js`:
 
 No VPS, o container fica atrás do Caddy existente (projeto `docs-site`), que faz TLS.
 
-O deploy de produção (`leadership-mcp.campello.me`) roda na **variante privada (Bearer token)**:
-o Caddy exige `Authorization: Bearer {$MCP_BEARER_TOKEN}` e responde 401 sem ele. O token vive no
-`.env` do projeto docs-site e é injetado no container Caddy. Para gerar/rotacionar o token use
-[`rotate-bearer.sh`](rotate-bearer.sh) (ver seção abaixo). A variante **pública** (sem auth)
-continua documentada em `Caddyfile.snippet` — racional e trade-offs lá; nela o conector do
-claude.ai conecta sem token, mas com Bearer ativo o conector web/mobile **não** consegue conectar
-(só clientes que enviam header, como o Claude Code).
+O deploy de produção (`leadership-mcp.campello.me`) usa **um único domínio para duas coisas**
+(ver `Caddyfile.snippet`):
+
+- **`/`** → **landing**, por **proxy reverso para a Vercel** (`leadership-mcp.vercel.app`). A URL
+  final continua `.campello.me` — **não é redirect**; o cliente nunca vê o domínio da Vercel.
+- **`/mcp`** → **conector MCP, público (sem auth)**. É o modo exigido pelo conector personalizado
+  do claude.ai (web/desktop/**mobile**), que não envia header customizado. Risco baixo por desenho:
+  ferramentas somente-leitura, determinísticas, servindo base de conhecimento já pública.
+- **`/health`** → healthcheck.
+
+A **variante privada (Bearer token)** continua documentada em `Caddyfile.snippet` para deploys
+white-label restritos: o Caddy exige `Authorization: Bearer {$MCP_BEARER_TOKEN}` (token no `.env`
+do docs-site, gerado/rotacionado por [`rotate-bearer.sh`](rotate-bearer.sh)). **Atenção:** com
+Bearer ativo, o conector do claude.ai (web/mobile) **não** consegue conectar — só clientes que
+enviam header, como o Claude Code.
 
 ## Pré-requisitos
 
@@ -42,13 +50,9 @@ claude.ai conecta sem token, mas com Bearer ativo o conector web/mobile **não**
 
 ## Conectar o Claude (web, desktop e mobile) — conector personalizado
 
-> ⚠️ **Só funciona na variante pública.** Com o Bearer token ativo (produção atual) o conector
-> do claude.ai — web, desktop e mobile — **não consegue conectar**, pois esses clientes não
-> enviam header customizado. Para expor pelo conector, troque para a variante pública do
-> `Caddyfile.snippet`. Com Bearer, use o Claude Code (seção acima).
-
-Requer plano Pro, Max, Team ou Enterprise (contas free têm direito a 1 conector). Feito uma vez
-no navegador, o conector fica disponível também no app mobile e no desktop.
+Produção roda na variante pública, então o conector funciona direto (é o caminho recomendado para
+web e **mobile**). Requer plano Pro, Max, Team ou Enterprise (contas free têm direito a 1 conector).
+Feito uma vez no navegador, o conector fica disponível também no app mobile e no desktop.
 
 1. Acesse [claude.ai/settings/connectors](https://claude.ai/settings/connectors)
    (Configurações → Conectores).
@@ -63,9 +67,10 @@ no navegador, o conector fica disponível também no app mobile e no desktop.
 Em Team/Enterprise, um Owner adiciona o conector em Organization Settings → Connectors e cada
 membro conecta individualmente.
 
-## Gerar / rotacionar o Bearer token
+## Gerar / rotacionar o Bearer token (só na variante privada)
 
-[`rotate-bearer.sh`](rotate-bearer.sh) gera um token novo no VPS via SSH, atualiza o `.env`,
+Só relevante se você estiver rodando a variante privada (Bearer) do `Caddyfile.snippet` — a
+produção pública não usa token. [`rotate-bearer.sh`](rotate-bearer.sh) gera um token novo no VPS via SSH, atualiza o `.env`,
 recria só o container Caddy (necessário — o `{$MCP_BEARER_TOKEN}` é lido do env do processo na
 subida) e verifica (token novo → 200, sem header → 401).
 
@@ -78,19 +83,28 @@ Config por env var (defaults no cabeçalho do script): `SSH_HOST` (default `Pand
 `MCP_URL`, `ENV_FILE`, `COMPOSE_DIR`, `CADDY_SVC`. **Atenção:** recriar o Caddy dá ~1-2s de blip
 em todos os sites desse proxy (docs.campello.me, lp.campello.me, …), não só no leadership-mcp.
 
-## Conectar o Claude Code (variante privada — produção atual)
+## Conectar o Claude Code
+
+Na produção pública, sem header:
+
+```sh
+claude mcp add --transport http --scope user leadership https://leadership-mcp.campello.me/mcp
+```
+
+Na variante privada (Bearer), acrescente o header (o `rotate-bearer.sh` imprime o comando pronto):
 
 ```sh
 claude mcp add --transport http --scope user leadership https://leadership-mcp.campello.me/mcp \
   --header "Authorization: Bearer <MCP_BEARER_TOKEN>"
 ```
 
-O `rotate-bearer.sh` imprime este comando já preenchido com o token novo. Na variante pública
-(sem Bearer), omita o `--header`.
-
 ## Verificação
 
 ```sh
+# Landing na raiz (proxy p/ Vercel; espera 200 text/html, sem redirect):
+curl -sI https://leadership-mcp.campello.me/ | grep -iE 'HTTP/|content-type|x-vercel-id'
+
+# Conector MCP (público; espera 200 com handshake):
 curl -s https://leadership-mcp.campello.me/mcp \
   -H "Content-Type: application/json" \
   -H "Accept: application/json, text/event-stream" \

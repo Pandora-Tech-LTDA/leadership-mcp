@@ -30,7 +30,10 @@ Chapman, Simon Sinek). A orientação é sempre **hipótese, nunca prescrição*
   - Env vars: `LEADERSHIP_MCP_REPO` (default `mcampello/leadership-mcp`), `LEADERSHIP_MCP_REF`
     (default `main`) — é o mecanismo de **white-label** (parceiro forka e aponta para o próprio repo).
 - **Transportes:** stdio (Claude Desktop) e Streamable HTTP (VPS, quando `MCP_HTTP_PORT` está setado).
-  Deploy HTTP documentado em `server/deploy/`.
+  Deploy HTTP documentado em `server/deploy/`. Em produção, `leadership-mcp.campello.me` serve **dois**
+  destinos no mesmo domínio (Caddy): `/` → **landing** por proxy reverso para a Vercel (URL continua
+  `.campello.me`, não é redirect) e `/mcp` → **conector MCP público** (Claude web/mobile). O servidor
+  só responde a `/`, `/mcp` e `/health`.
 - **Gatilho embutido** (`instructions` do servidor): a constante `INSTRUCTIONS` em `server/index.js`
   é entregue ao cliente MCP no handshake `initialize` (campo `instructions`), que o Claude injeta no
   contexto automaticamente. É o núcleo condensado do gatilho — só instalar o MCP já faz o Claude
@@ -122,8 +125,9 @@ Uma issue só é tornada pública quando o Mario pedir **explicitamente**.
 
 - ✅ Fundação pública mesclada na `main`: metadata npm, CODE_OF_CONDUCT, CI, GROWTH.md, README
   bilíngue, landing (`docs/index.html`), vercel.json.
-- 🔧 Landing em publicação na Vercel (produção); pendente: desligar Deployment Protection para
-  ficar pública.
+- ✅ Landing publicada na Vercel (pública) e servida também em `https://leadership-mcp.campello.me/`
+  via proxy reverso do Caddy (URL final `.campello.me`, não é redirect). O mesmo domínio expõe o
+  conector MCP público em `/mcp` (Claude web/mobile conecta sem token).
 - 🔜 Próximos (Fundação): base de marketing `/marketing` (SOPs + kit de semeadura), textos de
   submissão a registries MCP, deck para a rede de facilitadores.
 - ⏸️ Web app adiado (STR-201). Chave de API/hospedagem só se ele for revivido.
