@@ -160,15 +160,18 @@ porque é aí que a liderança acontece. As fontes completas estão [no fim dest
 
 ### Opção A — Claude web, desktop e celular (conector remoto)
 
-Se o endpoint hospedado estiver disponível (ou você [hospedar o seu](server/deploy/README.md)),
-este é o caminho mais simples — configura uma vez e funciona em todo lugar, **inclusive no app
-do celular**:
+O endpoint hospedado exige **sempre uma chave de acesso** — ou você pode
+[hospedar o seu](server/deploy/README.md). Este é o caminho mais simples — configura uma vez e
+funciona em todo lugar, **inclusive no app do celular**:
 
-1. Acesse [claude.ai/settings/connectors](https://claude.ai/settings/connectors) e clique em
+1. Peça a sua chave de acesso
+   [pelo WhatsApp](https://wa.me/5511992630805?text=Ol%C3%A1%21%20Quero%20usar%20o%20Leadership%20MCP%20pelo%20conector%20HTTP%20no%20Claude%20web%2Fmobile.%20Pode%20me%20passar%20minha%20chave%20de%20acesso%3F)
+   — você recebe o endereço do conector já com a chave embutida.
+2. Acesse [claude.ai/settings/connectors](https://claude.ai/settings/connectors) e clique em
    **Adicionar conector personalizado**.
-2. URL: `https://leadership-mcp.campello.me/mcp` — sem preencher os campos de OAuth.
-3. Numa conversa, abra **+ → Conectores** e ative o *leadership-mcp*.
-4. Cole o prompt de sistema (passo 1 abaixo) nas instruções personalizadas do seu perfil.
+3. URL: `https://leadership-mcp.campello.me/mcp/<chave>` — sem preencher os campos de OAuth.
+4. Numa conversa, abra **+ → Conectores** e ative o *leadership-mcp*.
+5. Cole o prompt de sistema (passo 1 abaixo) nas instruções personalizadas do seu perfil.
 
 Requer plano Pro/Max/Team/Enterprise (contas gratuitas podem adicionar 1 conector).
 
