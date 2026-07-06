@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
 #
-# rotate-bearer.sh — gera/rotaciona o Bearer token do endpoint privado do Leadership MCP.
+# rotate-bearer.sh — gera/rotaciona a chave de acesso do endpoint do Leadership MCP.
 #
-# O endpoint https://leadership-mcp.campello.me/mcp roda na variante PRIVADA (ver
-# Caddyfile.snippet): o Caddy exige `Authorization: Bearer {$MCP_BEARER_TOKEN}`. O token
-# vive no .env do projeto docs-site e é injetado no container Caddy na subida — por isso
-# rotacionar exige RECRIAR o container (um `caddy reload` não relê o env do processo).
+# O endpoint https://leadership-mcp.campello.me/mcp exige SEMPRE a chave (ver
+# Caddyfile.snippet), aceita de duas formas com o mesmo valor (MCP_BEARER_TOKEN):
+#   a) header `Authorization: Bearer <chave>` (ex.: Claude Code);
+#   b) chave na URL: /mcp/<chave> (conector personalizado do claude.ai — web/mobile).
+# A chave vive no .env do projeto docs-site e é injetada no container Caddy na subida —
+# por isso rotacionar exige RECRIAR o container (um `caddy reload` não relê o env do processo).
 #
 # O que este script faz, via SSH, de forma atômica:
-#   1. gera um token novo (openssl rand -hex 32) no VPS;
+#   1. gera uma chave nova (openssl rand -hex 32) no VPS;
 #   2. faz backup do .env e substitui a linha MCP_BEARER_TOKEN=;
 #   3. recria SÓ o serviço caddy (docker compose up -d --force-recreate caddy);
-#   4. imprime o token e verifica: token novo → 200, sem token → 401.
+#   4. imprime a chave e verifica: Bearer novo → 200, chave na URL → 200, sem chave → 401.
 #
 # ATENÇÃO: recriar o Caddy reinicia o proxy compartilhado (~1-2s de blip em TODOS os
 # sites desse Caddy: docs.campello.me, lp.campello.me, etc.), não só o leadership-mcp.
@@ -44,6 +46,14 @@ probe() { # $1 = token ("" para sem header)
   [ -n "${1:-}" ] && auth=(-H "Authorization: Bearer $1")
   curl -s -o /dev/null -w '%{http_code}' -X POST "$MCP_URL" \
     "${auth[@]+"${auth[@]}"}" \
+    -H 'Content-Type: application/json' \
+    -H 'Accept: application/json, text/event-stream' \
+    -d "$INIT_BODY"
+}
+
+# Idem, com a chave embutida na URL (forma usada pelo conector do claude.ai).
+probe_url() { # $1 = token
+  curl -s -o /dev/null -w '%{http_code}' -X POST "$MCP_URL/$1" \
     -H 'Content-Type: application/json' \
     -H 'Accept: application/json, text/event-stream' \
     -d "$INIT_BODY"
@@ -94,14 +104,16 @@ for _ in $(seq 1 15); do
 done
 echo >&2
 
+URL_CODE="$(probe_url "$NEW_TOKEN" || true)"
 NO_AUTH_CODE="$(probe '' || true)"
 
 echo >&2
-echo "  token novo (Bearer)  → HTTP $NEW_CODE   (esperado 200)" >&2
-echo "  sem Authorization    → HTTP $NO_AUTH_CODE   (esperado 401)" >&2
+echo "  chave nova (Bearer)  → HTTP $NEW_CODE   (esperado 200)" >&2
+echo "  chave na URL         → HTTP $URL_CODE   (esperado 200)" >&2
+echo "  sem chave            → HTTP $NO_AUTH_CODE   (esperado 401)" >&2
 echo >&2
 
-if [ "$NEW_CODE" != "200" ] || [ "$NO_AUTH_CODE" != "401" ]; then
+if [ "$NEW_CODE" != "200" ] || [ "$URL_CODE" != "200" ] || [ "$NO_AUTH_CODE" != "401" ]; then
   echo "⚠️  verificação falhou — confira o Caddy no VPS." >&2
   echo "$NEW_TOKEN"
   exit 1
@@ -109,10 +121,15 @@ fi
 
 echo "✅ rotacionado e verificado." >&2
 echo >&2
-echo "Novo token:" >&2
+echo "Nova chave:" >&2
 echo "$NEW_TOKEN"
+echo >&2
+echo "Conector do claude.ai (web/desktop/mobile) — chave na URL:" >&2
+echo "  $MCP_URL/$NEW_TOKEN" >&2
 echo >&2
 echo "Reconecte o Claude Code (remove o antigo se existir):" >&2
 echo "  claude mcp remove leadership 2>/dev/null || true" >&2
 echo "  claude mcp add --transport http --scope user leadership $MCP_URL \\" >&2
 echo "    --header \"Authorization: Bearer $NEW_TOKEN\"" >&2
+echo >&2
+echo "Quem recebeu a chave antiga perde o acesso — reenvie a URL nova a quem for da casa." >&2

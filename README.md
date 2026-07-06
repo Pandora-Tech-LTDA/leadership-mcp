@@ -160,14 +160,18 @@ interaction — because that's where leadership happens. Full sources are [at th
 
 ### Option A — Claude web, desktop and mobile (remote connector)
 
-If the hosted endpoint is available (or you [deploy your own](server/deploy/README.md)), this is
-the simplest path — one setup, works everywhere including the **mobile app**:
+The hosted endpoint **always requires an access key** — or you can
+[deploy your own](server/deploy/README.md). This is the simplest path — one setup, works
+everywhere including the **mobile app**:
 
-1. Go to [claude.ai/settings/connectors](https://claude.ai/settings/connectors) and click
+1. Request your access key
+   [via WhatsApp](https://wa.me/5511992630805?text=Ol%C3%A1%21%20Quero%20usar%20o%20Leadership%20MCP%20pelo%20conector%20HTTP%20no%20Claude%20web%2Fmobile.%20Pode%20me%20passar%20minha%20chave%20de%20acesso%3F)
+   — you'll receive the connector URL with the key embedded.
+2. Go to [claude.ai/settings/connectors](https://claude.ai/settings/connectors) and click
    **Add custom connector**.
-2. URL: `https://leadership-mcp.campello.me/mcp` — no OAuth fields needed.
-3. In a conversation, open **+ → Connectors** and enable *leadership-mcp*.
-4. Paste the system prompt (step 1 below) into your profile's custom instructions.
+3. URL: `https://leadership-mcp.campello.me/mcp/<key>` — no OAuth fields needed.
+4. In a conversation, open **+ → Connectors** and enable *leadership-mcp*.
+5. Paste the system prompt (step 1 below) into your profile's custom instructions.
 
 Requires a Pro/Max/Team/Enterprise plan (free accounts can add one custom connector).
 

@@ -32,8 +32,12 @@ Chapman, Simon Sinek). A orientação é sempre **hipótese, nunca prescrição*
 - **Transportes:** stdio (Claude Desktop) e Streamable HTTP (VPS, quando `MCP_HTTP_PORT` está setado).
   Deploy HTTP documentado em `server/deploy/`. Em produção, `leadership-mcp.campello.me` serve **dois**
   destinos no mesmo domínio (Caddy): `/` → **landing** por proxy reverso para a Vercel (URL continua
-  `.campello.me`, não é redirect) e `/mcp` → **conector MCP público** (Claude web/mobile). O servidor
-  só responde a `/`, `/mcp` e `/health`.
+  `.campello.me`, não é redirect) e `/mcp` → **conector MCP com chave de acesso SEMPRE obrigatória**
+  (decisão 2026-07-06: sem acesso indiscriminado). A mesma chave (`MCP_BEARER_TOKEN`, rotacionada por
+  `server/deploy/rotate-bearer.sh`) vale de duas formas: header `Authorization: Bearer` (Claude Code)
+  ou embutida na URL `/mcp/<chave>` (conector do claude.ai web/mobile, que não envia header). A chave
+  é distribuída por contato (WhatsApp na landing). O servidor só responde a `/`, `/mcp` e `/health`
+  (o Caddy reescreve `/mcp/<chave>` → `/mcp`).
 - **Gatilho embutido** (`instructions` do servidor): a constante `INSTRUCTIONS` em `server/index.js`
   é entregue ao cliente MCP no handshake `initialize` (campo `instructions`), que o Claude injeta no
   contexto automaticamente. É o núcleo condensado do gatilho — só instalar o MCP já faz o Claude
@@ -127,7 +131,9 @@ Uma issue só é tornada pública quando o Mario pedir **explicitamente**.
   bilíngue, landing (`docs/index.html`), vercel.json.
 - ✅ Landing publicada na Vercel (pública) e servida também em `https://leadership-mcp.campello.me/`
   via proxy reverso do Caddy (URL final `.campello.me`, não é redirect). O mesmo domínio expõe o
-  conector MCP público em `/mcp` (Claude web/mobile conecta sem token).
+  conector MCP em `/mcp` — **sempre com chave de acesso** (Bearer ou `/mcp/<chave>` na URL;
+  distribuição via WhatsApp na landing). O `/mcp` público sem token (PR #17) foi **revertido**
+  em 2026-07-06 a pedido do Mario.
 - 🔜 Próximos (Fundação): base de marketing `/marketing` (SOPs + kit de semeadura), textos de
   submissão a registries MCP, deck para a rede de facilitadores.
 - ⏸️ Web app adiado (STR-201). Chave de API/hospedagem só se ele for revivido.
@@ -136,4 +142,4 @@ Uma issue só é tornada pública quando o Mario pedir **explicitamente**.
   franqueza com cuidado/Kim Scott+Brené Brown), 3 ações e 1 resultado novos. Classificador com
   regra anti-falso-positivo (keywords fracas só desempatam) e limiar de ativação ≥2; bateria de
   40 casos em `server/eval-cases.js` roda no smoke/CI (40/40). Deploy documenta conector
-  personalizado do claude.ai (web/desktop/mobile) com endpoint público em `server/deploy/`.
+  personalizado do claude.ai (web/desktop/mobile) com chave de acesso em `server/deploy/`.
