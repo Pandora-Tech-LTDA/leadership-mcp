@@ -4,23 +4,20 @@
 # ROTEAMENTO: um único domínio serve DUAS coisas:
 #   /            → landing (proxy reverso para a Vercel; a URL final continua .campello.me,
 #                  NÃO é redirect — o cliente nunca vê o domínio da Vercel).
-#   /mcp         → conector MCP, SEMPRE com chave de acesso (sem acesso indiscriminado).
-#                  A mesma chave (MCP_BEARER_TOKEN) é aceita de DUAS formas:
-#                    a) header `Authorization: Bearer <chave>` — clientes que enviam header
-#                       (ex.: Claude Code);
-#                    b) chave embutida na URL: /mcp/<chave> — é o caminho para o conector
-#                       personalizado do claude.ai (web/desktop/mobile), que NÃO envia header
-#                       customizado (só suporta OAuth ou nenhum auth).
-#                  Sem chave válida → 401.
+#   /mcp, /mcp/* → conector MCP — PROXY PURO. A autenticação por lote de tokens (Bearer ou
+#                  token embutido na URL /mcp/<token>) vive inteiramente no Node
+#                  (server/auth.js) — o Caddy não valida mais nada aqui. Isso permite
+#                  criar/revogar token na hora, sem tocar no Caddy nem reiniciar nada dele.
 #   /health      → healthcheck do container (público, não expõe nada).
 #
-# A chave vive no .env do docs-site (MCP_BEARER_TOKEN) e é injetada no container Caddy na
-# SUBIDA — gere/rotacione com deploy/rotate-bearer.sh (que recria o container Caddy).
-# O default `:unset` abaixo evita que a env ausente vire uma chave vazia (gate aberto).
+# Por que a auth saiu do Caddy: com uma chave única (MCP_BEARER_TOKEN), o Caddy conseguia
+# validar via matcher de header/path. Um LOTE de tokens (um por pessoa, revogável
+# individualmente) não dá pra expressar em matchers estáticos do Caddyfile — o token válido
+# muda em runtime. Delegar ao Node (que já recebe a request) resolve isso sem dependência nova.
 #
-# Trade-off consciente da forma (b): a chave aparece na URL (e portanto em logs de acesso).
-# Aceitável aqui — ferramentas somente-leitura servindo base já pública; a chave existe para
-# controlar QUEM acessa (distribuição via contato), e é rotacionável a custo zero.
+# Trade-off consciente mantido: a chave na URL (/mcp/<token>) aparece em logs de acesso do
+# Caddy. Aceitável — ferramentas somente-leitura servindo base já pública; a telemetria do Node
+# agora permite identificar e revogar um token vazado.
 
 leadership-mcp.campello.me {
 	encode gzip zstd
@@ -29,42 +26,16 @@ leadership-mcp.campello.me {
 		Referrer-Policy strict-origin-when-cross-origin
 	}
 
-	# (b) Chave na URL — conector personalizado do claude.ai (web/desktop/mobile).
-	# Reescreve para /mcp antes de proxear (o servidor só conhece /mcp).
-	# Streamable HTTP usa SSE de longa duração — sem timeout no upstream.
-	@mcp_keyed_url path /mcp/{$MCP_BEARER_TOKEN:unset} /mcp/{$MCP_BEARER_TOKEN:unset}/*
-	handle @mcp_keyed_url {
-		uri replace /mcp/{$MCP_BEARER_TOKEN:unset} /mcp
+	# /mcp e /mcp/<token> — proxy puro para o Node. Streamable HTTP usa SSE de longa
+	# duração — sem timeout no upstream.
+	@mcp path /mcp /mcp/*
+	handle @mcp {
 		reverse_proxy leadership-mcp:3000 {
 			flush_interval -1
 			transport http {
 				read_timeout 0
 				write_timeout 0
 			}
-		}
-	}
-
-	# (a) Bearer no header — Claude Code e outros clientes que enviam header.
-	@mcp_bearer {
-		path /mcp /mcp/*
-		header Authorization "Bearer {$MCP_BEARER_TOKEN:unset}"
-	}
-	handle @mcp_bearer {
-		reverse_proxy leadership-mcp:3000 {
-			flush_interval -1
-			transport http {
-				read_timeout 0
-				write_timeout 0
-			}
-		}
-	}
-
-	# Qualquer outro acesso a /mcp: sem chave → 401.
-	@mcp_denied path /mcp /mcp/*
-	handle @mcp_denied {
-		respond 401 {
-			body "Unauthorized"
-			close
 		}
 	}
 

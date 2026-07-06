@@ -16,6 +16,8 @@ import { createServer as createHttpServer } from "node:http";
 import { realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { loadFile, listDir, parseFrontmatter } from "./knowledge-loader.js";
+import { authenticate, hasActiveTokens, PATH_TOKEN_RE } from "./auth.js";
+import { configureUsage, logUsage } from "./usage.js";
 
 // ---------------------------------------------------------------------------
 // Classificação de gatilho
@@ -202,18 +204,23 @@ export async function classify(situacao) {
 // exige ao menos uma keyword forte ou dois sinais. Reduz ativação espúria.
 export const MIN_ACTIVATION_SCORE = 2;
 
+// Retorna {text, gatilho}: `gatilho` é o id do gatilho classificado (ou null se nenhum ativou)
+// — a telemetria de uso precisa dele sem rodar o classificador uma segunda vez.
 export async function buildGuidance(situacao) {
   const scored = await classify(situacao);
   const top = scored[0];
 
   if (!top || top.score < MIN_ACTIVATION_SCORE) {
-    return [
-      "Não identifiquei com confiança um gatilho relacional específico nesta situação.",
-      "",
-      "Se ela envolve produzir ou estruturar algo para uma pessoa ou grupo, descreva quem é o",
-      "destinatário e qual a tensão envolvida, que eu busco a orientação adequada. Caso seja",
-      "uma tarefa puramente técnica ou operacional, ela provavelmente não exige orientação cultural.",
-    ].join("\n");
+    return {
+      gatilho: null,
+      text: [
+        "Não identifiquei com confiança um gatilho relacional específico nesta situação.",
+        "",
+        "Se ela envolve produzir ou estruturar algo para uma pessoa ou grupo, descreva quem é o",
+        "destinatário e qual a tensão envolvida, que eu busco a orientação adequada. Caso seja",
+        "uma tarefa puramente técnica ou operacional, ela provavelmente não exige orientação cultural.",
+      ].join("\n"),
+    };
   }
 
   const triggerMd = await loadFile(top.trigger.file);
@@ -259,7 +266,7 @@ export async function buildGuidance(situacao) {
       "orientação do Leadership MCP (as citações já vivem dentro da base)."
   );
 
-  return sections.join("\n");
+  return { gatilho: top.trigger.id, text: sections.join("\n") };
 }
 
 // Extrai o texto de uma seção "## Título" de um markdown.
@@ -349,7 +356,9 @@ export const INSTRUCTIONS = [
 // Cria uma instância do servidor MCP com as duas ferramentas registradas. No modo stdio
 // usamos uma única instância; no modo HTTP stateless criamos uma por request (recomendação
 // do SDK — evita vazamento de estado entre clientes concorrentes).
-export function createServer() {
+// `context.user` identifica quem autenticou a request (nome do token, ou "public" em modo
+// aberto) — propagado para a telemetria de uso (usage.js), nunca para a base de conhecimento.
+export function createServer(context = { user: null }) {
   const server = new McpServer(
     {
       name: "leadership-mcp",
@@ -389,8 +398,15 @@ export function createServer() {
       },
     },
     async ({ situacao }) => {
+      const start = Date.now();
       const guidance = await buildGuidance(situacao);
-      return { content: [{ type: "text", text: guidance }] };
+      logUsage({
+        user: context.user,
+        tool: "buscar_orientacao",
+        gatilho: guidance.gatilho,
+        durationMs: Date.now() - start,
+      });
+      return { content: [{ type: "text", text: guidance.text }] };
     }
   );
 
@@ -404,6 +420,7 @@ export function createServer() {
       inputSchema: {},
     },
     async () => {
+      const start = Date.now();
       const lines = ["# Gatilhos relacionais cobertos\n"];
       for (const t of TRIGGERS) {
         const md = await loadFile(t.file);
@@ -415,6 +432,12 @@ export function createServer() {
         ["gatilhos", "filtros", "acoes", "resultados"].map(async (d) => `${d}/ (${(await listDir(d)).length})`)
       );
       lines.push(`\nEstrutura da base: ${dirs.join(", ")}`);
+      logUsage({
+        user: context.user,
+        tool: "listar_gatilhos",
+        gatilho: null,
+        durationMs: Date.now() - start,
+      });
       return { content: [{ type: "text", text: lines.join("\n") }] };
     }
   );
@@ -426,9 +449,16 @@ export function createServer() {
 // Transportes
 // ---------------------------------------------------------------------------
 
-// stdio: usado pelo pacote npm / Claude Desktop. Uma única instância de servidor.
+// Paths default só fazem sentido no modo HTTP (stdio não tem tokens nem telemetria a menos
+// que a env var override seja setada explicitamente).
+const DEFAULT_TOKENS_FILE = "./data/tokens.json";
+const DEFAULT_USAGE_FILE = "./data/usage.jsonl";
+
+// stdio: usado pelo pacote npm / Claude Desktop. Uma única instância de servidor. Sem tokens
+// (não é exposto à rede); telemetria só se LEADERSHIP_MCP_USAGE_LOG for setada explicitamente.
 async function startStdio() {
-  const server = createServer();
+  configureUsage(process.env.LEADERSHIP_MCP_USAGE_LOG);
+  const server = createServer({ user: null });
   const transport = new StdioServerTransport();
   await server.connect(transport);
   // Log apenas em stderr — stdout é reservado para o protocolo MCP.
@@ -437,24 +467,67 @@ async function startStdio() {
 
 // HTTP (Streamable HTTP, stateless): usado no deploy do VPS atrás do Caddy. Cada request
 // recebe um par server+transport novo e descartável — sem sessão, sem estado compartilhado.
-// A autenticação (Bearer) é feita na borda (Caddy); aqui só tratamos o protocolo MCP.
-async function startHttp(port) {
+//
+// A autenticação vive AQUI (Node), não mais no Caddy — o Caddy virou proxy puro. Isso permite
+// aceitar um LOTE de tokens (não uma chave única) e fazer criar/revogar valer na request
+// seguinte, sem restart do processo nem tocar no Caddy. `LEADERSHIP_MCP_AUTH=off` desliga a
+// checagem (uso registrado como "public") — só para emergência/debug local.
+export async function startHttp(port, options = {}) {
+  const tokensFile = options.tokensFile ?? process.env.LEADERSHIP_MCP_TOKENS_FILE ?? DEFAULT_TOKENS_FILE;
+  const usageFile = options.usageFile ?? process.env.LEADERSHIP_MCP_USAGE_LOG ?? DEFAULT_USAGE_FILE;
+  const authDisabled = process.env.LEADERSHIP_MCP_AUTH === "off";
+  configureUsage(usageFile);
+
+  if (authDisabled) {
+    console.error("AVISO: LEADERSHIP_MCP_AUTH=off — /mcp respondendo SEM autenticação (modo aberto).");
+  } else if (!hasActiveTokens(tokensFile)) {
+    // Fail-closed: sem tokens ativos, toda request a /mcp volta 401 (nunca abre sozinho).
+    console.error(
+      `AVISO: nenhum token ativo em "${tokensFile}" — todo acesso a /mcp retornará 401 até ` +
+        `criar um token (ver server/tokens-cli.js).`
+    );
+  }
+
   const httpServer = createHttpServer(async (req, res) => {
-    // Healthcheck simples para o Docker/Caddy (não faz parte do protocolo MCP).
+    // Healthcheck simples para o Docker/Caddy (não faz parte do protocolo MCP) — sempre aberto.
     if (req.method === "GET" && req.url === "/health") {
       res.writeHead(200, { "Content-Type": "text/plain" });
       res.end("ok");
       return;
     }
 
-    if (req.url !== "/" && req.url !== "/mcp") {
+    const isMcpPath = req.url === "/mcp" || PATH_TOKEN_RE.test(req.url || "");
+    if (req.url !== "/" && !isMcpPath) {
       res.writeHead(404, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ jsonrpc: "2.0", error: { code: -32601, message: "Not found" }, id: null }));
       return;
     }
 
+    // Gate de auth antes do transport. `authenticate` lê o token do header OU do path — por
+    // isso roda antes da reescrita de URL abaixo. "/" também entra no gate (o conector não usa
+    // "/", mas é a mesma superfície MCP).
+    let user = "public";
+    if (!authDisabled) {
+      const auth = authenticate(req, tokensFile);
+      if (!auth) {
+        res.writeHead(401, {
+          "Content-Type": "application/json",
+          "WWW-Authenticate": 'Bearer realm="leadership-mcp"',
+        });
+        res.end(JSON.stringify({ jsonrpc: "2.0", error: { code: -32001, message: "Unauthorized" }, id: null }));
+        return;
+      }
+      user = auth.user;
+    }
+
+    // Reescreve /mcp/<token>(/...) → /mcp antes de handleRequest — o transport stateless não
+    // roteia por path, então isso é seguro e mantém o resto do handler olhando só para /mcp.
+    if (req.url !== "/" && req.url !== "/mcp") {
+      req.url = "/mcp";
+    }
+
     try {
-      const server = createServer();
+      const server = createServer({ user });
       const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
       // Encerra o par server+transport quando a conexão fechar (modo descartável).
       res.on("close", () => {
@@ -472,8 +545,11 @@ async function startHttp(port) {
     }
   });
 
-  httpServer.listen(port, () => {
-    console.error(`Leadership MCP server rodando (HTTP) na porta ${port}.`);
+  return new Promise((resolve) => {
+    httpServer.listen(port, () => {
+      console.error(`Leadership MCP server rodando (HTTP) na porta ${port}.`);
+      resolve(httpServer);
+    });
   });
 }
 

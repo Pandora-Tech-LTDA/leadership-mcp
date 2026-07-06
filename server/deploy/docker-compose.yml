@@ -1,8 +1,10 @@
 # Leadership MCP — serviço HTTP atrás do Caddy existente no VPS.
 #
-# O Caddy (projeto docs-site) faz o TLS e valida o Bearer token, e encaminha para este
-# container pela rede docker compartilhada. A porta NÃO é publicada no host — só o Caddy
-# alcança o serviço pela rede interna.
+# O Caddy (projeto docs-site) faz o TLS e encaminha para este container pela rede docker
+# compartilhada (proxy puro — não valida mais token, ver Caddyfile.snippet). A autenticação por
+# lote de tokens e a telemetria vivem no próprio processo Node (server/auth.js, server/usage.js),
+# persistidas em ./data (bind mount) para sobreviver a rebuilds/restarts do container. A porta
+# NÃO é publicada no host — só o Caddy alcança o serviço pela rede interna.
 services:
   leadership-mcp:
     build:
@@ -15,6 +17,10 @@ services:
       MCP_HTTP_PORT: 3000
       # Ref da base de conhecimento buscada do GitHub em runtime (fallback: cópia da imagem).
       LEADERSHIP_MCP_REF: main
+      LEADERSHIP_MCP_TOKENS_FILE: /app/data/tokens.json
+      LEADERSHIP_MCP_USAGE_LOG: /app/data/usage.jsonl
+    volumes:
+      - ./data:/app/data
     networks:
       - docs_net
 
