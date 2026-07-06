@@ -9,7 +9,7 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
 # Código + base de conhecimento empacotada (fallback offline do knowledge-loader).
-COPY index.js knowledge-loader.js ./
+COPY index.js knowledge-loader.js auth.js usage.js tokens-cli.js ./
 COPY knowledge ./knowledge
 
 # Porta HTTP interna (exposta ao Caddy pela rede Docker, não publicada no host).

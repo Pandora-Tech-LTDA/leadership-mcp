@@ -18,13 +18,17 @@
   "files": [
     "index.js",
     "knowledge-loader.js",
+    "auth.js",
+    "usage.js",
+    "tokens-cli.js",
     "knowledge/"
   ],
   "scripts": {
     "start": "node index.js",
     "sync-knowledge": "rm -rf knowledge && cp -R ../knowledge knowledge",
     "smoke": "node smoke-test.js",
-    "inspect": "npx @modelcontextprotocol/inspector node index.js"
+    "inspect": "npx @modelcontextprotocol/inspector node index.js",
+    "tokens": "node tokens-cli.js"
   },
   "keywords": [
     "mcp",

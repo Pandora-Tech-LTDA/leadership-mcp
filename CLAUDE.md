@@ -33,11 +33,22 @@ Chapman, Simon Sinek). A orientação é sempre **hipótese, nunca prescrição*
   Deploy HTTP documentado em `server/deploy/`. Em produção, `leadership-mcp.campello.me` serve **dois**
   destinos no mesmo domínio (Caddy): `/` → **landing** por proxy reverso para a Vercel (URL continua
   `.campello.me`, não é redirect) e `/mcp` → **conector MCP com chave de acesso SEMPRE obrigatória**
-  (decisão 2026-07-06: sem acesso indiscriminado). A mesma chave (`MCP_BEARER_TOKEN`, rotacionada por
-  `server/deploy/rotate-bearer.sh`) vale de duas formas: header `Authorization: Bearer` (Claude Code)
-  ou embutida na URL `/mcp/<chave>` (conector do claude.ai web/mobile, que não envia header). A chave
-  é distribuída por contato (WhatsApp na landing). O servidor só responde a `/`, `/mcp` e `/health`
-  (o Caddy reescreve `/mcp/<chave>` → `/mcp`).
+  (decisão 2026-07-06: sem acesso indiscriminado). O servidor só responde a `/`, `/mcp`/`/mcp/<token>`
+  e `/health`.
+- **Autenticação por lote de tokens** (`server/auth.js`, decisão 2026-07-06): a auth saiu do Caddy
+  (que virou proxy puro) e vive no Node — permite um **lote de tokens** (um por pessoa, formato
+  `lmcp_` + 16 hex), não mais uma chave única. `tokens.json` guarda só o hash SHA-256 de cada token
+  (o valor em claro só existe no MD de distribuição, repo privado) e é recarregado por mtime/tamanho
+  a cada request — criar/revogar vale na request seguinte, sem restart. Aceita o token de duas formas
+  (mesmo valor): header `Authorization: Bearer` (Claude Code) ou embutido na URL `/mcp/<token>`
+  (conector claude.ai web/mobile, que não envia header). **Fail-closed**: sem token ativo cadastrado,
+  tudo em `/mcp` volta 401; `LEADERSHIP_MCP_AUTH=off` é a única forma de abrir (só emergência).
+  `server/tokens-cli.js` (`npm run tokens`) cria/lista/revoga tokens e gera o lote inicial
+  (`create-batch`) com o MD de distribuição pronto (privado, gitignorado). Incrementalmente no VPS,
+  usa-se `server/deploy/tokens-remote.sh` (via SSH + `docker compose exec`).
+- **Telemetria de uso** (`server/usage.js`): uma linha JSONL por chamada de ferramenta
+  (`{ts, user, tool, gatilho, durationMs}`), fire-and-forget, nunca grava o texto da situação — mede
+  a North Star (usuários ativos semanais) sem logar conteúdo sensível.
 - **Gatilho embutido** (`instructions` do servidor): a constante `INSTRUCTIONS` em `server/index.js`
   é entregue ao cliente MCP no handshake `initialize` (campo `instructions`), que o Claude injeta no
   contexto automaticamente. É o núcleo condensado do gatilho — só instalar o MCP já faz o Claude
@@ -75,10 +86,11 @@ fallback — regenerada por `npm run sync-knowledge` antes de publicar. Edite se
 ```bash
 cd server
 npm install
-npm run smoke          # valida classificação + montagem da orientação (offline) — é o que o CI roda
+npm run smoke          # valida classificação + montagem + auth/usage/e2e HTTP (offline) — é o que o CI roda
 npm run inspect        # MCP Inspector interativo
 npm run start          # sobe o servidor
 npm run sync-knowledge # sincroniza server/knowledge/ a partir de ../knowledge (antes de publicar)
+npm run tokens -- create-batch 50 --md ./data/distribuicao-tokens.md  # gera lote de tokens (modo HTTP)
 npm publish --access public
 ```
 
@@ -131,9 +143,13 @@ Uma issue só é tornada pública quando o Mario pedir **explicitamente**.
   bilíngue, landing (`docs/index.html`), vercel.json.
 - ✅ Landing publicada na Vercel (pública) e servida também em `https://leadership-mcp.campello.me/`
   via proxy reverso do Caddy (URL final `.campello.me`, não é redirect). O mesmo domínio expõe o
-  conector MCP em `/mcp` — **sempre com chave de acesso** (Bearer ou `/mcp/<chave>` na URL;
+  conector MCP em `/mcp` — **sempre com token de acesso** (Bearer ou `/mcp/<token>` na URL;
   distribuição via WhatsApp na landing). O `/mcp` público sem token (PR #17) foi **revertido**
   em 2026-07-06 a pedido do Mario.
+- ✅ Lote de tokens por usuário + telemetria (2026-07, issue privada `leadership-mcp-ops#19`):
+  auth saiu do Caddy (proxy puro) e passou para o Node (`server/auth.js`, `server/tokens-cli.js`,
+  `server/deploy/tokens-remote.sh`); telemetria mínima em `server/usage.js` (nunca grava a
+  situação). Chave única antiga (`MCP_BEARER_TOKEN`, `rotate-bearer.sh`) removida.
 - 🔜 Próximos (Fundação): base de marketing `/marketing` (SOPs + kit de semeadura), textos de
   submissão a registries MCP, deck para a rede de facilitadores.
 - ⏸️ Web app adiado (STR-201). Chave de API/hospedagem só se ele for revivido.
