@@ -353,7 +353,16 @@ export function createServer() {
   const server = new McpServer(
     {
       name: "leadership-mcp",
+      title: "Leadership MCP",
       version: "0.2.0",
+      websiteUrl: "https://leadership-mcp.campello.me",
+      icons: [
+        {
+          src: "https://leadership-mcp.campello.me/icon.png",
+          mimeType: "image/png",
+          sizes: ["512x512"],
+        },
+      ],
     },
     { instructions: INSTRUCTIONS }
   );
