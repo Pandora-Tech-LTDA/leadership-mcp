@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Leadership MCP — balão de conversa com coração (mesma arte de icon.png) -->
+  <rect width="512" height="512" rx="100" fill="#2f6f5b"/>
+  <path fill="#fff" d="M152 114h208a60 60 0 0 1 60 60v116a60 60 0 0 1-60 60h-92l-92 70 14-70h-38a60 60 0 0 1-60-60V174a60 60 0 0 1 60-60z"/>
+  <path fill="#2f6f5b" d="M256 306s-62-40.5-78.5-77C160 190 189 158 220 158c17.5 0 30.5 9.5 36 21 5.5-11.5 18.5-21 36-21 31 0 60 32 42.5 71-16.5 36.5-78.5 77-78.5 77z"/>
+</svg>
