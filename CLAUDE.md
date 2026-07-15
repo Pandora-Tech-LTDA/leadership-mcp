@@ -45,7 +45,10 @@ Chapman, Simon Sinek). A orientação é sempre **hipótese, nunca prescrição*
   tudo em `/mcp` volta 401; `LEADERSHIP_MCP_AUTH=off` é a única forma de abrir (só emergência).
   `server/tokens-cli.js` (`npm run tokens`) cria/lista/revoga tokens e gera o lote inicial
   (`create-batch`) com o MD de distribuição pronto (privado, gitignorado). Incrementalmente no VPS,
-  usa-se `server/deploy/tokens-remote.sh` (via SSH + `docker compose exec`).
+  usa-se `server/deploy/tokens-remote.sh` (via SSH + `docker compose exec`). Para onboarding de uma
+  pessoa (nome + e-mail + WhatsApp → token no VPS + URL pronta + contato em `data/usuarios.jsonl`,
+  privado/gitignorado), usa-se `server/onboard-cli.js` (`npm run onboard`), orquestrado pela skill
+  `/criar-acesso` (`.claude/skills/criar-acesso/`).
 - **Telemetria de uso** (`server/usage.js`): uma linha JSONL por chamada de ferramenta
   (`{ts, user, tool, gatilho, durationMs}`), fire-and-forget, nunca grava o texto da situação — mede
   a North Star (usuários ativos semanais) sem logar conteúdo sensível.
@@ -91,6 +94,9 @@ npm run inspect        # MCP Inspector interativo
 npm run start          # sobe o servidor
 npm run sync-knowledge # sincroniza server/knowledge/ a partir de ../knowledge (antes de publicar)
 npm run tokens -- create-batch 50 --md ./data/distribuicao-tokens.md  # gera lote de tokens (modo HTTP)
+npm run onboard -- --nome "Fulana de Tal" --email f@ex.com --whatsapp "+55 11 91234-5678"
+                       # acesso individual: token + registro no VPS + contato em data/usuarios.jsonl
+                       # (skill /criar-acesso em .claude/skills/ orquestra a coleta dos dados)
 npm publish --access public
 ```
 
