@@ -28,7 +28,8 @@
     "sync-knowledge": "rm -rf knowledge && cp -R ../knowledge knowledge",
     "smoke": "node smoke-test.js",
     "inspect": "npx @modelcontextprotocol/inspector node index.js",
-    "tokens": "node tokens-cli.js"
+    "tokens": "node tokens-cli.js",
+    "onboard": "node onboard-cli.js"
   },
   "keywords": [
     "mcp",
