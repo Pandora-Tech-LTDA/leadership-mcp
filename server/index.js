@@ -13,7 +13,8 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
 import { createServer as createHttpServer } from "node:http";
-import { realpathSync } from "node:fs";
+import { existsSync, readFileSync, realpathSync } from "node:fs";
+import { extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadFile, listDir, parseFrontmatter } from "./knowledge-loader.js";
 import { authenticate, hasActiveTokens, PATH_TOKEN_RE } from "./auth.js";
@@ -454,6 +455,41 @@ export function createServer(context = { user: null }) {
 const DEFAULT_TOKENS_FILE = "./data/tokens.json";
 const DEFAULT_USAGE_FILE = "./data/usage.jsonl";
 
+// A landing fica no mesmo serviço HTTP no Railway, eliminando a dependência da Vercel.
+// Mantém o fallback local para o servidor executado diretamente a partir de ./server.
+const LANDING_DIR_CANDIDATES = [
+  process.env.LEADERSHIP_MCP_LANDING_DIR,
+  resolve(process.cwd(), "docs"),
+  resolve(process.cwd(), "../docs"),
+].filter(Boolean);
+
+function landingFile(requestPath) {
+  const relative = requestPath === "/" ? "index.html" : requestPath.slice(1);
+  if (!relative || relative.includes("\\0") || relative.split("/").includes("..")) return null;
+  for (const dir of LANDING_DIR_CANDIDATES) {
+    const candidate = join(dir, relative);
+    if (existsSync(candidate)) return candidate;
+  }
+  return null;
+}
+
+function serveLanding(req, res) {
+  if (req.method !== "GET") return false;
+  const file = landingFile(new URL(req.url || "/", "http://localhost").pathname);
+  if (!file) return false;
+  const types = {
+    ".html": "text/html; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".js": "text/javascript; charset=utf-8",
+    ".svg": "image/svg+xml",
+    ".png": "image/png",
+    ".ico": "image/x-icon",
+  };
+  res.writeHead(200, { "Content-Type": types[extname(file).toLowerCase()] || "application/octet-stream" });
+  res.end(readFileSync(file));
+  return true;
+}
+
 // stdio: usado pelo pacote npm / Claude Desktop. Uma única instância de servidor. Sem tokens
 // (não é exposto à rede); telemetria só se LEADERSHIP_MCP_USAGE_LOG for setada explicitamente.
 async function startStdio() {
@@ -489,7 +525,10 @@ export async function startHttp(port, options = {}) {
   }
 
   const httpServer = createHttpServer(async (req, res) => {
-    // Healthcheck simples para o Docker/Caddy (não faz parte do protocolo MCP) — sempre aberto.
+    // Landing e assets são públicos; o gate de token vale somente para o conector MCP.
+    if (serveLanding(req, res)) return;
+
+    // Healthcheck simples para o Docker/Railway (não faz parte do protocolo MCP) — sempre aberto.
     if (req.method === "GET" && req.url === "/health") {
       res.writeHead(200, { "Content-Type": "text/plain" });
       res.end("ok");
