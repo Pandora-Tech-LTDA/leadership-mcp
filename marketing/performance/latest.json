@@ -1,0 +1,137 @@
+{
+  "generated_at": "2026-10-09T20:51:11.178514-03:00",
+  "account": "01a122e8-f9dc-71b1-acd7-57fa2131d02a",
+  "counts": {
+    "published": 1,
+    "scheduled": 5,
+    "drafts": 4
+  },
+  "issues": [],
+  "posts": [
+    {
+      "id": "01a06a37-206b-736e-81d6-fad49ca271e7",
+      "status": "draft",
+      "scheduled_at": null,
+      "published_at": null,
+      "content": "Por que usar IA no trabalho?\n\nPorque IA bem aplicada tira peso operacional da equipe e libera atenção para decisão, relacionamento e execução.\n\nO ganho real aparece quando a empresa conecta a ferramenta a rotinas concretas:\n- resumir e tran",
+      "media_count": 6,
+      "facebook_status": []
+    },
+    {
+      "id": "01a06a6b-efbe-71e5-8ede-908b0b5ae5cd",
+      "status": "draft",
+      "scheduled_at": null,
+      "published_at": null,
+      "content": "IA corporativa não melhora só com prompts melhores.\n\nEla melhora quando o conhecimento da empresa fica disponível de forma clara, governada e atualizada para os modelos e agentes que as equipes usam.\n\nIsso inclui:\n- processos e políticas in",
+      "media_count": 7,
+      "facebook_status": []
+    },
+    {
+      "id": "01a06ac4-6170-73c4-9d71-7889b81b55d4",
+      "status": "draft",
+      "scheduled_at": null,
+      "published_at": null,
+      "content": "IA corporativa não melhora só com prompts melhores.\n\nEla melhora quando o conhecimento da empresa fica disponível de forma clara, governada e atualizada para os modelos e agentes que as equipes usam.\n\nIsso inclui:\n- processos e políticas in",
+      "media_count": 7,
+      "facebook_status": []
+    },
+    {
+      "id": "01a06ac5-4e11-703f-9602-872c871e5a23",
+      "status": "draft",
+      "scheduled_at": null,
+      "published_at": null,
+      "content": "IA corporativa não melhora só com prompts melhores.\n\nEla melhora quando o conhecimento da empresa fica disponível de forma clara, governada e atualizada para os modelos e agentes que as equipes usam.\n\nIsso inclui:\n- processos e políticas in",
+      "media_count": 7,
+      "facebook_status": []
+    },
+    {
+      "id": "01a122ff-25e2-72d6-aa87-74f331d51b2c",
+      "status": "scheduled",
+      "scheduled_at": "2026-10-24 13:00:00",
+      "published_at": null,
+      "content": "O treinamento terminou. A conversa difícil chega duas semanas depois.\n\nE se a sua metodologia aparecesse justamente no momento em que o cliente precisa aplicá-la?\n\nO Leadership MCP conecta uma base viva de liderança humanista ao assistente ",
+      "media_count": 1,
+      "facebook_status": [
+        "pending"
+      ]
+    },
+    {
+      "id": "01a12302-33cc-7200-9895-8595abbe27fd",
+      "status": "scheduled",
+      "scheduled_at": "2026-10-21 15:00:00",
+      "published_at": null,
+      "content": "A liderança não desapareceu.\n\nEla ficou longe do momento em que você precisava dela.\n\nUm princípio aprendido em um workshop pode estar na sua cabeça. Mas, sob pressão, o que aparece primeiro costuma ser o impulso.\n\nO Leadership MCP existe p",
+      "media_count": 1,
+      "facebook_status": [
+        "pending"
+      ]
+    },
+    {
+      "id": "01a122ff-23c1-734b-bf93-ee0624dae56c",
+      "status": "scheduled",
+      "scheduled_at": "2026-10-19 12:00:00",
+      "published_at": null,
+      "content": "Feedback começa pelo comportamento, não pelo caráter.\n\nAntes de uma conversa difícil, tente separar quatro coisas:\n\n1. o que aconteceu;\n2. qual foi o impacto;\n3. o que precisa ser entendido;\n4. qual próximo passo você está pedindo.\n\n\"Você é",
+      "media_count": 1,
+      "facebook_status": [
+        "pending"
+      ]
+    },
+    {
+      "id": "01a122ff-20a0-71e9-9dbe-466f3fe8da3c",
+      "status": "scheduled",
+      "scheduled_at": "2026-10-17 13:00:00",
+      "published_at": null,
+      "content": "O workshop terminou. A conversa difícil chega duas semanas depois.\n\nÉ nesse intervalo que uma metodologia pode desaparecer — ou continuar presente no momento em que o líder precisa agir.\n\nO que sobra de um treinamento quando a pressão chega",
+      "media_count": 1,
+      "facebook_status": [
+        "pending"
+      ]
+    },
+    {
+      "id": "01a12302-318d-73d5-b1a6-0cfbe5a7d5ea",
+      "status": "scheduled",
+      "scheduled_at": "2026-10-14 15:00:00",
+      "published_at": null,
+      "content": "Nem toda tarefa que parece escrita é só escrita.\n\nÀs vezes, o pedido é “me ajuda a responder este e-mail”, mas o que está em jogo é uma relação, uma cobrança ou uma conversa que pode escalar.\n\nO Leadership MCP faz uma pausa antes da respost",
+      "media_count": 1,
+      "facebook_status": [
+        "pending"
+      ]
+    },
+    {
+      "id": "01a122ff-1dce-72e8-93da-1cb2794079d0",
+      "status": "published",
+      "scheduled_at": "2026-10-09 23:49:18",
+      "published_at": "2026-10-09 23:49:26",
+      "content": "Você sabe que não deveria responder no impulso.\n\nMas o prazo estourou, alguém está esperando e a mensagem precisa sair agora.\n\nA diferença não está em deixar de ser firme. Está em trocar o julgamento por três movimentos:\n\n• começar pelo fat",
+      "media_count": 1,
+      "facebook_status": [
+        "published"
+      ],
+      "metrics": {
+        "post_id": "01a122ff-1dce-72e8-93da-1cb2794079d0",
+        "platforms": [
+          {
+            "post_platform_id": "01a122ff-1e09-7111-9717-d1a1d41d8959",
+            "platform": "facebook",
+            "status": "published",
+            "platform_post_id": "1334734686394962_122094889593513294",
+            "platform_url": "https://www.facebook.com/1334734686394962_122094889593513294",
+            "metrics": {
+              "unsupported": true,
+              "reason": "api_error"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "insights": null,
+  "insights_error": "HTTP Error 404: Not Found",
+  "recommendations": [
+    "Manter apenas posts estáticos/carrosséis nesta rodada.",
+    "Priorizar o formato e o tema com mais compartilhamentos e salvamentos, não apenas reações.",
+    "Se um post tiver comentários qualificados, responder manualmente em até 24 horas e transformar a pergunta em próximo carrossel."
+  ]
+}

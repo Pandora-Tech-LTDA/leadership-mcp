@@ -56,6 +56,8 @@
       const data = Object.fromEntries(new FormData(form));
       data.token = token;
       data.consent = document.getElementById('consent').checked;
+      const attribution = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
+      attribution.forEach((key) => { data[key] = localStorage.getItem('lmcp_' + key) || ''; });
       const response = await fetch('/api/register', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || 'Não foi possível concluir o cadastro.');

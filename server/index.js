@@ -635,10 +635,23 @@ function createRegistrationDb() {
       whatsapp TEXT NOT NULL,
       company TEXT NOT NULL,
       consent_at TIMESTAMPTZ NOT NULL,
-      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      utm_source TEXT,
+      utm_medium TEXT,
+      utm_campaign TEXT,
+      utm_content TEXT,
+      utm_term TEXT
     )
   `);
-  return { pool, ready };
+  const migrate = ready.then(() => pool.query(`
+    ALTER TABLE registrations
+      ADD COLUMN IF NOT EXISTS utm_source TEXT,
+      ADD COLUMN IF NOT EXISTS utm_medium TEXT,
+      ADD COLUMN IF NOT EXISTS utm_campaign TEXT,
+      ADD COLUMN IF NOT EXISTS utm_content TEXT,
+      ADD COLUMN IF NOT EXISTS utm_term TEXT
+  `));
+  return { pool, ready: migrate };
 }
 
 async function registerUser(req, res, tokensFile, db) {
@@ -659,6 +672,11 @@ async function registerUser(req, res, tokensFile, db) {
   const email = cleanRegistration(body.email, 254).toLowerCase();
   const whatsapp = cleanRegistration(body.whatsapp, 40);
   const company = cleanRegistration(body.company, 160);
+  const utmSource = cleanRegistration(body.utm_source, 100);
+  const utmMedium = cleanRegistration(body.utm_medium, 100);
+  const utmCampaign = cleanRegistration(body.utm_campaign, 100);
+  const utmContent = cleanRegistration(body.utm_content, 100);
+  const utmTerm = cleanRegistration(body.utm_term, 100);
   if ((tokenFromForm && !/^lmcp_[0-9a-f]+$/.test(tokenFromForm)) || name.length < 2 || !email || !/^\([0-9]{2}\) [0-9]{5}-[0-9]{4}$/.test(whatsapp) || company.length < 2 || body.consent !== true) {
     jsonResponse(res, 422, { error: "invalid_registration" });
     return;
@@ -688,11 +706,13 @@ async function registerUser(req, res, tokensFile, db) {
   }
 
   const result = await db.pool.query(
-    `INSERT INTO registrations (token_hash, name, email, whatsapp, company, consent_at)
-     VALUES ($1, $2, $3, $4, $5, NOW())
+    `INSERT INTO registrations (token_hash, name, email, whatsapp, company, consent_at,
+       utm_source, utm_medium, utm_campaign, utm_content, utm_term)
+     VALUES ($1, $2, $3, $4, $5, NOW(), $6, $7, $8, $9, $10)
      ON CONFLICT (token_hash) DO NOTHING
      RETURNING id`,
-    [hashToken(rawToken), name, email, whatsapp, company]
+    [hashToken(rawToken), name, email, whatsapp, company, utmSource || null, utmMedium || null,
+      utmCampaign || null, utmContent || null, utmTerm || null]
   );
   if (result.rowCount === 0) {
     jsonResponse(res, 409, { error: "token_already_registered" });

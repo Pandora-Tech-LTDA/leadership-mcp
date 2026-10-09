@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Leadership MCP — conexão e diálogo -->
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Leadership MCP</title>
+  <desc id="desc">Balão de diálogo com nós conectados, representando conexão e liderança.</desc>
   <rect width="512" height="512" rx="100" fill="#2f6f5b"/>
   <path fill="#fff" d="M120 122h226a58 58 0 0 1 58 58v112a58 58 0 0 1-58 58H224l-96 70 17-70h-25a58 58 0 0 1-58-58V180a58 58 0 0 1 58-58z"/>
   <path fill="none" stroke="#2f6f5b" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M160 252h64l40-52 54 70 34-42"/>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">LEA DER — Leadership MCP</title>
+  <desc id="desc">Ícone quadrado com a palavra LEADER dividida em duas linhas dentro de um balão de conversa.</desc>
+  <rect width="512" height="512" rx="72" fill="#1c2530"/>
+  <path fill="#2f6f5b" d="M112 82h288c48 0 86 38 86 86v164c0 48-38 86-86 86H260l-112 78 20-78h-56c-48 0-86-38-86-86V168c0-48 38-86 86-86z"/>
+  <text x="256" y="244" text-anchor="middle" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="116" font-weight="900" letter-spacing="-6">LEA</text>
+  <text x="256" y="374" text-anchor="middle" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="116" font-weight="900" letter-spacing="-6">DER</text>
+</svg>

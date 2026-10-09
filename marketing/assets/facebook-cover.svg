@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1640" height="856" viewBox="0 0 1640 856">
+  <rect width="1640" height="856" fill="#faf8f4"/>
+  <circle cx="1480" cy="80" r="300" fill="#e7f0ec"/>
+  <circle cx="1510" cy="790" r="230" fill="#f7e9e3"/>
+  <path d="M0 710 C300 620 560 800 850 690 S1270 580 1640 690 V856 H0Z" fill="#e7f0ec" opacity=".8"/>
+  <rect x="108" y="126" width="12" height="164" rx="6" fill="#c65f3f"/>
+  <text x="160" y="190" fill="#2f6f5b" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" letter-spacing="5">OPEN SOURCE · LEADERSHIP AI</text>
+  <text x="160" y="340" fill="#1c2530" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="800">Liderança no</text>
+  <text x="160" y="435" fill="#1c2530" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="800">momento da verdade.</text>
+  <text x="160" y="530" fill="#5b6875" font-family="Arial, Helvetica, sans-serif" font-size="33">Seu assistente percebe a conversa difícil.</text>
+  <text x="160" y="578" fill="#5b6875" font-family="Arial, Helvetica, sans-serif" font-size="33">Você decide como responder.</text>
+  <text x="160" y="744" fill="#2f6f5b" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">leadership-mcp.campello.me</text>
+  <text x="160" y="790" fill="#5b6875" font-family="Arial, Helvetica, sans-serif" font-size="23">Liderança humanista · MCP · MIT open source</text>
+</svg>

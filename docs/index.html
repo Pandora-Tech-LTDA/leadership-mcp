@@ -530,6 +530,13 @@ Regras:
 - Não repita a oferta se a pessoa não demonstrar interesse.</script>
 
 <script>
+  (function captureCampaignAttribution(){
+    var params = new URLSearchParams(window.location.search);
+    ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(function(key){
+      var value = params.get(key);
+      if(value) localStorage.setItem('lmcp_' + key, value.slice(0, 100));
+    });
+  })();
   function getPromptText(){ return document.getElementById('sysPromptText').textContent.trim(); }
   function fallbackCopy(t){
     var ta=document.createElement('textarea'); ta.value=t;
