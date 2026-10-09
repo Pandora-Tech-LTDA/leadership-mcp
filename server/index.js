@@ -11,13 +11,14 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { Pool } from "pg";
 import { z } from "zod";
 import { createServer as createHttpServer } from "node:http";
 import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadFile, listDir, parseFrontmatter } from "./knowledge-loader.js";
-import { authenticate, hasActiveTokens, PATH_TOKEN_RE } from "./auth.js";
+import { authenticate, generateToken, hasActiveTokens, hashToken, loadTokens, PATH_TOKEN_RE, saveTokens } from "./auth.js";
 import { configureUsage, logUsage } from "./usage.js";
 
 // ---------------------------------------------------------------------------
@@ -490,6 +491,118 @@ function serveLanding(req, res) {
   return true;
 }
 
+const REGISTER_PATH_RE = /^\/cadastro\/(lmcp_[0-9a-f]+)$/;
+const REGISTER_API_PATH = "/api/register";
+const MAX_BODY_BYTES = 16 * 1024;
+
+function jsonResponse(res, status, body) {
+  res.writeHead(status, { "Content-Type": "application/json; charset=utf-8" });
+  res.end(JSON.stringify(body));
+}
+
+function readJsonBody(req) {
+  return new Promise((resolveBody, reject) => {
+    let raw = "";
+    req.on("data", (chunk) => {
+      raw += chunk;
+      if (Buffer.byteLength(raw) > MAX_BODY_BYTES) reject(new Error("body_too_large"));
+    });
+    req.on("end", () => {
+      try {
+        resolveBody(JSON.parse(raw || "{}"));
+      } catch {
+        reject(new Error("invalid_json"));
+      }
+    });
+    req.on("error", reject);
+  });
+}
+
+function cleanRegistration(value, maxLength) {
+  return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
+}
+
+function createRegistrationDb() {
+  if (!process.env.DATABASE_URL) return null;
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 5, ssl: { rejectUnauthorized: false } });
+  const ready = pool.query(`
+    CREATE TABLE IF NOT EXISTS registrations (
+      id BIGSERIAL PRIMARY KEY,
+      token_hash TEXT NOT NULL UNIQUE,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      whatsapp TEXT NOT NULL,
+      company TEXT NOT NULL,
+      consent_at TIMESTAMPTZ NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  return { pool, ready };
+}
+
+async function registerUser(req, res, tokensFile, db) {
+  if (!db) {
+    jsonResponse(res, 503, { error: "registration_unavailable" });
+    return;
+  }
+  let body;
+  try {
+    body = await readJsonBody(req);
+  } catch (err) {
+    jsonResponse(res, err.message === "body_too_large" ? 413 : 400, { error: err.message });
+    return;
+  }
+
+  const tokenFromForm = cleanRegistration(body.token, 40);
+  const name = cleanRegistration(body.name, 120);
+  const email = cleanRegistration(body.email, 254).toLowerCase();
+  const whatsapp = cleanRegistration(body.whatsapp, 40);
+  const company = cleanRegistration(body.company, 160);
+  if ((tokenFromForm && !/^lmcp_[0-9a-f]+$/.test(tokenFromForm)) || !name || !email || !whatsapp || !company || body.consent !== true) {
+    jsonResponse(res, 422, { error: "invalid_registration" });
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    jsonResponse(res, 422, { error: "invalid_email" });
+    return;
+  }
+
+  let rawToken = tokenFromForm;
+  if (!rawToken) {
+    rawToken = generateToken();
+    const tokenData = loadTokens(tokensFile);
+    tokenData.tokens.push({
+      name: `cadastro-${Date.now()}`,
+      hash: hashToken(rawToken),
+      createdAt: new Date().toISOString(),
+      revokedAt: null,
+      note: "gerado no cadastro público",
+    });
+    saveTokens(tokensFile, tokenData);
+  }
+  const auth = authenticate({ headers: { authorization: `Bearer ${rawToken}` }, url: "/mcp" }, tokensFile);
+  if (!auth) {
+    jsonResponse(res, 404, { error: "invalid_token" });
+    return;
+  }
+
+  const result = await db.pool.query(
+    `INSERT INTO registrations (token_hash, name, email, whatsapp, company, consent_at)
+     VALUES ($1, $2, $3, $4, $5, NOW())
+     ON CONFLICT (token_hash) DO NOTHING
+     RETURNING id`,
+    [hashToken(token), name, email, whatsapp, company]
+  );
+  if (result.rowCount === 0) {
+    jsonResponse(res, 409, { error: "token_already_registered" });
+    return;
+  }
+  jsonResponse(res, 201, {
+    ok: true,
+    connectorUrl: `https://${req.headers.host || "leadership-mcp.campello.me"}/mcp/${rawToken}`,
+  });
+}
+
 // stdio: usado pelo pacote npm / Claude Desktop. Uma única instância de servidor. Sem tokens
 // (não é exposto à rede); telemetria só se LEADERSHIP_MCP_USAGE_LOG for setada explicitamente.
 async function startStdio() {
@@ -512,7 +625,9 @@ export async function startHttp(port, options = {}) {
   const tokensFile = options.tokensFile ?? process.env.LEADERSHIP_MCP_TOKENS_FILE ?? DEFAULT_TOKENS_FILE;
   const usageFile = options.usageFile ?? process.env.LEADERSHIP_MCP_USAGE_LOG ?? DEFAULT_USAGE_FILE;
   const authDisabled = process.env.LEADERSHIP_MCP_AUTH === "off";
+  const registrationDb = createRegistrationDb();
   configureUsage(usageFile);
+  if (registrationDb) await registrationDb.ready;
 
   if (authDisabled) {
     console.error("AVISO: LEADERSHIP_MCP_AUTH=off — /mcp respondendo SEM autenticação (modo aberto).");
@@ -525,6 +640,28 @@ export async function startHttp(port, options = {}) {
   }
 
   const httpServer = createHttpServer(async (req, res) => {
+    const requestUrl = new URL(req.url || "/", "http://localhost");
+    const registrationPath = REGISTER_PATH_RE.exec(requestUrl.pathname);
+    if (req.method === "GET" && (registrationPath || requestUrl.pathname === "/cadastro" || requestUrl.pathname === "/cadastro/")) {
+      const file = landingFile("/cadastro.html");
+      if (file) {
+        res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+        res.end(readFileSync(file));
+      } else {
+        jsonResponse(res, 404, { error: "registration_page_not_found" });
+      }
+      return;
+    }
+    if (req.method === "POST" && requestUrl.pathname === REGISTER_API_PATH) {
+      try {
+        await registerUser(req, res, process.env.LEADERSHIP_MCP_TOKENS_FILE ?? DEFAULT_TOKENS_FILE, registrationDb);
+      } catch (err) {
+        console.error("Erro ao registrar usuário:", err);
+        if (!res.headersSent) jsonResponse(res, 500, { error: "registration_failed" });
+      }
+      return;
+    }
+
     // Landing e assets são públicos; o gate de token vale somente para o conector MCP.
     if (serveLanding(req, res)) return;
 

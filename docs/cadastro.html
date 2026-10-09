@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadastro gratuito — Leadership MCP</title>
+<style>
+  :root{--ink:#1c2530;--muted:#5b6875;--line:#e6e3dc;--bg:#faf8f4;--card:#fff;--accent:#2f6f5b;--soft:#e7f0ec;--warm:#f7e9e3}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5}
+  main{max-width:620px;margin:0 auto;padding:56px 24px}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.8rem;font-weight:700;color:var(--accent)}
+  h1{font-size:clamp(2rem,6vw,3rem);line-height:1.1;margin:.3em 0}.lead{color:var(--muted);font-size:1.1rem}.free{display:inline-block;background:var(--soft);color:var(--accent);font-weight:800;border-radius:999px;padding:7px 13px;margin:10px 0 20px}
+  form{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;margin-top:28px}label{display:block;font-weight:700;margin:16px 0 6px}label:first-child{margin-top:0}
+  input{width:100%;padding:12px 13px;border:1px solid #cfd5d2;border-radius:9px;font:inherit}input:focus{outline:2px solid var(--soft);border-color:var(--accent)}
+  .consent{display:flex;gap:10px;align-items:flex-start;margin:20px 0;color:var(--muted);font-size:.9rem}.consent input{width:auto;margin-top:5px}
+  button{width:100%;padding:13px 18px;border:0;border-radius:999px;background:var(--accent);color:#fff;font:inherit;font-weight:800;cursor:pointer}button:disabled{opacity:.6;cursor:wait}
+  .message{margin-top:18px;padding:14px;border-radius:10px;display:none}.message.error{display:block;background:var(--warm)}.message.success{display:block;background:var(--soft)}
+  .connector{display:block;word-break:break-all;background:var(--ink);color:#fff;padding:14px;border-radius:9px;margin-top:10px;font-size:.88rem}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Leadership MCP</p>
+  <h1>Comece gratuitamente.</h1>
+  <span class="free">100% gratuito</span>
+  <p class="lead">Cadastre-se para receber acesso ao Leadership MCP e instalar a orientação de liderança humanista no assistente que você já usa.</p>
+  <form id="registrationForm">
+    <label for="name">Nome</label><input id="name" name="name" autocomplete="name" required maxlength="120">
+    <label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" required maxlength="254">
+    <label for="whatsapp">WhatsApp</label><input id="whatsapp" name="whatsapp" type="tel" autocomplete="tel" required maxlength="40">
+    <label for="company">Empresa</label><input id="company" name="company" autocomplete="organization" required maxlength="160">
+    <label class="consent"><input id="consent" name="consent" type="checkbox" required><span>Concordo em receber o acesso e comunicações relacionadas ao Leadership MCP. Posso solicitar a exclusão dos meus dados.</span></label>
+    <button type="submit">Criar meu acesso gratuito</button>
+    <div id="message" class="message" role="status"></div>
+  </form>
+  <p style="margin-top:22px;color:var(--muted);font-size:.9rem"><a href="/">Voltar para a página inicial</a></p>
+</main>
+<script>
+  const token = (/\/cadastro\/(lmcp_[0-9a-f]+)/.exec(location.pathname) || [])[1] || '';
+  const form = document.getElementById('registrationForm');
+  const message = document.getElementById('message');
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const button = form.querySelector('button');
+    button.disabled = true;
+    message.className = 'message';
+    message.textContent = 'Criando seu acesso…';
+    try {
+      const data = Object.fromEntries(new FormData(form));
+      data.token = token;
+      data.consent = document.getElementById('consent').checked;
+      const response = await fetch('/api/register', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Não foi possível concluir o cadastro.');
+      message.className = 'message success';
+      message.innerHTML = '<strong>Cadastro concluído.</strong><br>Seu conector está pronto:<span class="connector">' + result.connectorUrl + '</span><br><br>Copie essa URL e adicione-a em Configurações → Conectores no Claude.';
+      form.querySelectorAll('input,button').forEach((element) => element.disabled = true);
+    } catch (error) {
+      message.className = 'message error';
+      message.textContent = error.message === 'token_already_registered' ? 'Este acesso já foi cadastrado.' : 'Não foi possível concluir o cadastro. Confira os dados e tente novamente.';
+      button.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
