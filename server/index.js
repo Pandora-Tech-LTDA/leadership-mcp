@@ -591,7 +591,7 @@ async function registerUser(req, res, tokensFile, db) {
      VALUES ($1, $2, $3, $4, $5, NOW())
      ON CONFLICT (token_hash) DO NOTHING
      RETURNING id`,
-    [hashToken(token), name, email, whatsapp, company]
+    [hashToken(rawToken), name, email, whatsapp, company]
   );
   if (result.rowCount === 0) {
     jsonResponse(res, 409, { error: "token_already_registered" });
