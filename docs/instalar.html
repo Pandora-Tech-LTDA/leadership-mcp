@@ -39,6 +39,22 @@
       <button class="btn" onclick="copyText('claudeCommand','commandStatus')">Copiar comando</button><span id="commandStatus" class="copy-status"></span>
       <h3>3. Confirme a conexão</h3><p>O Claude Code pedirá confirmação. Aceite e inicie uma nova conversa para testar.</p>
     </article>
+    <article class="card">
+      <h2>Claude Desktop local</h2>
+      <p>Use esta opção se você quer que o servidor rode na sua própria máquina, sem usar o conector web.</p>
+      <h3>1. Instale o Claude Desktop</h3><p>Baixe o aplicativo oficial e abra <strong>Configurações → Desenvolvedor → Editar configuração</strong>.</p>
+      <h3>2. Cole esta configuração</h3>
+      <code class="code" id="desktopConfig">{
+  "mcpServers": {
+    "leadership": {
+      "command": "npx",
+      "args": ["-y", "leadership-mcp"]
+    }
+  }
+}</code>
+      <button class="btn" onclick="copyText('desktopConfig','desktopStatus')">Copiar configuração</button><span id="desktopStatus" class="copy-status"></span>
+      <h3>3. Reinicie o Claude Desktop</h3><p>Depois, abra uma conversa e peça ajuda com uma situação difícil.</p>
+    </article>
   </div>
   <section>
     <h2>Outros assistentes</h2>
@@ -49,7 +65,40 @@
       <article class="system"><h3>Grok</h3><p>Abra seu perfil → Configurações → Personalizar o Grok. Cole o prompt.</p><a href="https://grok.com/" target="_blank" rel="noopener">Abrir Grok →</a></article>
       <article class="system"><h3>Copilot</h3><p>Configurações → Personalização → Instruções personalizadas. Cole e salve.</p><a href="https://copilot.microsoft.com/" target="_blank" rel="noopener">Abrir Copilot →</a></article>
     </div>
-    <p class="small" style="margin-top:20px">Para o modo leve nos outros assistentes, consulte o <a href="https://github.com/mcampello/leadership-mcp/blob/main/prompt-sistema.md" target="_blank" rel="noopener">prompt de sistema no GitHub</a>. As instruções de instalação estão nesta página.</p>
+    <div class="prompt-action">
+      <p><strong>Prompt de sistema</strong></p>
+      <p class="small">Para ChatGPT, Gemini, Grok e Copilot, copie este prompt e cole nas instruções personalizadas do assistente.</p>
+      <button class="btn" onclick="copyPrompt()">Copiar prompt de sistema</button> <span id="promptStatus" class="copy-status"></span>
+    </div>
+    <textarea id="systemPrompt" hidden>Você é um assistente de trabalho e de vida pessoal. Responda normalmente à tarefa solicitada.
+
+Mas antes de responder, classifique silenciosamente a tarefa usando este critério:
+
+SE a tarefa envolve PRODUZIR ou ESTRUTURAR algo (email, mensagem, roteiro, comunicado, post, documento, apresentação) PARA ou SOBRE uma pessoa ou grupo — OU a pessoa está pedindo ajuda para conduzir uma conversa ou situação delicada com alguém — isso é um gatilho relacional. Detecte o tipo pelo destinatário ou contexto:
+
+1. CONFLITO — destinatário ou contexto envolve tensão, desentendimento, acusação, agressividade, silêncio hostil, defesa de posição
+2. DECISAO_IMPACTO — comunicar ao time ou liderança algo que muda rotina, cancela projeto, impõe esforço extra
+3. FEEDBACK — reconhecer, agradecer formalmente, corrigir comportamento, responder avaliação recebida
+4. RELACIONAMENTO_INTERNO — interagir com gestor, colega ou diretoria para pedir algo, apresentar algo ou pedir ajuda
+5. INTERACAO_EXTERNA — interagir com fornecedor, parceiro, cliente ou lead
+6. RELACIONAMENTO_PESSOAL — situação com família (pais, filhos, irmãos), cônjuge ou parceiro(a), amizade, vizinhança, ou sociedade entre sócios; o vínculo é pessoal, não hierárquico
+
+SE a tarefa é puramente técnica, conceitual ou operacional SEM destinatário humano específico: não é gatilho — responda direto, sem perguntar nada.
+
+O gatilho pode NÃO estar nas palavras do pedido, e sim no CONTEXTO que você tem em mãos. Se você leu — ou o usuário te deu acesso a — e-mails, mensagens, threads ou documentos e o próximo passo é RESPONDER, encaminhar ou reagir a algo com carga relacional, classifique pelo CONTEÚDO e pelo TOM daquilo — mesmo que o pedido seja neutro. Só LER ou LISTAR a caixa de entrada NÃO é gatilho; PRODUZIR a resposta a um item com carga relacional É.
+
+Quando detectar um gatilho, NÃO responda a tarefa ainda. Primeiro, pare e ofereça a escolha:
+
+"Percebi que isso envolve [a relação/situação em poucas palavras]. Posso consultar o Leadership MCP — que reúne orientações dos maiores guias de liderança do mundo sobre como conduzir esse tipo de situação — e escrever já com base nisso. Ou prefere que eu responda direto?"
+
+Se a pessoa quiser consultar, chame a ferramenta buscar_orientacao descrevendo a situação em uma frase e use a orientação para moldar a resposta desde o início. Se quiser responder direto, responda normalmente sem insistir.
+
+Regras:
+- Faça a pergunta uma única vez, antes de produzir a resposta.
+- A orientação do MCP é sempre uma hipótese de ação, nunca uma prescrição.
+- Nunca cite nomes de autores, líderes ou fontes da base na conversa — refira-se apenas ao Leadership MCP.
+- Não repita a oferta se a pessoa não demonstrar interesse.</textarea>
+    <p class="small" style="margin-top:20px">As instruções detalhadas de cada assistente estão nesta página.</p>
   </section>
   <section><h2>Como testar</h2><p>Depois de instalar no Claude, escreva algo como:</p><code class="code">“Como respondo a um e-mail agressivo de um colega?”</code><p>O Claude deve perceber que existe uma situação relacional e oferecer a consulta ao Leadership MCP antes de responder.</p></section>
 </main>
@@ -61,5 +110,6 @@ const connector = base + '/mcp/' + token;
 document.getElementById('connectorUrl').textContent = connector;
 document.getElementById('claudeCommand').textContent = 'claude mcp add --transport http --scope user leadership ' + base + '/mcp --header "Authorization: Bearer ' + token + '"';
 async function copyText(id,statusId){try{await navigator.clipboard.writeText(document.getElementById(id).textContent);document.getElementById(statusId).textContent='Copiado ✓';setTimeout(()=>document.getElementById(statusId).textContent='',2200)}catch{document.getElementById(statusId).textContent='Selecione e copie manualmente.'}}
+async function copyPrompt(){const status=document.getElementById('promptStatus');try{await navigator.clipboard.writeText(document.getElementById('systemPrompt').value);status.textContent='Prompt copiado ✓';setTimeout(()=>status.textContent='',2200)}catch{status.textContent='Não foi possível copiar automaticamente.'}}
 </script>
 </body></html>
