@@ -45,6 +45,38 @@ Trade-off consciente da forma "token na URL": ele aparece em logs de acesso do C
 aqui — ferramentas somente-leitura servindo base já pública; a telemetria (abaixo) permite
 identificar e revogar um token vazado.
 
+## Cadastro público, cookie de acesso e e-mail de boas-vindas
+
+A landing agora tem um caminho **self-service de cadastro** (nome, e-mail, WhatsApp com máscara e
+empresa) que roda no mesmo processo HTTP:
+
+- `GET /cadastro` — formulário. Quem já tem o cookie de acesso é redirecionado direto para as
+  instruções (não preenche de novo).
+- `POST /api/register` — grava o cadastro no Postgres, gera um token individual e devolve as
+  instruções.
+- `GET /instalar/<token>` — página de instalação (todos os assistentes + prompt de sistema).
+- `GET /instalar` (sem token) — usa o cookie; sem cookie, manda para `/cadastro`.
+
+**Persistência:** o cadastro vive no PostgreSQL do Railway (`registrations`), criado pelo próprio
+servidor no boot (`CREATE TABLE IF NOT EXISTS`). Só o **hash** do token vai para o banco e para o
+`tokens.json`; o valor em claro existe na resposta do cadastro, na página de instalação e no e-mail
+do usuário.
+
+**Cookie:** `lmcp_access` (HttpOnly, Secure, SameSite=Lax, 1 ano) guarda o token no navegador do
+próprio usuário — a landing troca o CTA para "Ver minha instalação" no servidor e `/cadastro`
+redireciona sozinho. Revogar o token invalida o cookie na hora (a checagem roda a cada request).
+
+**E-mail (Resend):**
+
+| Env var          | Uso                                                                 |
+|------------------|---------------------------------------------------------------------|
+| `RESEND_API_KEY` | chave da API (sem ela o envio fica desligado e o cadastro segue ok) |
+| `RESEND_FROM`    | remetente, ex.: `Leadership MCP <leadership@campello.me>`           |
+
+O envio é fire-and-forget: uma falha do Resend **nunca** derruba o cadastro (fica registrada em
+stderr e a resposta traz `emailSent: false`). O domínio `campello.me` precisa estar **verificado** no
+Resend (registros DKIM/SPF apontados no DNS).
+
 ## Telemetria de uso
 
 `server/usage.js` grava uma linha JSONL por chamada de ferramenta (`buscar_orientacao` /
