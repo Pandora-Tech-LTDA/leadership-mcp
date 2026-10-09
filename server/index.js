@@ -492,6 +492,7 @@ function serveLanding(req, res) {
 }
 
 const REGISTER_PATH_RE = /^\/cadastro\/(lmcp_[0-9a-f]+)$/;
+const INSTALL_PATH_RE = /^\/instalar\/(lmcp_[0-9a-f]+)$/;
 const REGISTER_API_PATH = "/api/register";
 const MAX_BODY_BYTES = 16 * 1024;
 
@@ -651,6 +652,17 @@ export async function startHttp(port, options = {}) {
   const httpServer = createHttpServer(async (req, res) => {
     const requestUrl = new URL(req.url || "/", "http://localhost");
     const registrationPath = REGISTER_PATH_RE.exec(requestUrl.pathname);
+    const installationPath = INSTALL_PATH_RE.exec(requestUrl.pathname);
+    if (req.method === "GET" && installationPath) {
+      const file = landingFile("/instalar.html");
+      if (file) {
+        res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+        res.end(readFileSync(file));
+      } else {
+        jsonResponse(res, 404, { error: "installation_page_not_found" });
+      }
+      return;
+    }
     if (req.method === "GET" && (registrationPath || requestUrl.pathname === "/cadastro" || requestUrl.pathname === "/cadastro/")) {
       const file = landingFile("/cadastro.html");
       if (file) {

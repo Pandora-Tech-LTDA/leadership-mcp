@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instalar o Leadership MCP</title>
+<style>
+:root{--ink:#1c2530;--muted:#5b6875;--line:#e6e3dc;--bg:#faf8f4;--card:#fff;--accent:#2f6f5b;--soft:#e7f0ec;--warm:#f7e9e3;--max:920px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.55}.wrap{max-width:var(--max);margin:auto;padding:0 24px}header{padding:58px 0 38px}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.78rem;font-weight:800;color:var(--accent)}h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.08;margin:.3em 0}.lead{color:var(--muted);font-size:1.15rem;max-width:700px}.free{display:inline-block;background:var(--soft);color:var(--accent);font-weight:800;border-radius:999px;padding:7px 13px;margin-top:12px}.notice{background:var(--ink);color:#fff;border-radius:18px;padding:24px;margin:26px 0}.notice p{margin:5px 0;color:#d9e2e7}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin:26px 0 50px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:25px}.card h2{font-size:1.35rem;margin:0 0 8px}.card h3{font-size:1rem;margin:22px 0 6px}.card p,.card li{color:var(--muted)}.card ol{padding-left:1.25em}.card li{margin:8px 0}.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.primary p,.primary li{color:#e3f0eb}.btn{display:inline-block;border:0;border-radius:999px;background:var(--accent);color:#fff;padding:11px 16px;font:inherit;font-weight:800;text-decoration:none;cursor:pointer;margin:6px 5px 0 0}.btn:hover{text-decoration:none;filter:brightness(.94)}.btn.light{background:#fff;color:var(--ink)}.btn.outline{background:transparent;color:var(--accent);border:2px solid var(--accent)}.code{display:block;background:#18212a;color:#eef2f4;border-radius:10px;padding:14px;overflow:auto;font: .82rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all;margin:12px 0}.copy-status{font-size:.85rem;color:var(--accent);font-weight:700;min-height:1.2em}.small{font-size:.9rem;color:var(--muted)}section{border-top:1px solid var(--line);padding:42px 0}section h2{font-size:1.8rem;margin-top:0}.systems{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.system{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}.system h3{margin:0 0 7px}.system p{font-size:.9rem;color:var(--muted);margin:0 0 10px}footer{padding:25px 0 60px;color:var(--muted)}a{color:var(--accent)}@media(max-width:760px){.grid,.systems{grid-template-columns:1fr}.card{padding:21px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <p class="eyebrow">Seu acesso está pronto</p>
+  <h1>Agora vamos instalar.</h1>
+  <span class="free">Gratuito para começar</span>
+  <p class="lead">Escolha o assistente que você usa. Se você nunca instalou um conector antes, siga o caminho recomendado: Claude web ou mobile.</p>
+</div></header>
+<main class="wrap">
+  <div class="notice"><strong>Importante</strong><p>Seu acesso é pessoal. Não publique a URL do conector nem envie para outra pessoa. Ela contém sua chave de acesso.</p></div>
+  <div class="grid">
+    <article class="card primary">
+      <h2>Claude web, desktop e mobile</h2>
+      <p><strong>Recomendado:</strong> é a instalação mais simples e ativa a base completa do Leadership MCP.</p>
+      <h3>1. Copie sua URL</h3>
+      <code class="code" id="connectorUrl"></code>
+      <button class="btn light" onclick="copyText('connectorUrl','urlStatus')">Copiar URL</button><span id="urlStatus" class="copy-status"></span>
+      <h3>2. Abra os conectores do Claude</h3>
+      <ol><li>Abra <strong>Configurações</strong> no Claude.</li><li>Entre em <strong>Conectores</strong>.</li><li>Clique em <strong>Adicionar conector personalizado</strong>.</li><li>Cole a URL acima e confirme.</li></ol>
+      <a class="btn light" href="https://claude.ai/settings/connectors" target="_blank" rel="noopener">Abrir configurações do Claude</a>
+      <p class="small" style="color:#d9e2e7">Depois, em uma conversa, abra <strong>+</strong> → <strong>Conectores</strong> e ative o Leadership MCP.</p>
+    </article>
+    <article class="card">
+      <h2>Claude Code</h2>
+      <p>Para quem usa o Claude no terminal. Você precisa ter o Claude Code instalado.</p>
+      <h3>1. Abra o terminal</h3><p>Mac: Terminal. Windows: PowerShell. Linux: seu terminal habitual.</p>
+      <h3>2. Copie e cole este comando</h3>
+      <code class="code" id="claudeCommand"></code>
+      <button class="btn" onclick="copyText('claudeCommand','commandStatus')">Copiar comando</button><span id="commandStatus" class="copy-status"></span>
+      <h3>3. Confirme a conexão</h3><p>O Claude Code pedirá confirmação. Aceite e inicie uma nova conversa para testar.</p>
+    </article>
+  </div>
+  <section>
+    <h2>Outros assistentes</h2>
+    <p class="lead">Nestes sistemas, o caminho atual é usar o prompt de liderança nas instruções personalizadas. O conector MCP ao vivo é recomendado no Claude.</p>
+    <div class="systems">
+      <article class="system"><h3>ChatGPT</h3><p>Abra seu perfil → Personalização → Instruções personalizadas. Cole o prompt de sistema.</p><a href="https://chatgpt.com/" target="_blank" rel="noopener">Abrir ChatGPT →</a></article>
+      <article class="system"><h3>Gemini</h3><p>Configurações e ajuda → Inteligência pessoal → Instruções para o Gemini → Adicionar.</p><a href="https://gemini.google.com/" target="_blank" rel="noopener">Abrir Gemini →</a></article>
+      <article class="system"><h3>Grok</h3><p>Abra seu perfil → Configurações → Personalizar o Grok. Cole o prompt.</p><a href="https://grok.com/" target="_blank" rel="noopener">Abrir Grok →</a></article>
+      <article class="system"><h3>Copilot</h3><p>Configurações → Personalização → Instruções personalizadas. Cole e salve.</p><a href="https://copilot.microsoft.com/" target="_blank" rel="noopener">Abrir Copilot →</a></article>
+    </div>
+    <p class="small" style="margin-top:20px">Para obter o prompt de sistema, abra a <a href="/#instalar">seção de instalação</a> da página principal e clique em “Copiar o prompt de sistema”.</p>
+  </section>
+  <section><h2>Como testar</h2><p>Depois de instalar no Claude, escreva algo como:</p><code class="code">“Como respondo a um e-mail agressivo de um colega?”</code><p>O Claude deve perceber que existe uma situação relacional e oferecer a consulta ao Leadership MCP antes de responder.</p></section>
+</main>
+<footer><div class="wrap"><a href="/">Voltar para a página inicial</a> · <a href="/cadastro">Voltar ao cadastro</a></div></footer>
+<script>
+const token = (/\/instalar\/(lmcp_[0-9a-f]+)/.exec(location.pathname) || [])[1] || '';
+const base = location.origin;
+const connector = base + '/mcp/' + token;
+document.getElementById('connectorUrl').textContent = connector;
+document.getElementById('claudeCommand').textContent = 'claude mcp add --transport http --scope user leadership ' + base + '/mcp --header "Authorization: Bearer ' + token + '"';
+async function copyText(id,statusId){try{await navigator.clipboard.writeText(document.getElementById(id).textContent);document.getElementById(statusId).textContent='Copiado ✓';setTimeout(()=>document.getElementById(statusId).textContent='',2200)}catch{document.getElementById(statusId).textContent='Selecione e copie manualmente.'}}
+</script>
+</body></html>
