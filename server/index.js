@@ -653,6 +653,12 @@ export async function startHttp(port, options = {}) {
     const requestUrl = new URL(req.url || "/", "http://localhost");
     const registrationPath = REGISTER_PATH_RE.exec(requestUrl.pathname);
     const installationPath = INSTALL_PATH_RE.exec(requestUrl.pathname);
+    const mcpTokenPath = PATH_TOKEN_RE.exec(requestUrl.pathname);
+    if (req.method === "GET" && mcpTokenPath && !(req.headers.accept || "").includes("text/event-stream")) {
+      res.writeHead(302, { Location: `/instalar/${mcpTokenPath[1]}` });
+      res.end();
+      return;
+    }
     if (req.method === "GET" && installationPath) {
       const file = landingFile("/instalar.html");
       if (file) {
