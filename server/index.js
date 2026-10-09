@@ -11,12 +11,14 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { Pool } from "pg";
 import { z } from "zod";
 import { createServer as createHttpServer } from "node:http";
-import { realpathSync } from "node:fs";
+import { existsSync, readFileSync, realpathSync } from "node:fs";
+import { extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadFile, listDir, parseFrontmatter } from "./knowledge-loader.js";
-import { authenticate, hasActiveTokens, PATH_TOKEN_RE } from "./auth.js";
+import { authenticate, generateToken, hasActiveTokens, hashToken, loadTokens, PATH_TOKEN_RE, saveTokens } from "./auth.js";
 import { configureUsage, logUsage } from "./usage.js";
 
 // ---------------------------------------------------------------------------
@@ -454,6 +456,280 @@ export function createServer(context = { user: null }) {
 const DEFAULT_TOKENS_FILE = "./data/tokens.json";
 const DEFAULT_USAGE_FILE = "./data/usage.jsonl";
 
+// A landing fica no mesmo serviço HTTP no Railway, eliminando a dependência da Vercel.
+// Mantém o fallback local para o servidor executado diretamente a partir de ./server.
+const LANDING_DIR_CANDIDATES = [
+  process.env.LEADERSHIP_MCP_LANDING_DIR,
+  resolve(process.cwd(), "docs"),
+  resolve(process.cwd(), "../docs"),
+].filter(Boolean);
+
+function landingFile(requestPath) {
+  const relative = requestPath === "/" ? "index.html" : requestPath.slice(1);
+  if (!relative || relative.includes("\\0") || relative.split("/").includes("..")) return null;
+  for (const dir of LANDING_DIR_CANDIDATES) {
+    const candidate = join(dir, relative);
+    if (existsSync(candidate)) return candidate;
+  }
+  return null;
+}
+
+function serveLanding(req, res, tokensFile) {
+  if (req.method !== "GET") return false;
+  const file = landingFile(new URL(req.url || "/", "http://localhost").pathname);
+  if (!file) return false;
+  const types = {
+    ".html": "text/html; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".js": "text/javascript; charset=utf-8",
+    ".svg": "image/svg+xml",
+    ".png": "image/png",
+    ".ico": "image/x-icon",
+  };
+  const contentType = types[extname(file).toLowerCase()] || "application/octet-stream";
+  let body = readFileSync(file);
+
+  // Quem já tem o cookie de acesso vê "Ver minha instalação" no lugar de "Começar gratuitamente"
+  // — troca feita no servidor, sem expor o token ao JavaScript da página.
+  if (tokensFile && file.endsWith("index.html")) {
+    const token = cookieToken(req, tokensFile);
+    if (token) {
+      body = Buffer.from(
+        body.toString("utf8").replace('href="#cadastro">Começar gratuitamente', `href="/instalar/${token}">Ver minha instalação`),
+        "utf8"
+      );
+    }
+  }
+
+  res.writeHead(200, { "Content-Type": contentType });
+  res.end(body);
+  return true;
+}
+
+const REGISTER_PATH_RE = /^\/cadastro\/(lmcp_[0-9a-f]+)$/;
+const INSTALL_PATH_RE = /^\/instalar\/(lmcp_[0-9a-f]+)$/;
+const REGISTER_API_PATH = "/api/register";
+const MAX_BODY_BYTES = 16 * 1024;
+
+function jsonResponse(res, status, body, headers = {}) {
+  res.writeHead(status, { "Content-Type": "application/json; charset=utf-8", ...headers });
+  res.end(JSON.stringify(body));
+}
+
+// Cookie de acesso: guarda o token em claro no NAVEGADOR do próprio usuário (nunca no servidor).
+// HttpOnly impede leitura por JavaScript; o servidor é quem lê e usa para redirecionar.
+const ACCESS_COOKIE = "lmcp_access";
+const ACCESS_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+
+function accessCookie(token) {
+  return `${ACCESS_COOKIE}=${token}; Path=/; Max-Age=${ACCESS_COOKIE_MAX_AGE}; HttpOnly; Secure; SameSite=Lax`;
+}
+
+function readCookie(req, name) {
+  const header = req.headers.cookie || "";
+  for (const part of header.split(";")) {
+    const index = part.indexOf("=");
+    if (index === -1) continue;
+    if (part.slice(0, index).trim() === name) return decodeURIComponent(part.slice(index + 1).trim());
+  }
+  return null;
+}
+
+// Confirma que o cookie carrega um token ATIVO (revogar um token invalida o cookie na hora).
+function cookieToken(req, tokensFile) {
+  const token = readCookie(req, ACCESS_COOKIE);
+  if (!token) return null;
+  const auth = authenticate({ headers: { authorization: `Bearer ${token}` }, url: "/mcp" }, tokensFile);
+  return auth ? token : null;
+}
+
+// E-mail de boas-vindas via Resend. Fire-and-forget: falha no envio NUNCA derruba o cadastro.
+async function sendWelcomeEmail({ to, name, installUrl }) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return { sent: false, reason: "not_configured" };
+  const from = process.env.RESEND_FROM || "Leadership MCP <onboarding@resend.dev>";
+  const firstName = (name || "").split(" ")[0] || "olá";
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 9000);
+  try {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      signal: controller.signal,
+      body: JSON.stringify({
+        from,
+        to: [to],
+        subject: "Seu acesso ao Leadership MCP está pronto",
+        text: [
+          `Olá, ${firstName}!`,
+          "",
+          "Seu acesso gratuito ao Leadership MCP foi criado.",
+          "",
+          "Suas instruções de instalação estão aqui:",
+          installUrl,
+          "",
+          "Guarde este link: é por ele que você instala o Leadership MCP no Claude e vê as instruções para os outros assistentes.",
+          "",
+          "Qualquer dúvida, é só responder este e-mail.",
+          "",
+          "Leadership MCP",
+        ].join("\n"),
+        html: `<!doctype html><html lang="pt-BR"><body style="margin:0;background:#faf8f4;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:#1c2530">
+<div style="max-width:560px;margin:0 auto;padding:32px 24px">
+  <p style="text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:700;color:#2f6f5b;margin:0 0 8px">Leadership MCP</p>
+  <h1 style="font-size:26px;line-height:1.2;margin:0 0 16px">Seu acesso está pronto, ${firstName}.</h1>
+  <p style="font-size:16px;line-height:1.6;color:#5b6875;margin:0 0 24px">Seu acesso gratuito ao Leadership MCP foi criado. É neste link que ficam suas instruções de instalação — guarde-o para voltar quando quiser.</p>
+  <p style="margin:0 0 28px"><a href="${installUrl}" style="display:inline-block;background:#2f6f5b;color:#fff;text-decoration:none;font-weight:700;padding:14px 22px;border-radius:999px">Ver minhas instruções de instalação</a></p>
+  <p style="font-size:14px;color:#5b6875;margin:0 0 8px">Se o botão não funcionar, copie e cole este endereço no navegador:</p>
+  <p style="font-size:13px;word-break:break-all;background:#fff;border:1px solid #e6e3dc;border-radius:10px;padding:12px;margin:0 0 28px"><a href="${installUrl}" style="color:#2f6f5b">${installUrl}</a></p>
+  <p style="font-size:14px;color:#5b6875;line-height:1.6;margin:0 0 24px">O link é pessoal: ele contém sua chave de acesso. Não compartilhe.</p>
+  <p style="font-size:13px;color:#5b6875;margin:0">Qualquer dúvida, responda este e-mail.</p>
+</div></body></html>`,
+      }),
+    });
+    if (!response.ok) {
+      const detail = await response.text();
+      console.error(`Resend recusou o envio (${response.status}): ${detail.slice(0, 300)}`);
+      return { sent: false, reason: `http_${response.status}` };
+    }
+    return { sent: true };
+  } catch (err) {
+    console.error("Erro ao enviar e-mail de boas-vindas:", err.message);
+    return { sent: false, reason: "request_failed" };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function readJsonBody(req) {
+  return new Promise((resolveBody, reject) => {
+    let raw = "";
+    req.on("data", (chunk) => {
+      raw += chunk;
+      if (Buffer.byteLength(raw) > MAX_BODY_BYTES) reject(new Error("body_too_large"));
+    });
+    req.on("end", () => {
+      try {
+        resolveBody(JSON.parse(raw || "{}"));
+      } catch {
+        reject(new Error("invalid_json"));
+      }
+    });
+    req.on("error", reject);
+  });
+}
+
+function cleanRegistration(value, maxLength) {
+  return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
+}
+
+function createRegistrationDb() {
+  if (!process.env.DATABASE_URL) return null;
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 5, ssl: { rejectUnauthorized: false } });
+  const ready = pool.query(`
+    CREATE TABLE IF NOT EXISTS registrations (
+      id BIGSERIAL PRIMARY KEY,
+      token_hash TEXT NOT NULL UNIQUE,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      whatsapp TEXT NOT NULL,
+      company TEXT NOT NULL,
+      consent_at TIMESTAMPTZ NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  return { pool, ready };
+}
+
+async function registerUser(req, res, tokensFile, db) {
+  if (!db) {
+    jsonResponse(res, 503, { error: "registration_unavailable" });
+    return;
+  }
+  let body;
+  try {
+    body = await readJsonBody(req);
+  } catch (err) {
+    jsonResponse(res, err.message === "body_too_large" ? 413 : 400, { error: err.message });
+    return;
+  }
+
+  const tokenFromForm = cleanRegistration(body.token, 40);
+  const name = cleanRegistration(body.name, 120);
+  const email = cleanRegistration(body.email, 254).toLowerCase();
+  const whatsapp = cleanRegistration(body.whatsapp, 40);
+  const company = cleanRegistration(body.company, 160);
+  if ((tokenFromForm && !/^lmcp_[0-9a-f]+$/.test(tokenFromForm)) || name.length < 2 || !email || !/^\([0-9]{2}\) [0-9]{5}-[0-9]{4}$/.test(whatsapp) || company.length < 2 || body.consent !== true) {
+    jsonResponse(res, 422, { error: "invalid_registration" });
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    jsonResponse(res, 422, { error: "invalid_email" });
+    return;
+  }
+
+  let rawToken = tokenFromForm;
+  if (!rawToken) {
+    rawToken = generateToken();
+    const tokenData = loadTokens(tokensFile);
+    tokenData.tokens.push({
+      name: `cadastro-${Date.now()}`,
+      hash: hashToken(rawToken),
+      createdAt: new Date().toISOString(),
+      revokedAt: null,
+      note: "gerado no cadastro público",
+    });
+    saveTokens(tokensFile, tokenData);
+  }
+  const auth = authenticate({ headers: { authorization: `Bearer ${rawToken}` }, url: "/mcp" }, tokensFile);
+  if (!auth) {
+    jsonResponse(res, 404, { error: "invalid_token" });
+    return;
+  }
+
+  const result = await db.pool.query(
+    `INSERT INTO registrations (token_hash, name, email, whatsapp, company, consent_at)
+     VALUES ($1, $2, $3, $4, $5, NOW())
+     ON CONFLICT (token_hash) DO NOTHING
+     RETURNING id`,
+    [hashToken(rawToken), name, email, whatsapp, company]
+  );
+  if (result.rowCount === 0) {
+    jsonResponse(res, 409, { error: "token_already_registered" });
+    return;
+  }
+  const baseUrl = `https://${req.headers.host || "leadership-mcp.campello.me"}`;
+  const installUrl = `${baseUrl}/instalar/${rawToken}`;
+
+  // E-mail de boas-vindas com o link pessoal das instruções. Nunca bloqueia o cadastro.
+  const welcome = await sendWelcomeEmail({ to: email, name, installUrl });
+  if (welcome.sent) {
+    console.error(`E-mail de boas-vindas enviado para ${email}.`);
+  } else if (welcome.reason !== "not_configured") {
+    console.error(`E-mail de boas-vindas NÃO enviado para ${email} (${welcome.reason}).`);
+  }
+
+  jsonResponse(
+    res,
+    201,
+    {
+      ok: true,
+      connectorUrl: `${baseUrl}/mcp/${rawToken}`,
+      installUrl,
+      emailSent: welcome.sent,
+      installations: {
+        claude: { label: "Claude web, desktop e mobile", url: `${baseUrl}/mcp/${rawToken}` },
+        claudeCode: {
+          label: "Claude Code",
+          command: `claude mcp add --transport http --scope user leadership ${baseUrl}/mcp --header "Authorization: Bearer ${rawToken}"`,
+        },
+        otherAssistants: { label: "ChatGPT, Gemini, Grok e Copilot", url: installUrl },
+      },
+    },
+    { "Set-Cookie": accessCookie(rawToken) }
+  );
+}
+
 // stdio: usado pelo pacote npm / Claude Desktop. Uma única instância de servidor. Sem tokens
 // (não é exposto à rede); telemetria só se LEADERSHIP_MCP_USAGE_LOG for setada explicitamente.
 async function startStdio() {
@@ -476,7 +752,9 @@ export async function startHttp(port, options = {}) {
   const tokensFile = options.tokensFile ?? process.env.LEADERSHIP_MCP_TOKENS_FILE ?? DEFAULT_TOKENS_FILE;
   const usageFile = options.usageFile ?? process.env.LEADERSHIP_MCP_USAGE_LOG ?? DEFAULT_USAGE_FILE;
   const authDisabled = process.env.LEADERSHIP_MCP_AUTH === "off";
+  const registrationDb = createRegistrationDb();
   configureUsage(usageFile);
+  if (registrationDb) await registrationDb.ready;
 
   if (authDisabled) {
     console.error("AVISO: LEADERSHIP_MCP_AUTH=off — /mcp respondendo SEM autenticação (modo aberto).");
@@ -489,7 +767,65 @@ export async function startHttp(port, options = {}) {
   }
 
   const httpServer = createHttpServer(async (req, res) => {
-    // Healthcheck simples para o Docker/Caddy (não faz parte do protocolo MCP) — sempre aberto.
+    const requestUrl = new URL(req.url || "/", "http://localhost");
+    const registrationPath = REGISTER_PATH_RE.exec(requestUrl.pathname);
+    const installationPath = INSTALL_PATH_RE.exec(requestUrl.pathname);
+    const mcpTokenPath = PATH_TOKEN_RE.exec(requestUrl.pathname);
+    if (req.method === "GET" && mcpTokenPath && !(req.headers.accept || "").includes("text/event-stream")) {
+      res.writeHead(302, { Location: `/instalar/${mcpTokenPath[1]}` });
+      res.end();
+      return;
+    }
+    // Quem já se cadastrou não passa pelo formulário de novo: o cookie leva direto às instruções.
+    const bareInstallPath =
+      requestUrl.pathname === "/instalar" || requestUrl.pathname === "/instalar/" || requestUrl.pathname === "/minha-instalacao";
+    if (req.method === "GET" && bareInstallPath) {
+      const token = cookieToken(req, tokensFile);
+      res.writeHead(302, { Location: token ? `/instalar/${token}` : "/cadastro" });
+      res.end();
+      return;
+    }
+    if (req.method === "GET" && installationPath) {
+      const file = landingFile("/instalar.html");
+      if (file) {
+        res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+        res.end(readFileSync(file));
+      } else {
+        jsonResponse(res, 404, { error: "installation_page_not_found" });
+      }
+      return;
+    }
+    if (req.method === "GET" && (registrationPath || requestUrl.pathname === "/cadastro" || requestUrl.pathname === "/cadastro/")) {
+      // Já cadastrado? Vai direto para as instruções dele, sem preencher o formulário de novo.
+      const existingToken = cookieToken(req, tokensFile);
+      if (existingToken) {
+        res.writeHead(302, { Location: `/instalar/${existingToken}` });
+        res.end();
+        return;
+      }
+      const file = landingFile("/cadastro.html");
+      if (file) {
+        res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+        res.end(readFileSync(file));
+      } else {
+        jsonResponse(res, 404, { error: "registration_page_not_found" });
+      }
+      return;
+    }
+    if (req.method === "POST" && requestUrl.pathname === REGISTER_API_PATH) {
+      try {
+        await registerUser(req, res, process.env.LEADERSHIP_MCP_TOKENS_FILE ?? DEFAULT_TOKENS_FILE, registrationDb);
+      } catch (err) {
+        console.error("Erro ao registrar usuário:", err);
+        if (!res.headersSent) jsonResponse(res, 500, { error: "registration_failed" });
+      }
+      return;
+    }
+
+    // Landing e assets são públicos; o gate de token vale somente para o conector MCP.
+    if (serveLanding(req, res, tokensFile)) return;
+
+    // Healthcheck simples para o Docker/Railway (não faz parte do protocolo MCP) — sempre aberto.
     if (req.method === "GET" && req.url === "/health") {
       res.writeHead(200, { "Content-Type": "text/plain" });
       res.end("ok");
