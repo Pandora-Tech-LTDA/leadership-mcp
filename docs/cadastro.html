@@ -27,7 +27,7 @@
   <form id="registrationForm">
     <label for="name">Nome</label><input id="name" name="name" autocomplete="name" required maxlength="120">
     <label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" required maxlength="254">
-    <label for="whatsapp">WhatsApp</label><input id="whatsapp" name="whatsapp" type="tel" autocomplete="tel" required maxlength="40">
+    <label for="whatsapp">WhatsApp</label><input id="whatsapp" name="whatsapp" type="tel" inputmode="numeric" autocomplete="tel" required minlength="15" maxlength="15" placeholder="(11) 99999-9999" pattern="\([0-9]{2}\) [0-9]{5}-[0-9]{4}">
     <label for="company">Empresa</label><input id="company" name="company" autocomplete="organization" required maxlength="160">
     <label class="consent"><input id="consent" name="consent" type="checkbox" required><span>Concordo em receber o acesso e comunicações relacionadas ao Leadership MCP. Posso solicitar a exclusão dos meus dados.</span></label>
     <button type="submit">Criar meu acesso gratuito</button>
@@ -38,7 +38,14 @@
 <script>
   const token = (/\/cadastro\/(lmcp_[0-9a-f]+)/.exec(location.pathname) || [])[1] || '';
   const form = document.getElementById('registrationForm');
+  const whatsappInput = document.getElementById('whatsapp');
   const message = document.getElementById('message');
+  whatsappInput.addEventListener('input', () => {
+    const digits = whatsappInput.value.replace(/\D/g, '').slice(0, 11);
+    if (digits.length <= 2) whatsappInput.value = digits ? '(' + digits : '';
+    else if (digits.length <= 7) whatsappInput.value = '(' + digits.slice(0, 2) + ') ' + digits.slice(2);
+    else whatsappInput.value = '(' + digits.slice(0, 2) + ') ' + digits.slice(2, 7) + '-' + digits.slice(7);
+  });
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const button = form.querySelector('button');

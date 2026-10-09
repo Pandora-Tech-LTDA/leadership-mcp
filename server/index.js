@@ -558,7 +558,7 @@ async function registerUser(req, res, tokensFile, db) {
   const email = cleanRegistration(body.email, 254).toLowerCase();
   const whatsapp = cleanRegistration(body.whatsapp, 40);
   const company = cleanRegistration(body.company, 160);
-  if ((tokenFromForm && !/^lmcp_[0-9a-f]+$/.test(tokenFromForm)) || !name || !email || !whatsapp || !company || body.consent !== true) {
+  if ((tokenFromForm && !/^lmcp_[0-9a-f]+$/.test(tokenFromForm)) || name.length < 2 || !email || !/^\([0-9]{2}\) [0-9]{5}-[0-9]{4}$/.test(whatsapp) || company.length < 2 || body.consent !== true) {
     jsonResponse(res, 422, { error: "invalid_registration" });
     return;
   }
