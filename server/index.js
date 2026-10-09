@@ -597,9 +597,18 @@ async function registerUser(req, res, tokensFile, db) {
     jsonResponse(res, 409, { error: "token_already_registered" });
     return;
   }
+  const baseUrl = `https://${req.headers.host || "leadership-mcp.campello.me"}`;
   jsonResponse(res, 201, {
     ok: true,
-    connectorUrl: `https://${req.headers.host || "leadership-mcp.campello.me"}/mcp/${rawToken}`,
+    connectorUrl: `${baseUrl}/mcp/${rawToken}`,
+    installations: {
+      claude: { label: "Claude web, desktop e mobile", url: `${baseUrl}/mcp/${rawToken}` },
+      claudeCode: {
+        label: "Claude Code",
+        command: `claude mcp add --transport http --scope user leadership ${baseUrl}/mcp --header "Authorization: Bearer ${rawToken}"`,
+      },
+      otherAssistants: { label: "ChatGPT, Gemini, Grok e Copilot", url: `${baseUrl}/#instalar` },
+    },
   });
 }
 

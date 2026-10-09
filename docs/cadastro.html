@@ -59,8 +59,13 @@
       const response = await fetch('/api/register', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || 'Não foi possível concluir o cadastro.');
+      const install = result.installations;
+      const esc = (value) => String(value).replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
       message.className = 'message success';
-      message.innerHTML = '<strong>Cadastro concluído.</strong><br>Seu conector está pronto:<span class="connector">' + result.connectorUrl + '</span><br><br>Copie essa URL e adicione-a em Configurações → Conectores no Claude.';
+      message.innerHTML = '<strong>Cadastro concluído.</strong><p>Escolha onde quer instalar:</p>'
+        + '<a class="connector" href="' + esc(install.claude.url) + '" target="_blank" rel="noopener">Claude web, desktop e mobile → abrir conector</a>'
+        + '<span class="connector">Claude Code:<br><code>' + esc(install.claudeCode.command) + '</code></span>'
+        + '<a class="connector" href="' + esc(install.otherAssistants.url) + '">ChatGPT, Gemini, Grok e Copilot → ver instruções</a>';
       form.querySelectorAll('input,button').forEach((element) => element.disabled = true);
     } catch (error) {
       message.className = 'message error';
