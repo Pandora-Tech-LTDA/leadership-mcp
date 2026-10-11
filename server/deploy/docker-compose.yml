@@ -19,6 +19,8 @@ services:
       LEADERSHIP_MCP_REF: main
       LEADERSHIP_MCP_TOKENS_FILE: /app/data/tokens.json
       LEADERSHIP_MCP_USAGE_LOG: /app/data/usage.jsonl
+      # Caixa local de consultas para revisão humana e melhoria da base.
+      LEADERSHIP_MCP_CONSULTATIONS_LOG: /app/data/consultations.jsonl
     volumes:
       - ./data:/app/data
     networks:

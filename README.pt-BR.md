@@ -20,12 +20,9 @@ Não nos treinamentos. Na hora de escrever o e-mail difícil, dar o feedback, co
 
 O **Leadership MCP** é uma ferramenta open source e gratuita que conecta uma base viva de
 **liderança humanista** ao Claude (ou a qualquer cliente compatível com
-[MCP](https://modelcontextprotocol.io)). Quando você pede ajuda para escrever um e-mail tenso,
-dar um feedback, comunicar uma decisão ou conduzir um conflito, o assistente **para, pergunta se
-você quer**, e — se você quiser — molda a resposta a partir de princípios de liderança com
-impacto humano e econômico comprovado.
+[MCP](https://modelcontextprotocol.io)). Quando você pede ajuda para escrever um e-mail tenso, dar um feedback, comunicar uma decisão ou conduzir um conflito, o assistente **consulta automaticamente** o Leadership MCP antes de responder e molda a resposta a partir de princípios de liderança humanista.
 
-A orientação é sempre **uma hipótese, nunca uma prescrição**. Você decide se quer ouvir.
+A orientação é sempre **uma hipótese, nunca uma prescrição**. Você decide como agir.
 
 ---
 
@@ -45,24 +42,17 @@ usa para escrever.
 
 ## ⚙️ Como funciona na prática
 
-A inteligência mora num detalhe de comportamento: o assistente **não despeja teoria**. Ele detecta
-que a tarefa é relacional, pausa, e oferece a escolha — e só então molda a resposta.
+A inteligência mora num detalhe de comportamento: o assistente **consulta automaticamente** o MCP quando a tarefa pode se beneficiar dele e só então molda a resposta.
 
 > **Você:** preciso responder esse e-mail de um colega que está me acusando de atrasar o projeto dele.
 >
-> **Claude:** Percebi que isso envolve uma conversa difícil com um colega. Posso consultar o
-> Leadership MCP — que reúne orientações dos maiores guias de liderança do mundo sobre como
-> conduzir esse tipo de situação — e escrever já com base nisso. Ou prefere que eu
-> responda direto?
->
-> **Você:** pode consultar.
->
-> **Claude:** *(consulta `buscar_orientacao`)* Vou começar pelo fato em vez da defesa, assumir
+> **Claude:** *(consulta `buscar_orientacao` automaticamente)* Vou começar pelo fato em vez da defesa, assumir
 > boa intenção e fechar com um próximo passo concreto — é o que reduz a escalada num e-mail tenso.
 > Aqui está o rascunho: …
 
-A consulta **molda a resposta desde o início** — não é um adendo no final. E a pergunta é feita
-uma única vez: se você não quiser, ele responde direto, sem insistir.
+A consulta **molda a resposta desde o início** — não é um adendo no final. O assistente consulta o MCP
+sempre que a tarefa puder se beneficiar dele, inclusive quando o pedido parecer apenas de escrita,
+resumo ou decisão.
 
 ---
 
@@ -214,14 +204,18 @@ Adicione o bloco abaixo (se já houver outros `mcpServers`, basta acrescentar a 
 Depois **reinicie o Claude Desktop**. Pronto — peça algo como *"como respondo um e-mail agressivo
 de um colega?"* e veja a orientação moldar a resposta.
 
+Para gravar as consultas localmente, a instalação precisa apontar para uma cópia do servidor que
+contenha essa rotina e definir `LEADERSHIP_MCP_CONSULTATIONS_LOG` no bloco `env` do Claude Desktop.
+O arquivo deve ficar fora do Git e ser tratado como dado potencialmente sensível.
+
 ### Opcional: cole o prompt de sistema (reforço)
 
-O MCP já carrega o gatilho, então este passo não é obrigatório no Claude. Cole se quiser o
-comportamento de *pausar e oferecer* no ponto mais forte e consistente — ou se você usa um
-assistente **sem MCP** (ChatGPT, Gemini, Grok, Copilot), onde o prompt é a única forma de ter o
-gatilho. Abra [`prompt-sistema.md`](prompt-sistema.md), copie o conteúdo da seção **Prompt** e cole
-nas instruções personalizadas do seu assistente (**Settings → Profile / Custom Instructions**). Ele
-ensina o assistente a detectar situações relacionais e a oferecer — sem impor — a consulta.
+O MCP já carrega o gatilho, então este passo não é obrigatório no Claude. Cole se quiser reforçar o
+comportamento — ou se você usa um assistente **sem MCP** (ChatGPT, Gemini, Grok, Copilot), onde o
+prompt é a única forma de ter o gatilho. Abra [`prompt-sistema.md`](prompt-sistema.md), copie o
+conteúdo da seção **Prompt** e cole nas instruções personalizadas do seu assistente (**Settings →
+Profile / Custom Instructions**). Ele ensina o assistente a consultar automaticamente o Leadership
+MCP quando a tarefa puder se beneficiar dele.
 
 > **Rodando a partir do código (desenvolvimento):** para usar sua cópia local em vez da versão do
 > npm, aponte para o `index.js`:

@@ -78,6 +78,28 @@ O envio é fire-and-forget: uma falha do Resend **nunca** derruba o cadastro (fi
 stderr e a resposta traz `emailSent: false`). O domínio `campello.me` precisa estar **verificado** no
 Resend (registros DKIM/SPF apontados no DNS).
 
+## Caixa de consultas para melhoria
+
+Além da telemetria agregada, o servidor pode preservar cada consulta em uma caixa local para revisão
+humana e evolução da base. O arquivo `consultations.jsonl` registra uma entrada por chamada de
+`buscar_orientacao` com `id`, data, usuário/token, texto da situação, gatilho classificado, duração e
+referência da base usada. Ele não fica exposto como ferramenta MCP nem é publicado no repositório.
+
+No modo HTTP, o caminho padrão é `./data/consultations.jsonl`; no container, `/app/data/consultations.jsonl`
+fica persistido pelo bind mount. No modo stdio, configure explicitamente:
+
+```json
+{
+  "env": {
+    "LEADERSHIP_MCP_CONSULTATIONS_LOG": "/caminho/local/leadership-mcp/data/consultations.jsonl"
+  }
+}
+```
+
+Esse arquivo contém texto potencialmente sensível. A revisão deve ser humana, com remoção de PII e
+separação entre: consulta útil, classificação errada, lacuna da base e orientação inadequada. Não use
+o arquivo como treinamento automático sem curadoria.
+
 ## Telemetria de uso
 
 `server/usage.js` grava uma linha JSONL por chamada de ferramenta (`buscar_orientacao` /
@@ -186,7 +208,7 @@ Feito uma vez no navegador, o conector fica disponível também no app mobile e 
 3. Clique em **Adicionar conector personalizado** (*Add custom connector*).
 4. Em URL, informe: `https://leadership-mcp.campello.me/mcp/<seu-token>` — sem OAuth ID/secret.
 5. Numa conversa, abra o menu **+** → **Conectores** e ative o *leadership-mcp*.
-6. Para o comportamento completo (pausar e oferecer a consulta), cole o conteúdo de
+6. Para o comportamento completo (consulta automática antes da resposta), cole o conteúdo de
    [`prompt-sistema.md`](../../prompt-sistema.md) no seu perfil
    (Configurações → Perfil → instruções personalizadas).
 

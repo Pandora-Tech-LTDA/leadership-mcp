@@ -154,12 +154,13 @@ console.log("\n== HTTP e2e (auth + telemetria) ==\n");
   const dir = mkdtempSync(join(tmpdir(), "lmcp-http-"));
   const tokensFile = join(dir, "tokens.json");
   const usageFile = join(dir, "usage.jsonl");
+  const consultationsFile = join(dir, "consultations.jsonl");
   const token = generateToken();
   saveTokens(tokensFile, {
     tokens: [{ name: "e2e-user", hash: hashToken(token), createdAt: new Date().toISOString(), revokedAt: null, note: "" }],
   });
 
-  const httpServer = await startHttp(0, { tokensFile, usageFile });
+  const httpServer = await startHttp(0, { tokensFile, usageFile, consultationsFile });
   const port = httpServer.address().port;
   const base = `http://127.0.0.1:${port}`;
   const situacaoSecreta = "briguei com meu irmao por causa da heranca marcador-unico-9f3c";
@@ -200,6 +201,14 @@ console.log("\n== HTTP e2e (auth + telemetria) ==\n");
     );
     const usageRaw = readFileSync(usageFile, "utf8");
     check(!usageRaw.includes(situacaoSecreta), "usage.jsonl NUNCA contém o texto da situação");
+    const consultationLines = readFileSync(consultationsFile, "utf8").trim().split("\n").map((l) => JSON.parse(l));
+    check(consultationLines.length === 2, "consultations.jsonl recebeu uma linha por consulta");
+    check(
+      consultationLines.every(
+        (l) => l.user === "e2e-user" && l.tool === "buscar_orientacao" && l.gatilho && l.situacao === situacaoSecreta && l.status === "new"
+      ),
+      "consultations.jsonl preserva a consulta para revisão humana"
+    );
   } finally {
     httpServer.close();
   }
