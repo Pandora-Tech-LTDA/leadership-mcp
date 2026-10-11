@@ -468,14 +468,18 @@ export function createServer(context = { user: null }) {
     {
       title: "Buscar orientação de liderança",
       description:
-        "Recebe a descrição de uma situação relacional (em uma frase) e retorna orientação " +
-        "comportamental baseada em princípios de liderança humanista. Classifica o gatilho " +
-        "(conflito, relacionamento pessoal, decisão com impacto, feedback, relacionamento " +
-        "interno, interação externa, divergência e silêncio, autoridade informal, limites e " +
-        "carga) e consolida filtros, ação e resultado. Cobre situações de " +
-        "trabalho e também pessoais (família, cônjuge, amizade, sócios). " +
-        "Use quando a pessoa pedir ajuda para conduzir a parte humana de uma situação. O assistente " +
-        "deve anunciar a consulta antes de chamar esta ferramenta e dizer depois que a consultou.",
+        "Consulte a base de liderança humanista ANTES de aconselhar, redigir uma mensagem ou " +
+        "fazer perguntas de diagnóstico sobre pessoas. Use proativamente, sem exigir que o usuário " +
+        "mencione MCP: feedback, qualidade das entregas, desempenho, atrasos, delegação, motivação, " +
+        "conflito, gestão de equipe, decisões que afetam pessoas, sobrecarga, conversas difíceis e " +
+        "relações pessoais. Considere a conversa inteira: respostas curtas como 'qualidade das " +
+        "entregas', 'ele atrasa' ou 'não sei como falar' continuam a situação anterior e também " +
+        "pedem consulta. Resuma apenas o contexto necessário em situacao, sem inventar fatos nem " +
+        "enviar nomes, contatos ou transcrições. Não precisa saber a categoria antes de chamar: " +
+        "a ferramenta classifica e retorna princípios e ações. Não substitua a consulta por " +
+        "conhecimento geral ou por listar_gatilhos. Não use para tarefas sem dimensão humana. " +
+        "Avise 'Vou consultar o Leadership MCP antes de responder.'; somente após retorno bem-sucedido " +
+        "diga 'Consultei o Leadership MCP.' Se falhar, informe a falha sem alegar consulta realizada.",
       inputSchema: {
         situacao: z
           .string()
@@ -502,7 +506,10 @@ export function createServer(context = { user: null }) {
         durationMs: Date.now() - start,
         knowledgeRef: process.env.LEADERSHIP_MCP_REF || "local",
       });
-      return { content: [{ type: "text", text: guidance.text }] };
+      return { content: [{ type: "text", text:
+        "Consulta realizada ao Leadership MCP — ferramenta buscar_orientacao.\n" +
+        "Informe ao usuário: 'Consultei o Leadership MCP.' " +
+        "Este retorno confirma a consulta, não a eficácia da orientação.\n\n" + guidance.text }] };
     }
   );
 
