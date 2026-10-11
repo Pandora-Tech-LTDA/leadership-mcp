@@ -2,8 +2,7 @@
 # Após adicionar: `caddy validate` e reload graceful. Ver deploy/README.md.
 #
 # ROTEAMENTO: um único domínio serve DUAS coisas:
-#   /            → landing (proxy reverso para a Vercel; a URL final continua .campello.me,
-#                  NÃO é redirect — o cliente nunca vê o domínio da Vercel).
+#   /            → landing servida diretamente pelo serviço Railway.
 #   /mcp, /mcp/* → conector MCP — PROXY PURO. A autenticação por lote de tokens (Bearer ou
 #                  token embutido na URL /mcp/<token>) vive inteiramente no Node
 #                  (server/auth.js) — o Caddy não valida mais nada aqui. Isso permite
@@ -44,11 +43,10 @@ leadership-mcp.campello.me {
 		reverse_proxy leadership-mcp:3000
 	}
 
-	# Landing: proxy reverso para a Vercel. A Vercel roteia pelo Host, então sobrescrevemos o Host
-	# para o domínio do projeto (o Caddy disca por TLS com SNI = leadership-mcp.vercel.app).
-	handle {
-		reverse_proxy https://leadership-mcp.vercel.app {
-			header_up Host leadership-mcp.vercel.app
-		}
-	}
+	# A landing agora é servida pelo próprio Node no Railway.
+	# Se este arquivo ainda for usado como camada de compatibilidade, encaminhe / para o
+	# domínio customizado do Railway:
+	# handle / {
+	#   reverse_proxy https://<servico>.up.railway.app
+	# }
 }

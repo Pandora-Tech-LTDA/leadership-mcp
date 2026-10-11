@@ -536,7 +536,7 @@ export function createServer(context = { user: null }) {
 const DEFAULT_TOKENS_FILE = "./data/tokens.json";
 const DEFAULT_USAGE_FILE = "./data/usage.jsonl";
 
-// A landing fica no mesmo serviço HTTP no Railway, eliminando a dependência da Vercel.
+// A landing fica no mesmo serviço HTTP no Railway, sem dependência de hospedagem externa.
 // Mantém o fallback local para o servidor executado diretamente a partir de ./server.
 const LANDING_DIR_CANDIDATES = [
   process.env.LEADERSHIP_MCP_LANDING_DIR,

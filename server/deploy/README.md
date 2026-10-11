@@ -9,13 +9,14 @@ O Leadership MCP roda em dois modos a partir do mesmo `index.js`:
 
 No VPS, o container fica atrás do Caddy existente (projeto `docs-site`), que faz TLS.
 
-O deploy de produção (`leadership-mcp.campello.me`) usa **um único domínio para duas coisas**
-(ver `Caddyfile.snippet`):
+O deploy de produção (`leadership-mcp.campello.me`) usa **um único serviço Railway para duas coisas**:
 
-- **`/`** → **landing**, por **proxy reverso para a Vercel** (`leadership-mcp.vercel.app`). A URL
-  final continua `.campello.me` — **não é redirect**; o cliente nunca vê o domínio da Vercel.
+- **`/`** → **landing**, servida pelo próprio Node/Railway a partir de `docs/`.
 - **`/mcp`** → **conector MCP, sempre com chave de acesso** (sem acesso indiscriminado).
 - **`/health`** → healthcheck.
+
+O domínio customizado deve apontar diretamente para o serviço Railway. Não há dependência de hospedagem
+externa nem de outro proxy para servir a landing.
 
 ## Autenticação: lote de tokens, validado no Node (não mais no Caddy)
 
@@ -208,8 +209,8 @@ claude mcp add --transport http --scope user leadership https://leadership-mcp.c
 ## Verificação
 
 ```sh
-# Landing na raiz (proxy p/ Vercel; espera 200 text/html, sem redirect):
-curl -sI https://leadership-mcp.campello.me/ | grep -iE 'HTTP/|content-type|x-vercel-id'
+# Landing na raiz (servida pelo Railway; espera 200 text/html, sem redirect):
+curl -sI https://leadership-mcp.campello.me/ | grep -iE 'HTTP/|content-type|server|x-railway'
 
 # Sem chave: espera 401 + WWW-Authenticate.
 curl -sI -X POST https://leadership-mcp.campello.me/mcp \

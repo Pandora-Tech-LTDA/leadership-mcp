@@ -31,8 +31,8 @@ Chapman, Simon Sinek). A orientação é sempre **hipótese, nunca prescrição*
     (default `main`) — é o mecanismo de **white-label** (parceiro forka e aponta para o próprio repo).
 - **Transportes:** stdio (Claude Desktop) e Streamable HTTP (VPS, quando `MCP_HTTP_PORT` está setado).
   Deploy HTTP documentado em `server/deploy/`. Em produção, `leadership-mcp.campello.me` serve **dois**
-  destinos no mesmo domínio (Caddy): `/` → **landing** por proxy reverso para a Vercel (URL continua
-  `.campello.me`, não é redirect) e `/mcp` → **conector MCP com chave de acesso SEMPRE obrigatória**
+  destinos no mesmo serviço Railway: `/` → **landing** servida pelo próprio Node (URL continua
+  `.campello.me`) e `/mcp` → **conector MCP com chave de acesso SEMPRE obrigatória**
   (decisão 2026-07-06: sem acesso indiscriminado). O servidor só responde a `/`, `/mcp`/`/mcp/<token>`
   e `/health`.
 - **Autenticação por lote de tokens** (`server/auth.js`, decisão 2026-07-06): a auth saiu do Caddy
@@ -74,11 +74,11 @@ knowledge/            ← base canônica (markdown com frontmatter YAML)
   acoes/              ← hipóteses de comportamento concretas
   resultados/         ← efeitos esperados (engajamento, confiança, cultura inclusiva)
 server/               ← servidor MCP (Node.js) + cópia de knowledge/ (fallback) + smoke-test + deploy/
-docs/                 ← landing estática (index.html) servida pela Vercel/GitHub Pages
+docs/                 ← landing estática (index.html) servida pelo Node no Railway
 README.md             ← EN (descoberta) · README.pt-BR.md ← PT completo
 CONTRIBUTING.md, CODE_OF_CONDUCT.md, prompt-sistema.md
 GROWTH.md             ← quadro de estado do trabalho de adoção
-vercel.json           ← serve docs/ como estático (outputDirectory), sem build
+railway.json          ← build Docker e healthcheck do serviço Railway
 .github/workflows/ci.yml ← smoke test (Node 18/20/22)
 ```
 
@@ -137,15 +137,15 @@ Uma issue só é tornada pública quando o Mario pedir **explicitamente**.
 ## Fluxo de trabalho git
 
 - Trabalhar em branch de feature; abrir PR para `main`. O CI (smoke test) roda em PRs para `main`.
-- A landing é publicada pela Vercel a partir da `main` (Production Branch). `docs/` é servido via
-  `vercel.json` (`outputDirectory: docs`, sem build) — isolado do `server/`.
+- A landing e o servidor MCP são publicados pelo Railway a partir da `main`. `docs/` é servido pelo
+  mesmo processo HTTP do Node, com o healthcheck em `/health`.
 - Ao mesclar uma PR, começar o próximo trabalho a partir da `main` atualizada (não reusar PR mesclada).
 
 ## Estado atual (atualizar conforme evolui)
 
 - ✅ Fundação pública mesclada na `main`: metadata npm, CODE_OF_CONDUCT, CI, GROWTH.md, README
-  bilíngue, landing (`docs/index.html`), vercel.json.
-- ✅ Landing publicada na Vercel (pública) e servida também em `https://leadership-mcp.campello.me/`
+  bilíngue, landing (`docs/index.html`), `railway.json`.
+- ✅ Landing servida pelo Railway (pública) em `https://leadership-mcp.campello.me/`
   via proxy reverso do Caddy (URL final `.campello.me`, não é redirect). O mesmo domínio expõe o
   conector MCP em `/mcp` — **sempre com token de acesso** (Bearer ou `/mcp/<token>` na URL;
   distribuição via WhatsApp na landing). O `/mcp` público sem token (PR #17) foi **revertido**
