@@ -143,8 +143,8 @@
   }
 </style>
 <script>
-  // Preenchido quando a instância Umami estiver disponível; o arquivo opera em modo no-op até lá.
-  window.LEADERSHIP_ANALYTICS = { host: '', websiteId: '' };
+  // Instância Umami self-hosted no Railway; coleta permanece condicionada ao opt-in.
+  window.LEADERSHIP_ANALYTICS = { host: 'https://umami-production-bbb9.up.railway.app', websiteId: 'c45eb78c-7edc-48fc-85d2-294e2d57cb76' };
 </script>
 <script defer src="/analytics.js"></script>
 </head>
