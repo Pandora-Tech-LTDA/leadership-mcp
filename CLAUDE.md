@@ -64,9 +64,13 @@ Chapman, Simon Sinek). A orientação é sempre **hipótese, nunca prescrição*
 
 ```
 knowledge/            ← base canônica (markdown com frontmatter YAML)
-  gatilhos/           ← 6 situações relacionais (conflito, feedback, decisão, relacionamento, externa, pessoal)
+  gatilhos/           ← 9 situações relacionais (conflito, feedback, decisão, relacionamento interno,
+                        interação externa, relacionamento pessoal, divergência e silêncio,
+                        autoridade informal, limites e carga)
   filtros/            ← pilares da liderança humanista (escuta ativa, reconhecimento, serviço, presença,
-                        CNV, segurança psicológica, interesses-não-posições, franqueza com cuidado)
+                        CNV, segurança psicológica, interesses-não-posições, franqueza com cuidado,
+                        liderança relacional, liderança adaptativa, humildade investigativa,
+                        experimentação de identidade, participação e divergência)
   acoes/              ← hipóteses de comportamento concretas
   resultados/         ← efeitos esperados (engajamento, confiança, cultura inclusiva)
 server/               ← servidor MCP (Node.js) + cópia de knowledge/ (fallback) + smoke-test + deploy/
@@ -157,5 +161,5 @@ Uma issue só é tornada pública quando o Mario pedir **explicitamente**.
   4 filtros novos (CNV/Rosenberg, segurança psicológica/Edmondson, interesses-não-posições/Fisher&Ury,
   franqueza com cuidado/Kim Scott+Brené Brown), 3 ações e 1 resultado novos. Classificador com
   regra anti-falso-positivo (keywords fracas só desempatam) e limiar de ativação ≥2; bateria de
-  40 casos em `server/eval-cases.js` roda no smoke/CI (40/40). Deploy documenta conector
+  60 casos em `server/eval-cases.js` roda no smoke/CI (60/60). Deploy documenta conector
   personalizado do claude.ai (web/desktop/mobile) com chave de acesso em `server/deploy/`.

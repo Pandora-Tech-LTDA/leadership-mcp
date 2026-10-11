@@ -36,6 +36,9 @@ Situações relacionais que ativam sugestões comportamentais.
 - [decisao-com-impacto.md](gatilhos/decisao-com-impacto.md) — escolha que afeta outras pessoas
 - [interacao-externa.md](gatilhos/interacao-externa.md) — fornecedor, parceiro, cliente, prestador
 - [relacionamento-pessoal.md](gatilhos/relacionamento-pessoal.md) — família, cônjuge, amizade, vizinhança, sócios
+- [divergencia-e-silencio.md](gatilhos/divergencia-e-silencio.md) — ninguém discorda, o grupo concorda fácil, alguém cala
+- [autoridade-informal.md](gatilhos/autoridade-informal.md) — conduzir quem não me deve obediência
+- [limites-e-carga.md](gatilhos/limites-e-carga.md) — sobrecarga, exaustão, renegociar prazo, dizer não
 
 ### /filtros
 Pilares comportamentais da liderança humanista que qualificam a resposta.
@@ -47,6 +50,11 @@ Pilares comportamentais da liderança humanista que qualificam a resposta.
 - [seguranca-psicologica.md](filtros/seguranca-psicologica.md) — o ambiente onde é seguro discordar, errar e perguntar
 - [interesses-nao-posicoes.md](filtros/interesses-nao-posicoes.md) — negociar pelo que cada lado precisa, não pelo que exige
 - [franqueza-com-cuidado.md](filtros/franqueza-com-cuidado.md) — a verdade difícil dita porque a pessoa importa
+- [lideranca-relacional.md](filtros/lideranca-relacional.md) — liderança como relação, influência e processo social
+- [lideranca-adaptativa.md](filtros/lideranca-adaptativa.md) — distinguir solução técnica de trabalho de adaptação
+- [humildade-investigativa.md](filtros/humildade-investigativa.md) — perguntar para compreender antes de prescrever
+- [experimentacao-de-identidade.md](filtros/experimentacao-de-identidade.md) — testar comportamentos novos sem esperar autenticidade pronta
+- [participacao-e-divergencia.md](filtros/participacao-e-divergencia.md) — abrir espaço para vozes diferentes e dissentimento produtivo
 
 ### /acoes
 Hipóteses de comportamento concretas para cada situação.
@@ -63,6 +71,8 @@ Hipóteses de comportamento concretas para cada situação.
 - [conversa-dificil-pessoal.md](acoes/conversa-dificil-pessoal.md)
 - [reconstruindo-uma-relacao.md](acoes/reconstruindo-uma-relacao.md)
 - [negociando-um-acordo.md](acoes/negociando-um-acordo.md)
+- [abrindo-a-divergencia.md](acoes/abrindo-a-divergencia.md)
+- [colocando-limites.md](acoes/colocando-limites.md)
 
 ### /resultados
 Resultados esperados quando os comportamentos são aplicados.
@@ -77,6 +87,11 @@ Resultados esperados quando os comportamentos são aplicados.
 - Marshall Rosenberg — *Comunicação Não-Violenta*
 - Roger Fisher & William Ury — *Como Chegar ao Sim* (*Getting to Yes*)
 - Amy Edmondson — pesquisa sobre segurança psicológica (*The Fearless Organization*)
+- Mary Uhl-Bien — liderança relacional e liderança em complexidade
+- Ronald A. Heifetz — liderança adaptativa (*Leadership Without Easy Answers*)
+- Edgar H. Schein — investigação humilde (*Humble Inquiry*) e cultura organizacional
+- Herminia Ibarra — identidade e experimentação no desenvolvimento de líderes
+- Michael A. West — participação, dissentimento e inovação em equipes
 - Kim Scott — *Radical Candor* · Brené Brown — *Dare to Lead*
 - Robert Greenleaf — a raiz da liderança servidora (*Servant Leadership*)
 - A prática e a experiência de liderança de Mario Campello

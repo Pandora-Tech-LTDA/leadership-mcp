@@ -21,9 +21,10 @@ incompleta sem saber.
 
 Segurança psicológica é o nome desse custo estar baixo: a crença compartilhada de que ninguém
 será punido ou humilhado por levantar dúvidas, erros ou ideias. O conceito foi consolidado pela
-pesquisa de Amy Edmondson (Harvard), e o Project Aristotle, estudo do Google sobre times de alta
-performance, o apontou como o maior previsor de desempenho de um time — acima de talento
-individual e recursos.
+pesquisa de Amy Edmondson (Harvard). Em um estudo posterior do Google sobre seus próprios times,
+o Project Aristotle apontou a segurança psicológica como o fator mais associado ao desempenho
+daquelas equipes — acima de talento individual e recursos. São duas pesquisas distintas: Edmondson
+desenvolveu o construto; o estudo do Google o destacou em um contexto específico.
 
 Importante: segurança psicológica não é conforto nem ausência de cobrança. É o contrário de
 complacência — é o que torna possível a conversa exigente, porque as pessoas podem ser francas

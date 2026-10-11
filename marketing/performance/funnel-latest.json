@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-10-11T02:23:07.838194+00:00",
+  "site": "https://leadership-mcp.campello.me",
+  "window_days": 7,
+  "ok": true,
+  "checks": [
+    {
+      "path": "/health",
+      "ok": true,
+      "status": 200,
+      "content_type": "text/plain",
+      "bytes_sampled": 2,
+      "latency_ms": 378
+    },
+    {
+      "path": "/",
+      "ok": true,
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes_sampled": 4096,
+      "latency_ms": 246
+    },
+    {
+      "path": "/cadastro/",
+      "ok": true,
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes_sampled": 4096,
+      "latency_ms": 238
+    }
+  ],
+  "usage": {
+    "available": false,
+    "path": "/opt/data/home/workspace/leadership-mcp/server/data/usage.jsonl",
+    "reason": "file_not_found"
+  },
+  "registrations": {
+    "available": false,
+    "reason": "DATABASE_URL_not_set"
+  },
+  "alerts": []
+}

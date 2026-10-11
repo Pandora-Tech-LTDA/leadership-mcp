@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1640" height="856" viewBox="0 0 1640 856">
+  <rect width="1640" height="856" fill="#173f35"/>
+  <circle cx="1435" cy="-20" r="360" fill="#2f6f5b" opacity=".72"/>
+  <circle cx="1510" cy="790" r="280" fill="#255849" opacity=".8"/>
+  <path d="M0 720 C300 620 540 820 850 710 S1280 580 1640 690 V856 H0Z" fill="#24594b" opacity=".85"/>
+  <path d="M1130 160 C1250 90 1430 105 1510 210 C1590 315 1518 435 1394 448 C1304 458 1248 426 1192 472 L1202 400 C1125 348 1070 237 1130 160Z" fill="none" stroke="#9bc6b4" stroke-width="5" opacity=".7"/>
+  <path d="M1310 240 C1345 207 1402 218 1418 257 C1431 290 1410 323 1381 337 C1351 352 1321 337 1307 309 C1293 281 1293 257 1310 240Z" fill="#faf8f4" opacity=".95"/>
+  <path d="M1325 287 L1345 273 L1358 287 L1376 263 L1399 278 L1381 313 L1350 320Z" fill="#2f6f5b"/>
+  <rect x="108" y="122" width="12" height="170" rx="6" fill="#e28a68"/>
+  <text x="160" y="186" fill="#b9d6c9" font-family="Helvetica, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="5">OPEN SOURCE · LEADERSHIP AI</text>
+  <text x="160" y="342" fill="#faf8f4" font-family="Helvetica, Arial, sans-serif" font-size="80" font-weight="700">Liderança no</text>
+  <text x="160" y="462" fill="#f2d1c4" font-family="'Segoe Script','Bradley Hand','Brush Script MT',cursive" font-size="102" font-weight="500">momento da verdade.</text>
+  <text x="160" y="554" fill="#d7e7df" font-family="Helvetica, Arial, sans-serif" font-size="32">Seu assistente percebe a conversa difícil.</text>
+  <text x="160" y="602" fill="#d7e7df" font-family="Helvetica, Arial, sans-serif" font-size="32">Você decide como responder.</text>
+  <line x1="160" y1="692" x2="545" y2="692" stroke="#e28a68" stroke-width="4"/>
+  <text x="160" y="748" fill="#faf8f4" font-family="Helvetica, Arial, sans-serif" font-size="29" font-weight="700">leadership-mcp.campello.me</text>
+  <text x="160" y="794" fill="#b9d6c9" font-family="Helvetica, Arial, sans-serif" font-size="23">Liderança humanista · MCP · MIT open source</text>
+</svg>

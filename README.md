@@ -78,9 +78,12 @@ The base is organized in four chained layers — **trigger → filters → actio
 server assembles into a single, consolidated piece of guidance from the situation you describe:
 
 1. **Trigger** — the relational nature of the situation (conflict, feedback, high-impact decision,
-   internal relationship, external interaction, personal relationship).
+   internal relationship, external interaction, personal relationship, dissent and silence,
+   informal authority, limits and workload).
 2. **Filters** — the pillars of humanist leadership (active listening, recognition, culture of
-   service, nonviolent communication, psychological safety, interests over positions).
+   service, nonviolent communication, psychological safety, interests over positions, relational
+   leadership, adaptive leadership, humble inquiry, identity experimentation, participation and
+   dissent).
 3. **Action** — a concrete behavioral hypothesis for that situation.
 4. **Outcome** — the expected effect (engagement, trust, inclusive culture).
 

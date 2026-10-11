@@ -5,6 +5,10 @@ description: Situações de tensão explícita ou implícita entre pessoas dentr
 tags: [conflito, tensão, crise, desentendimento]
 links:
   - filtros/escuta-ativa.md
+  - filtros/lideranca-relacional.md
+  - filtros/lideranca-adaptativa.md
+  - filtros/humildade-investigativa.md
+  - filtros/participacao-e-divergencia.md
   - filtros/presenca-intencional.md
   - filtros/comunicacao-nao-violenta.md
   - acoes/durante-o-conflito.md

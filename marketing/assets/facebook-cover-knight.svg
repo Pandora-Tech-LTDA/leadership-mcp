@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1640" height="856" viewBox="0 0 1640 856" role="img" aria-labelledby="title desc">
+  <title id="title">Leadership MCP — Liderança no momento da verdade</title>
+  <desc id="desc">Capa da Página: à esquerda, o título "Liderança no momento da verdade" sobre fundo bege; à direita, o cavalo de xadrez bege da marca sobre bloco verde.</desc>
+  <!-- Safe zone: desktop corta ~116 px em cima/embaixo; mobile corta ~60 px nas laterais.
+       Todo o texto fica entre y 150–700 e x 140–980. -->
+  <rect width="1640" height="856" fill="#faf8f4"/>
+
+  <!-- Bloco verde do símbolo (ponto focal à direita) -->
+  <rect x="1060" y="0" width="580" height="856" fill="#2f6f5b"/>
+  <circle cx="1350" cy="428" r="250" fill="#2a6452"/>
+
+  <!-- Cavalo de xadrez (mesmo desenho do perfil), bege sobre verde -->
+  <g transform="translate(1350 428) scale(1.12) translate(-291 -276)">
+    <path fill="#faf8f4" d="M151 409c8-22 30-35 55-39l21-4-14-42c-7-20-11-41-9-62 2-21 10-39 25-55l-42-72 13-11 79 42c15-10 32-16 51-18l-13-40 20-10 41 43c17 8 30 18 40 32 14 19 18 42 13 66-4 20-15 38-31 53l-13 13 8 39c3 16 14 29 29 39l22 14H151z"/>
+    <path fill="#2f6f5b" d="M267 175c15-8 33-10 49-6 18 5 31 17 39 33 8 17 8 35 2 51-5 12-13 23-24 32l-13 11 6 29H244l-12-35c-7-20-7-39 0-57 7-18 19-34 35-45z"/>
+    <circle cx="332" cy="178" r="9" fill="#c65f3f"/>
+    <path fill="#1c2530" d="M151 409h282l22 14H143z"/>
+    <rect x="128" y="423" width="292" height="18" rx="9" fill="#c65f3f"/>
+  </g>
+
+  <!-- Texto -->
+  <rect x="140" y="168" width="12" height="150" rx="6" fill="#c65f3f"/>
+  <text x="186" y="206" fill="#2f6f5b" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="26" font-weight="700" letter-spacing="5">OPEN SOURCE · LIDERANÇA HUMANISTA</text>
+  <text x="186" y="304" fill="#1c2530" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="74" font-weight="800">Liderança no</text>
+  <text x="186" y="396" fill="#1c2530" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="74" font-weight="800">momento da verdade.</text>
+  <text x="186" y="484" fill="#5b6875" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="32">Seu assistente percebe a conversa difícil.</text>
+  <text x="186" y="530" fill="#5b6875" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="32">Você decide como responder.</text>
+
+  <line x1="186" y1="598" x2="300" y2="598" stroke="#2f6f5b" stroke-width="4" stroke-linecap="round"/>
+  <text x="186" y="656" fill="#2f6f5b" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="30" font-weight="700">leadership-mcp.campello.me</text>
+</svg>

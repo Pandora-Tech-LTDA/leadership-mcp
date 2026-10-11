@@ -142,6 +142,11 @@
     section{padding:56px 0}
   }
 </style>
+<script>
+  // Preenchido quando a instância Umami estiver disponível; o arquivo opera em modo no-op até lá.
+  window.LEADERSHIP_ANALYTICS = { host: '', websiteId: '' };
+</script>
+<script defer src="/analytics.js"></script>
 </head>
 <body>
 
@@ -156,7 +161,7 @@
       princípios de liderança humanista comprovados. Sempre uma hipótese; <em>você decide</em>.
     </p>
     <div class="btns">
-      <a class="btn" href="#cadastro">Começar gratuitamente</a>
+      <a class="btn" data-lmcp-event="cta_start_click" data-lmcp-placement="landing" href="#cadastro">Começar gratuitamente</a>
       <a class="btn ghost" href="#demo">Ver a diferença na prática</a>
       <a class="btn ghost" href="#parceiros">Sou de treinamento / consultoria</a>
     </div>
@@ -291,7 +296,7 @@
       Roda sobre o padrão aberto <a href="https://modelcontextprotocol.io">MCP</a>.
     </p>
     <div class="btns">
-      <a class="btn" href="#cadastro">Começar gratuitamente</a>
+      <a class="btn" data-lmcp-event="cta_start_click" data-lmcp-placement="landing" href="#cadastro">Começar gratuitamente</a>
     </div>
   </div>
 </section>

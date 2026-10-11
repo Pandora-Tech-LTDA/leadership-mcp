@@ -17,6 +17,10 @@
   .connector{display:block;word-break:break-all;background:var(--ink);color:#fff;padding:14px;border-radius:9px;margin-top:10px;font-size:.88rem}
   a{color:var(--accent)}
 </style>
+<script>
+  window.LEADERSHIP_ANALYTICS = { host: '', websiteId: '' };
+</script>
+<script defer src="/analytics.js"></script>
 </head>
 <body>
 <main>
@@ -46,7 +50,9 @@
     else if (digits.length <= 7) whatsappInput.value = '(' + digits.slice(0, 2) + ') ' + digits.slice(2);
     else whatsappInput.value = '(' + digits.slice(0, 2) + ') ' + digits.slice(2, 7) + '-' + digits.slice(7);
   });
+  form.addEventListener('focusin', () => window.LMCPAnalytics?.track('signup_start'), { once: true });
   form.addEventListener('submit', async (event) => {
+    window.LMCPAnalytics?.track('signup_submit');
     event.preventDefault();
     const button = form.querySelector('button');
     button.disabled = true;
@@ -56,11 +62,14 @@
       const data = Object.fromEntries(new FormData(form));
       data.token = token;
       data.consent = document.getElementById('consent').checked;
+      const attribution = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
+      attribution.forEach((key) => { data[key] = localStorage.getItem('lmcp_' + key) || ''; });
       const response = await fetch('/api/register', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || 'Não foi possível concluir o cadastro.');
       message.className = 'message success';
       const tokenForInstall = result.connectorUrl.split('/mcp/')[1];
+      window.LMCPAnalytics?.track('signup_success');
       window.location.href = '/instalar/' + encodeURIComponent(tokenForInstall);
     } catch (error) {
       message.className = 'message error';
