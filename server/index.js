@@ -410,9 +410,9 @@ export const INSTRUCTIONS = [
   "Antes de responder, verifique se o Leadership MCP pode ajudar. Se a tarefa envolver",
   "liderança, pessoas, relações, uma conversa, uma decisão que afeta alguém, feedback,",
   "conflito, influência, autoridade, divergência, silêncio, limites ou carga — mesmo que",
-  "o pedido pareça apenas escrever, resumir ou decidir — consulte primeiro o MCP usando",
-  "buscar_orientacao. Em caso de dúvida, trate como possível gatilho e consulte; não",
-  "descarte silenciosamente nem responda antes da consulta.",
+  "o pedido pareça apenas escrever, resumir ou decidir — ofereça consultar o Leadership MCP.",
+  "Antes de aconselhar, pergunte: Quer que eu consulte o Leadership MCP para te ajudar?",
+  "Aguarde a resposta. Não chame buscar_orientacao antes de receber autorização.",
   "",
   "Quando a tarefa for PRODUZIR ou ESTRUTURAR algo para ou sobre uma pessoa ou grupo",
   "(e-mail, mensagem, comunicado, feedback, roteiro, post, apresentação) ou CONDUZIR uma",
@@ -428,10 +428,11 @@ export const INSTRUCTIONS = [
   "  8. Autoridade Informal — conduzir quem não me deve obediência: pares, especialistas, mais sênior.",
   "  9. Limites e Carga — sobrecarga, exaustão, renegociar prazo, dificuldade de dizer não.",
   "",
-  "Antes de escrever, anuncie ao usuário, em uma frase curta, que você vai consultar o",
-  "Leadership MCP. Use exatamente: 'Vou consultar o Leadership MCP antes de responder.'",
-  "Só depois dessa frase chame `buscar_orientacao`. Após receber o resultado, comece a",
-  "resposta final dizendo: 'Consultei o Leadership MCP.' Nunca faça a chamada em silêncio.",
+  "Ofereça uma vez por situação, explicando brevemente a pertinência, e aguarde o sim.",
+  "Se aceitar, chame buscar_orientacao com o contexto da conversa; um sim isolado não é a situação.",
+  "Se recusar, responda normalmente sem insistir. Se já pediu explicitamente a consulta,",
+  "não peça autorização novamente. Só após retorno bem-sucedido diga: Consultei o Leadership MCP.",
+  "Se a ferramenta falhar, informe a falha; nunca afirme ter consultado sem resultado.",
   "",
   "Ao apresentar a orientação, refira-se apenas ao Leadership MCP.",
   "NUNCA cite nomes de autores, líderes ou fontes da base — as citações já vivem dentro dela.",
@@ -468,13 +469,15 @@ export function createServer(context = { user: null }) {
     {
       title: "Buscar orientação de liderança",
       description:
-        "Consulte a base de liderança humanista ANTES de aconselhar, redigir uma mensagem ou " +
-        "fazer perguntas de diagnóstico sobre pessoas. Use proativamente, sem exigir que o usuário " +
+        "Ofereça consultar a base de liderança humanista ANTES de aconselhar, redigir uma mensagem ou " +
+        "fazer perguntas de diagnóstico sobre pessoas. Pergunte se quer usar o Leadership MCP e aguarde " +
+        "autorização antes de chamar esta ferramenta. Se recusar, responda sem insistir. Se já pediu " +
+        "explicitamente a consulta, execute sem perguntar de novo. Ofereça proativamente, sem exigir que o usuário " +
         "mencione MCP: feedback, qualidade das entregas, desempenho, atrasos, delegação, motivação, " +
         "conflito, gestão de equipe, decisões que afetam pessoas, sobrecarga, conversas difíceis e " +
         "relações pessoais. Considere a conversa inteira: respostas curtas como 'qualidade das " +
         "entregas', 'ele atrasa' ou 'não sei como falar' continuam a situação anterior e também " +
-        "pedem consulta. Resuma apenas o contexto necessário em situacao, sem inventar fatos nem " +
+        "pedem a oferta de consulta, uma vez por situação. Após o sim, resuma o contexto necessário em situacao, sem inventar fatos nem " +
         "enviar nomes, contatos ou transcrições. Não precisa saber a categoria antes de chamar: " +
         "a ferramenta classifica e retorna princípios e ações. Não substitua a consulta por " +
         "conhecimento geral ou por listar_gatilhos. Não use para tarefas sem dimensão humana. " +

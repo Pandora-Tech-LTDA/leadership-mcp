@@ -20,7 +20,7 @@ Não nos treinamentos. Na hora de escrever o e-mail difícil, dar o feedback, co
 
 O **Leadership MCP** é uma ferramenta open source e gratuita que conecta uma base viva de
 **liderança humanista** ao Claude (ou a qualquer cliente compatível com
-[MCP](https://modelcontextprotocol.io)). Quando você pede ajuda para escrever um e-mail tenso, dar um feedback, comunicar uma decisão ou conduzir um conflito, o assistente **consulta automaticamente** o Leadership MCP antes de responder e molda a resposta a partir de princípios de liderança humanista.
+[MCP](https://modelcontextprotocol.io)). Quando você pede ajuda para escrever um e-mail tenso, dar um feedback, comunicar uma decisão ou conduzir um conflito, o assistente **oferece consultar** o Leadership MCP antes de responder e molda a resposta a partir de princípios de liderança humanista.
 
 A orientação é sempre **uma hipótese, nunca uma prescrição**. Você decide como agir.
 
@@ -42,16 +42,16 @@ usa para escrever.
 
 ## ⚙️ Como funciona na prática
 
-A inteligência mora num detalhe de comportamento: o assistente **consulta automaticamente** o MCP quando a tarefa pode se beneficiar dele e só então molda a resposta.
+A inteligência mora num detalhe de comportamento: o assistente **oferece consultar** o MCP quando a tarefa pode se beneficiar dele e só então molda a resposta.
 
 > **Você:** preciso responder esse e-mail de um colega que está me acusando de atrasar o projeto dele.
 >
-> **Claude:** *(consulta `buscar_orientacao` automaticamente)* Vou começar pelo fato em vez da defesa, assumir
+> **Claude:** *(após o usuário aceitar, consulta `buscar_orientacao`)* Vou começar pelo fato em vez da defesa, assumir
 > boa intenção e fechar com um próximo passo concreto — é o que reduz a escalada num e-mail tenso.
 > Aqui está o rascunho: …
 
-A consulta **molda a resposta desde o início** — não é um adendo no final. O assistente consulta o MCP
-sempre que a tarefa puder se beneficiar dele, inclusive quando o pedido parecer apenas de escrita,
+A consulta **molda a resposta desde o início** — não é um adendo no final. O assistente oferece consultar o MCP
+quando a tarefa puder se beneficiar dele, inclusive quando o pedido parecer apenas de escrita,
 resumo ou decisão.
 
 ---
@@ -214,7 +214,7 @@ O MCP já carrega o gatilho, então este passo não é obrigatório no Claude. C
 comportamento — ou se você usa um assistente **sem MCP** (ChatGPT, Gemini, Grok, Copilot), onde o
 prompt é a única forma de ter o gatilho. Abra [`prompt-sistema.md`](prompt-sistema.md), copie o
 conteúdo da seção **Prompt** e cole nas instruções personalizadas do seu assistente (**Settings →
-Profile / Custom Instructions**). Ele ensina o assistente a consultar automaticamente o Leadership
+Profile / Custom Instructions**). Ele ensina o assistente a oferecer a consulta o Leadership
 MCP quando a tarefa puder se beneficiar dele.
 
 > **Rodando a partir do código (desenvolvimento):** para usar sua cópia local em vez da versão do

@@ -208,7 +208,7 @@ Feito uma vez no navegador, o conector fica disponível também no app mobile e 
 3. Clique em **Adicionar conector personalizado** (*Add custom connector*).
 4. Em URL, informe: `https://leadership-mcp.campello.me/mcp/<seu-token>` — sem OAuth ID/secret.
 5. Numa conversa, abra o menu **+** → **Conectores** e ative o *leadership-mcp*.
-6. Para o comportamento completo (consulta automática antes da resposta), cole o conteúdo de
+6. Para o comportamento completo (oferta de consulta antes da resposta), cole o conteúdo de
    [`prompt-sistema.md`](../../prompt-sistema.md) no seu perfil
    (Configurações → Perfil → instruções personalizadas).
 
