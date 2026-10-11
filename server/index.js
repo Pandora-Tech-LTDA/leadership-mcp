@@ -428,10 +428,10 @@ export const INSTRUCTIONS = [
   "  8. Autoridade Informal — conduzir quem não me deve obediência: pares, especialistas, mais sênior.",
   "  9. Limites e Carga — sobrecarga, exaustão, renegociar prazo, dificuldade de dizer não.",
   "",
-  "Antes de escrever, consulte diretamente o Leadership MCP via ferramenta",
-  "`buscar_orientacao` e molde a resposta a partir dela. Não peça permissão para consultar",
-  "e não ofereça responder direto antes da consulta. O gatilho pode vir do CONTEÚDO que",
-  "você acessou (um e-mail tenso, uma cobrança), não só das palavras do pedido.",
+  "Antes de escrever, anuncie ao usuário, em uma frase curta, que você vai consultar o",
+  "Leadership MCP. Use exatamente: 'Vou consultar o Leadership MCP antes de responder.'",
+  "Só depois dessa frase chame `buscar_orientacao`. Após receber o resultado, comece a",
+  "resposta final dizendo: 'Consultei o Leadership MCP.' Nunca faça a chamada em silêncio.",
   "",
   "Ao apresentar a orientação, refira-se apenas ao Leadership MCP.",
   "NUNCA cite nomes de autores, líderes ou fontes da base — as citações já vivem dentro dela.",
@@ -474,7 +474,8 @@ export function createServer(context = { user: null }) {
         "interno, interação externa, divergência e silêncio, autoridade informal, limites e " +
         "carga) e consolida filtros, ação e resultado. Cobre situações de " +
         "trabalho e também pessoais (família, cônjuge, amizade, sócios). " +
-        "Use quando a pessoa pedir ajuda para conduzir a parte humana de uma situação.",
+        "Use quando a pessoa pedir ajuda para conduzir a parte humana de uma situação. O assistente " +
+        "deve anunciar a consulta antes de chamar esta ferramenta e dizer depois que a consultou.",
       inputSchema: {
         situacao: z
           .string()
