@@ -6,7 +6,7 @@ WORKDIR /app
 COPY server/package.json server/package-lock.json ./
 RUN npm ci --omit=dev
 
-COPY server/index.js server/knowledge-loader.js server/auth.js server/usage.js server/tokens-cli.js ./
+COPY server/index.js server/knowledge-loader.js server/auth.js server/usage.js server/consultations.js server/tokens-cli.js ./
 COPY server/knowledge ./knowledge
 COPY docs ./docs
 
