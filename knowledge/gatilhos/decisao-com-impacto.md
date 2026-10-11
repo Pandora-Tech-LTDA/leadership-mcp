@@ -5,6 +5,10 @@ description: Situações onde uma escolha afeta diretamente outras pessoas — c
 tags: [decisão, impacto, comunicação, mudança, escalada]
 links:
   - filtros/escuta-ativa.md
+  - filtros/lideranca-relacional.md
+  - filtros/lideranca-adaptativa.md
+  - filtros/experimentacao-de-identidade.md
+  - filtros/participacao-e-divergencia.md
   - filtros/cultura-de-servico.md
   - filtros/seguranca-psicologica.md
   - acoes/comunicando-decisao.md

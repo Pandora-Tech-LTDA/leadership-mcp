@@ -5,6 +5,9 @@ description: Situações que envolvem interação com colegas, gestores ou subor
 tags: [relacionamento, interno, interação, hierarquia]
 links:
   - filtros/escuta-ativa.md
+  - filtros/lideranca-relacional.md
+  - filtros/humildade-investigativa.md
+  - filtros/experimentacao-de-identidade.md
   - filtros/cultura-de-servico.md
   - filtros/presenca-intencional.md
   - acoes/antes-da-reuniao.md

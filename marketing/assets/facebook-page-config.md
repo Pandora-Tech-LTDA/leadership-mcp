@@ -11,7 +11,9 @@
 
 ## Assets
 
+- **Marca v2 (proposta, aguardando aprovação):** prancha [`v2/Marca v2.html`](v2/Marca%20v2.html) — perfil `v2/LMCP_profile_v2.png`, capas `v2/LMCP_cover_v2_{a-clara,b-escura,c-verde}.png`. Gerado por `marketing/scripts/build_brand_v2.py`.
 - Foto de perfil: [`facebook-profile-knight-green-bg.png`](facebook-profile-knight-green-bg.png)
+- Capa com cavalo (segue o design system: símbolo + mensagem, texto dentro da safe zone de desktop/mobile): [`facebook-cover-knight.png`](facebook-cover-knight.png) · editável [`facebook-cover-knight.svg`](facebook-cover-knight.svg)
 - Capa preferida pronta para upload: [`facebook-cover-dark.png`](facebook-cover-dark.png)
 - Capa preferida editável: [`facebook-cover-dark.svg`](facebook-cover-dark.svg)
 - Capa alternativa clara: [`facebook-cover.png`](facebook-cover.png)

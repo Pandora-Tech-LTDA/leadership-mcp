@@ -29,6 +29,9 @@ import { configureUsage, logUsage } from "./usage.js";
 //   - keywords fortes (peso 2): descrevem a NATUREZA da situação (agressivo, decisão, feedback…)
 //   - weakKeywords (peso 1): descrevem só QUEM (colega, gestor, time…) — co-ocorrem em quase
 //     toda situação relacional, então discriminam pouco e não devem dominar a natureza
+//   - weakOnlyKeywords (peso 1): termos usados por MAIS DE UM gatilho ("outra área", "outro
+//     time"…). Só somam quando o gatilho já tem evidência forte — sem isso virariam
+//     falso positivo em situações que pertencem a outro gatilho.
 //   - "sinais de ativação" extraídos do próprio .md do gatilho (peso 1)
 // A ideia é refletir a lógica do prompt v0.3 sem depender de IA no servidor.
 const TRIGGERS = [
@@ -108,6 +111,60 @@ const TRIGGERS = [
       "agência", "nos atende",
     ],
   },
+  {
+    id: "divergencia-e-silencio",
+    file: "gatilhos/divergencia-e-silencio.md",
+    label: "Divergência e Silêncio",
+    keywords: [
+      "ninguém discorda", "ninguem discorda", "concorda com tudo", "concorda com o que eu",
+      "concordaram por educação", "concordou fácil", "passou fácil", "estão calados",
+      "ninguém traz", "ninguem traz", "ninguém contesta", "ninguem contesta",
+      "não me sinto à vontade para discordar", "nao me sinto a vontade para discordar",
+      "não me sinto confortável para discordar", "não fala nada", "não fala na reunião",
+      "não se manifesta", "não traz risco", "nenhum risco", "melhor objeção", "melhor objecao",
+      "ninguém vê risco", "ninguem ve risco", "concordância fácil", "concordancia facil",
+      "voz minoritária", "voz minoritaria", "deixando passar", "não foi ouvido",
+      "ninguém falou nada", "ninguem falou nada",
+    ],
+  },
+  {
+    id: "autoridade-informal",
+    file: "gatilhos/autoridade-informal.md",
+    label: "Autoridade Informal",
+    keywords: [
+      "não sou o chefe", "nao sou o chefe", "não sou chefe", "sem autoridade",
+      "não tenho autoridade", "nao tenho autoridade", "não me reporta", "nao me reporta",
+      "não reporta para mim", "não é meu subordinado", "nao e meu subordinado",
+      "lidero mas não", "lidero, mas não",
+      "influenciar sem", "convencer alguém que não", "convencer alguem que nao",
+      "me enxerga nesse papel", "não me enxerga no papel", "ainda não me enxerga",
+      "mais sênior", "mais senior", "mais experiente que eu", "mais tempo de casa",
+      "não aceita minha liderança", "nao aceita minha lideranca",
+      "não reconhece minha liderança", "nao reconhece minha lideranca",
+      "especialista resistente",
+      "liderança lateral", "lideranca lateral", "conduzir sem cargo",
+    ],
+    // Aparecem também em situações de outros gatilhos — só reforçam quando já há evidência.
+    weakOnlyKeywords: [
+      "outra área", "outra area", "outro departamento", "outro time", "pares",
+    ],
+  },
+  {
+    id: "limites-e-carga",
+    file: "gatilhos/limites-e-carga.md",
+    label: "Limites e Carga",
+    keywords: [
+      "dizer não", "dizer nao", "dizer um não", "não consigo dizer", "nao consigo dizer",
+      "sobrecarregad", "sobrecarga", "esgotad", "exaust", "esgotamento", "burnout",
+      "no limite", "acumulando trabalho", "trabalhando demais", "trabalho demais",
+      "renegociar o prazo", "renegociar prazo", "prazo impossível", "prazo impossivel",
+      "recusar", "recusei", "recusar uma demanda", "recuso uma demanda",
+      "recusar o pedido", "recuso o pedido", "não vou conseguir entregar",
+      "nao vou conseguir entregar", "não dou conta", "nao dou conta", "dar conta de tudo",
+      "aceito tudo", "aceitei tudo", "pedir ajuda com a carga", "minha carga",
+      "reduzir escopo", "priorizar meu trabalho", "limite saudável", "limite saudavel",
+    ],
+  },
 ];
 
 // Palavras vazias (já normalizadas, sem acento) — ignoradas no matching de sinais para
@@ -123,6 +180,16 @@ const STOPWORDS = new Set([
   "time", "equipe", "gestor", "chefe", "colega", "pessoa", "pessoas", "reuniao",
   "lider", "liderado", "liderada", "diretoria", "trabalho",
 ]);
+
+// Vetos: quando o texto contém evidência forte de OUTRO gatilho, os termos fracos do gatilho
+// aqui listado não podem inverter a classificação. Resolve a colisão de termos de cenário
+// ("outra área", "outro time") que descrevem contexto, não a natureza da situação.
+const VETO_KEYWORDS = {
+  "autoridade-informal": [
+    "desqualific", "na frente dos outros", "humilh", "gritou", "passou por cima",
+    "acusad", "hostil", "briga", "perdi a paciência",
+  ],
+};
 
 function normalize(s) {
   return (s || "")
@@ -183,12 +250,21 @@ export async function classify(situacao) {
     // natureza da situação ou sinal do .md), não ativam o gatilho sozinhas — era a maior
     // fonte de falsos positivos ("planilha para controlar tarefas do time" ativava gatilho).
     if (score > 0) {
-      for (const kw of trigger.weakKeywords || []) {
+      for (const kw of [...(trigger.weakKeywords || []), ...(trigger.weakOnlyKeywords || [])]) {
         if (text.includes(normalize(kw))) {
           score += 1;
           hits.push(kw);
         }
       }
+    }
+
+    // Penalidade de sobreposição: quando o TEXTO INTEIRO contém evidência forte de outro
+    // gatilho, termos fracos deste (pares, outra área, outro time…) não devem inverter o
+    // resultado. Ex.: "o gerente de outra área vive desqualificando meu trabalho" é conflito,
+    // não autoridade informal — "outra área" descreve só o cenário.
+    const vetoes = VETO_KEYWORDS[trigger.id];
+    if (trigger.weakOnlyKeywords?.length && vetoes?.length) {
+      if (vetoes.some((kw) => text.includes(normalize(kw)))) score -= 3;
     }
 
     scored.push({ trigger, score, hits });
@@ -340,6 +416,9 @@ export const INSTRUCTIONS = [
   "  4. Feedback — reconhecer, agradecer, corrigir comportamento, responder avaliação.",
   "  5. Relacionamento Interno — pedir, apresentar ou alinhar com gestor, colega ou time.",
   "  6. Interação Externa — fornecedor, parceiro, cliente ou lead.",
+  "  7. Divergência e Silêncio — ninguém discorda, o grupo concorda fácil, alguém cala o que pensa.",
+  "  8. Autoridade Informal — conduzir quem não me deve obediência: pares, especialistas, mais sênior.",
+  "  9. Limites e Carga — sobrecarga, exaustão, renegociar prazo, dificuldade de dizer não.",
   "",
   "Nesses casos, ANTES de escrever, ofereça uma escolha: consultar o Leadership MCP — que",
   "reúne orientações dos maiores guias de liderança do mundo — via ferramenta",
@@ -386,7 +465,8 @@ export function createServer(context = { user: null }) {
         "Recebe a descrição de uma situação relacional (em uma frase) e retorna orientação " +
         "comportamental baseada em princípios de liderança humanista. Classifica o gatilho " +
         "(conflito, relacionamento pessoal, decisão com impacto, feedback, relacionamento " +
-        "interno, interação externa) e consolida filtros, ação e resultado. Cobre situações de " +
+        "interno, interação externa, divergência e silêncio, autoridade informal, limites e " +
+        "carga) e consolida filtros, ação e resultado. Cobre situações de " +
         "trabalho e também pessoais (família, cônjuge, amizade, sócios). " +
         "Use quando a pessoa pedir ajuda para conduzir a parte humana de uma situação.",
       inputSchema: {

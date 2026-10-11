@@ -6,6 +6,7 @@ tags: [pessoal, família, amizade, sócios, casamento, reconciliação]
 links:
   - filtros/comunicacao-nao-violenta.md
   - filtros/escuta-ativa.md
+  - filtros/humildade-investigativa.md
   - acoes/conversa-dificil-pessoal.md
   - acoes/reconstruindo-uma-relacao.md
   - resultados/relacoes-saudaveis.md

@@ -1,7 +1,7 @@
-# Performance Leadership MCP — 2026-10-09 20:51 -03
+# Performance Leadership MCP — 2026-10-10 11:46 -03
 
 - Publicados: 1
-- Agendados: 5
+- Agendados: 6
 - Drafts: 4
 
 ## Analytics
@@ -18,9 +18,10 @@
 - `draft` · mídia 7 · IA corporativa não melhora só com prompts melhores.  Ela melhora quando o conhecimento da empresa fica disponível de forma clara, governada 
 - `draft` · mídia 7 · IA corporativa não melhora só com prompts melhores.  Ela melhora quando o conhecimento da empresa fica disponível de forma clara, governada 
 - `draft` · mídia 7 · IA corporativa não melhora só com prompts melhores.  Ela melhora quando o conhecimento da empresa fica disponível de forma clara, governada 
-- `scheduled` · mídia 1 · O treinamento terminou. A conversa difícil chega duas semanas depois.  E se a sua metodologia aparecesse justamente no momento em que o clie
+- `scheduled` · mídia 1 · O treinamento terminou. A conversa difícil chega duas semanas depois.  E se a sua metodologia aparecesse justamente quando o cliente precisa
 - `scheduled` · mídia 1 · A liderança não desapareceu.  Ela ficou longe do momento em que você precisava dela.  Um princípio aprendido em um workshop pode estar na su
-- `scheduled` · mídia 1 · Feedback começa pelo comportamento, não pelo caráter.  Antes de uma conversa difícil, tente separar quatro coisas:  1. o que aconteceu; 2. q
-- `scheduled` · mídia 1 · O workshop terminou. A conversa difícil chega duas semanas depois.  É nesse intervalo que uma metodologia pode desaparecer — ou continuar pr
-- `scheduled` · mídia 1 · Nem toda tarefa que parece escrita é só escrita.  Às vezes, o pedido é “me ajuda a responder este e-mail”, mas o que está em jogo é uma rela
+- `scheduled` · mídia 1 · Feedback começa pelo comportamento, não pelo caráter.  Antes de uma conversa difícil, separe quatro pontos:  1. o que aconteceu; 2. qual foi
+- `scheduled` · mídia 1 · O treinamento acabou. Duas semanas depois, chega a conversa difícil.  É nesse momento que muitos conceitos ficam difíceis de aplicar.  O Lea
+- `scheduled` · mídia 1 · Nem todo pedido para responder uma mensagem é só uma tarefa de escrita.  Às vezes, você está tentando lidar com um atraso, dar um retorno ou
+- `scheduled` · mídia 1 · Antes de pedir uma atualização sobre um prazo, faça uma pausa.  Você pode ser firme sem transformar o atraso em julgamento:  • descreva o qu
 - `published` · mídia 1 · Você sabe que não deveria responder no impulso.  Mas o prazo estourou, alguém está esperando e a mensagem precisa sair agora.  A diferença n

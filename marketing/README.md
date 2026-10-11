@@ -26,6 +26,9 @@ privado do projeto (Linear).
   alt text e direção visual dos posts do primeiro ciclo.
 - [`scripts/performance_check.py`](scripts/performance_check.py) — checagem diária de status,
   mídia, publicações e analytics disponíveis, com relatório em `performance/`.
+- [`scripts/funnel_check.py`](scripts/funnel_check.py) — checagem somente leitura da landing,
+  cadastro, telemetria agregada do MCP e cadastros agregados (quando `DATABASE_URL`/`psql`
+  estiverem disponíveis), com relatório em `performance/funnel-latest.{json,md}`.
 - [`reference-para-outros-modelos.md`](reference-para-outros-modelos.md) — handoff de produto,
   público, linguagem brasileira, tipografia, paleta, assets e guardrails para criação de novas peças.
 

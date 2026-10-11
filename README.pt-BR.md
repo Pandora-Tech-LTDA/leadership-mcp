@@ -79,9 +79,12 @@ A base é organizada em quatro camadas encadeadas — **gatilho → filtros → 
 o servidor monta em uma orientação consolidada a partir da situação que você descreve:
 
 1. **Gatilho** — a natureza relacional da situação (conflito, feedback, decisão com impacto,
-   relacionamento interno, interação externa, relacionamento pessoal).
+   relacionamento interno, interação externa, relacionamento pessoal, divergência e silêncio,
+   autoridade informal, limites e carga).
 2. **Filtros** — os pilares da liderança humanista (escuta ativa, reconhecimento, cultura de
-   serviço, comunicação não-violenta, segurança psicológica, interesses em vez de posições).
+   serviço, comunicação não-violenta, segurança psicológica, interesses em vez de posições,
+   liderança relacional, liderança adaptativa, humildade investigativa, experimentação de
+   identidade, participação e divergência).
 3. **Ação** — uma hipótese de comportamento concreta para aquela situação.
 4. **Resultado** — o efeito esperado (engajamento, confiança, cultura inclusiva).
 

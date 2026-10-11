@@ -58,6 +58,34 @@ export const CASES = [
   ["preciso demitir uma pessoa que também é minha amiga", ["decisao-com-impacto", "relacionamento-pessoal"]],
   ["o fornecedor errou de novo e dessa vez eu perdi a paciência na ligação", ["interacao-externa", "conflito"]],
 
+  // --- Divergência e silêncio ----------------------------------------------
+  ["ninguém discorda nas reuniões e eu saio achando que todos concordaram por educação", "divergencia-e-silencio"],
+  ["meu time concorda com tudo que eu proponho e isso me preocupa", "divergencia-e-silencio"],
+  ["tem uma pessoa do time que não fala nada mas eu percebo que discorda", "divergencia-e-silencio"],
+  ["antes de decidir quero saber qual é a melhor objeção que está sobre a mesa", "divergencia-e-silencio"],
+  ["a decisão passou fácil demais e ninguém trouxe nenhum risco", "divergencia-e-silencio"],
+  ["eu não me sinto à vontade para discordar do meu chefe na reunião", "divergencia-e-silencio"],
+
+  // --- Autoridade informal -------------------------------------------------
+  ["eu lidero o projeto mas não sou o chefe dessas pessoas", "autoridade-informal"],
+  ["preciso convencer alguém de outra área que não me reporta a mudar o processo", "autoridade-informal"],
+  ["meu especialista mais experiente não aceita minha liderança", "autoridade-informal"],
+  ["assumi a coordenação e o time ainda não me enxerga nesse papel", "autoridade-informal"],
+  ["sou mais novo na empresa e preciso conduzir pessoas com mais tempo de casa", "autoridade-informal"],
+  ["não tenho autoridade para cobrar esse compromisso de quem não é meu subordinado", "autoridade-informal"],
+
+  // --- Limites e carga -----------------------------------------------------
+  ["não consigo dizer não para mais um pedido e estou sobrecarregado", "limites-e-carga"],
+  ["preciso renegociar o prazo sem parecer que não dou conta do trabalho", "limites-e-carga"],
+  ["uma pessoa do meu time está esgotada e eu ainda recebo mais demanda", "limites-e-carga"],
+  ["aceitei tudo e agora não vou conseguir entregar nada no prazo", "limites-e-carga"],
+  ["como recuso uma demanda que não cabe na minha semana sem prejudicar a relação", "limites-e-carga"],
+
+  // --- Ambíguos novos (mais de uma leitura razoável) ------------------------
+  ["ninguém contesta o que a liderança propõe e eu não sei se é alinhamento ou medo", ["divergencia-e-silencio", "conflito"]],
+  ["estou no limite e perdi a paciência com o time na reunião", ["limites-e-carga", "conflito"]],
+  ["quero influenciar sem autoridade formal, mas a pessoa é sócia da empresa", ["autoridade-informal", "relacionamento-pessoal"]],
+
   // --- Não-gatilho (técnico/operacional, sem destinatário) -----------------
   ["como faço um relatório de desempenho do time", null],
   ["planilha para controlar tarefas do time", null],

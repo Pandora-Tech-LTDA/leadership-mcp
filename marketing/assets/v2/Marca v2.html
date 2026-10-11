@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Leadership MCP — Marca v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,500&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1c2530;--green:#2f6f5b;--beige:#faf8f4;--soft:#e7f0ec;--coral:#c65f3f;--muted:#5b6875;--line:#e6e3dc}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--beige);color:var(--ink);font-family:'Instrument Sans',Arial,sans-serif}
+  main{max-width:1180px;padding:56px 40px 80px}
+  h1{font-size:44px;letter-spacing:-.02em;margin:0 0 6px}
+  h1 em{font-family:Fraunces,Georgia,serif;font-weight:500;color:var(--green)}
+  p.lead{color:var(--muted);font-size:18px;margin:0 0 48px;max-width:62ch;text-wrap:pretty}
+  h2{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:56px 0 16px;border-top:1px solid var(--line);padding-top:20px}
+  .marks{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;align-items:end}
+  .marks figure,.covers figure{margin:0}
+  .marks img{width:100%;display:block;border-radius:24px}
+  .marks .round img{border-radius:50%}
+  .marks .small{display:flex;gap:16px;align-items:end}
+  .marks .small img{width:64px;border-radius:14px}.marks .small img+img{width:32px;border-radius:8px}
+  figcaption{font-size:14px;color:var(--muted);margin-top:10px}
+  figcaption b{color:var(--ink);font-weight:600}
+  .covers{display:grid;gap:36px}
+  .covers img{width:100%;display:block;border-radius:6px;box-shadow:0 1px 0 var(--line),0 24px 48px -28px rgba(28,37,48,.35)}
+  .rules{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;font-size:15px;line-height:1.5}
+  .rules b{display:block;margin-bottom:4px}
+  .swatches{display:flex;gap:10px;margin-top:8px}.swatches span{width:28px;height:28px;border-radius:50%;border:1px solid var(--line)}
+</style>
+</head>
+<body>
+<main>
+  <h1>Marca v2: <em>o cavalo da ilustração</em></h1>
+  <p class="lead">A ilustração do cavalo aplicada nas cores da marca (traço bege, verde ou ink conforme o fundo). As cores continuam as mesmas. Três capas do Facebook, da mais conservadora à mais ousada.</p>
+
+  <h2>Símbolo</h2>
+  <section class="marks">
+    <figure><img src="LMCP_mark_v2.png" alt="Cavalo bege sobre quadrado verde"><figcaption><b>Principal</b>: bege sobre verde</figcaption></figure>
+    <figure><img src="LMCP_mark_v2_mono-ink.png" alt="Cavalo ink sobre bege"><figcaption><b>Monocromático</b>: ink sobre bege</figcaption></figure>
+    <figure class="round"><img src="LMCP_profile_v2.png" alt="Foto de perfil em recorte circular"><figcaption><b>Perfil</b>: já no recorte circular</figcaption></figure>
+    <figure><div class="small"><img src="LMCP_mark_v2.png" alt=""><img src="LMCP_mark_v2.png" alt=""></div><figcaption><b>Teste de tamanho</b>: 64 e 32 px</figcaption></figure>
+  </section>
+
+  <h2>Capas do Facebook · 1640 × 856</h2>
+  <section class="covers">
+    <figure><img src="LMCP_cover_v2_b-escura.png" alt="Capa escura"><figcaption><b>B · Escura (recomendada)</b>: segue a capa escura que você preferiu; o cartão mostra o produto pausando antes de responder.</figcaption></figure>
+    <figure><img src="LMCP_cover_v2_a-clara.png" alt="Capa clara"><figcaption><b>A · Clara</b>: bege e painel verde com tabuleiro sutil; a mais próxima do site.</figcaption></figure>
+    <figure><img src="LMCP_cover_v2_c-verde.png" alt="Capa verde"><figcaption><b>C · Verde</b>: cavalo grande sangrando a borda; a mais ousada, sem cartão.</figcaption></figure>
+  </section>
+
+  <h2>Regras</h2>
+  <section class="rules">
+    <div><b>Tipografia</b>Instrument Sans para títulos e texto; Fraunces itálico só na ênfase (“momento da verdade”). No máximo duas famílias.</div>
+    <div><b>Coral</b>Só no olho do cavalo, no ponto final do título e no marcador do cartão. Nunca como faixa ou fundo.</div>
+    <div><b>Paleta</b><div class="swatches"><span style="background:#1c2530"></span><span style="background:#2f6f5b"></span><span style="background:#faf8f4"></span><span style="background:#e7f0ec"></span><span style="background:#c65f3f"></span></div></div>
+  </section>
+</main>
+</body>
+</html>

@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-10-09T20:51:11.178514-03:00",
+  "generated_at": "2026-10-10T11:46:45.439903-03:00",
   "account": "01a122e8-f9dc-71b1-acd7-57fa2131d02a",
   "counts": {
     "published": 1,
-    "scheduled": 5,
+    "scheduled": 6,
     "drafts": 4
   },
   "issues": [],
@@ -49,7 +49,7 @@
       "status": "scheduled",
       "scheduled_at": "2026-10-24 13:00:00",
       "published_at": null,
-      "content": "O treinamento terminou. A conversa difícil chega duas semanas depois.\n\nE se a sua metodologia aparecesse justamente no momento em que o cliente precisa aplicá-la?\n\nO Leadership MCP conecta uma base viva de liderança humanista ao assistente ",
+      "content": "O treinamento terminou. A conversa difícil chega duas semanas depois.\n\nE se a sua metodologia aparecesse justamente quando o cliente precisasse aplicá-la?\n\nO Leadership MCP é um complemento para assistentes de IA. Ele conecta uma base viva ",
       "media_count": 1,
       "facebook_status": [
         "pending"
@@ -60,7 +60,7 @@
       "status": "scheduled",
       "scheduled_at": "2026-10-21 15:00:00",
       "published_at": null,
-      "content": "A liderança não desapareceu.\n\nEla ficou longe do momento em que você precisava dela.\n\nUm princípio aprendido em um workshop pode estar na sua cabeça. Mas, sob pressão, o que aparece primeiro costuma ser o impulso.\n\nO Leadership MCP existe p",
+      "content": "A liderança não desapareceu.\n\nEla ficou longe do momento em que você precisava dela.\n\nUm princípio aprendido em um workshop pode estar na sua cabeça. Sob pressão, porém, o impulso costuma aparecer primeiro.\n\nO Leadership MCP é um complement",
       "media_count": 1,
       "facebook_status": [
         "pending"
@@ -71,7 +71,7 @@
       "status": "scheduled",
       "scheduled_at": "2026-10-19 12:00:00",
       "published_at": null,
-      "content": "Feedback começa pelo comportamento, não pelo caráter.\n\nAntes de uma conversa difícil, tente separar quatro coisas:\n\n1. o que aconteceu;\n2. qual foi o impacto;\n3. o que precisa ser entendido;\n4. qual próximo passo você está pedindo.\n\n\"Você é",
+      "content": "Feedback começa pelo comportamento, não pelo caráter.\n\nAntes de uma conversa difícil, separe quatro pontos:\n\n1. o que aconteceu;\n2. qual foi o impacto;\n3. o que ainda precisa ser entendido;\n4. qual próximo passo você está pedindo.\n\n“Você é ",
       "media_count": 1,
       "facebook_status": [
         "pending"
@@ -82,7 +82,7 @@
       "status": "scheduled",
       "scheduled_at": "2026-10-17 13:00:00",
       "published_at": null,
-      "content": "O workshop terminou. A conversa difícil chega duas semanas depois.\n\nÉ nesse intervalo que uma metodologia pode desaparecer — ou continuar presente no momento em que o líder precisa agir.\n\nO que sobra de um treinamento quando a pressão chega",
+      "content": "O treinamento acabou. Duas semanas depois, chega a conversa difícil.\n\nÉ nesse momento que muitos conceitos ficam difíceis de aplicar.\n\nO Leadership MCP é um complemento para assistentes de IA que leva uma orientação de liderança até situaçõ",
       "media_count": 1,
       "facebook_status": [
         "pending"
@@ -93,7 +93,18 @@
       "status": "scheduled",
       "scheduled_at": "2026-10-14 15:00:00",
       "published_at": null,
-      "content": "Nem toda tarefa que parece escrita é só escrita.\n\nÀs vezes, o pedido é “me ajuda a responder este e-mail”, mas o que está em jogo é uma relação, uma cobrança ou uma conversa que pode escalar.\n\nO Leadership MCP faz uma pausa antes da respost",
+      "content": "Nem todo pedido para responder uma mensagem é só uma tarefa de escrita.\n\nÀs vezes, você está tentando lidar com um atraso, dar um retorno ou evitar que uma conversa fique pior.\n\nO Leadership MCP é um complemento para assistentes de IA. Ele ",
+      "media_count": 1,
+      "facebook_status": [
+        "pending"
+      ]
+    },
+    {
+      "id": "01a12314-fb22-70a5-8b8e-808c375c9e8f",
+      "status": "scheduled",
+      "scheduled_at": "2026-10-10 15:00:00",
+      "published_at": null,
+      "content": "Antes de pedir uma atualização sobre um prazo, faça uma pausa.\n\nVocê pode ser firme sem transformar o atraso em julgamento:\n\n• descreva o que aconteceu;\n• pergunte o que mudou;\n• combine o próximo passo.\n\nO Leadership MCP é um complemento p",
       "media_count": 1,
       "facebook_status": [
         "pending"

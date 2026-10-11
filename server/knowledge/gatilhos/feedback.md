@@ -7,6 +7,10 @@ links:
   - filtros/escuta-ativa.md
   - filtros/reconhecimento.md
   - filtros/franqueza-com-cuidado.md
+  - filtros/lideranca-relacional.md
+  - filtros/humildade-investigativa.md
+  - filtros/experimentacao-de-identidade.md
+  - filtros/participacao-e-divergencia.md
   - acoes/dando-feedback.md
   - acoes/recebendo-feedback.md
   - acoes/conversa-que-voce-vem-adiando.md
